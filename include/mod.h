@@ -2,6 +2,7 @@
 
 #include "defines.h"
 #include <tp/d_com_inf_game.h>
+#include <tp/DynamicLink.h>
 #include "eventListener.h"
 #include "chestRando.h"
 #include "HUDConsole.h"
@@ -42,17 +43,33 @@ namespace mod
 
 			// Debug info
 			char lastItemFunc[32]; // Last called item create function
-			char lastItemData[50];
+			char lastItemDataID[5];
+			char lastItemDataX[30];
+			char lastItemDataY[30];
+			char lastItemDataZ[30];
+			
+			char currentPosX[30];
+			char currentPosY[30];
+			char currentPosZ[30];
 
 			// Replacment handler
 			s32 procItemCreateFunc(const float pos[3], s32 item, const char funcIdentifier[32]);
-
+			
+			u8 enableNormalTime = 1;			
+			u8 setDay = 1;
+			
+			u8 stage = 0;
+			u8 room = 0;
+			u8 spawn = 0;
+			u8 state = 0;
+			u8 trigerLoadSave = 0;
+			
 		// Functions
 		private:
 			/**
 			 * Runs once each frame
 			 */
-			void procNewFrame();		
+			void procNewFrame();
 			
 			/**
 			 * Runs when checking if the treasure chest content
@@ -61,6 +78,12 @@ namespace mod
 			bool procCheckTreasureRupeeReturn(void* unk1, s32 item);
 
 			s32 procEvtSkipper(void* evtPtr);
+
+			bool proc_query022(void* unk1, void* unk2, s32 unk3);
+
+			bool procDoLink(tp::dynamic_link::DynamicModuleControl* dmc);
+
+			void procItem_func_UTUWA_HEART();
 
 		// Private members
 		//private:
@@ -72,7 +95,13 @@ namespace mod
 			
 			s32 (*evt_control_Skipper_trampoline)(void* eventPtr) = nullptr;
 
+			bool (*query022_trampoline)(void* unk1, void* unk2, s32 unk3) = nullptr;
+
+			bool (*do_link_trampoline)(tp::dynamic_link::DynamicModuleControl* dmc) = nullptr;
+
 			bool (*checkTreasureRupeeReturn_trampoline)(void* unk1, s32 item) = nullptr;
+
+			void (*item_func_UTUWA_HEART_trampoline)() = nullptr;
 
 			// Item functions
 			s32 (*createItemForPresentDemo_trampoline)(const float pos[3], s32 item, u8 unk3, s32 unk4, s32 unk5, const float unk6[3], const float unk7[3]) = nullptr;

@@ -2,9 +2,10 @@
 
 #include "defines.h"
 #include "item.h"
+#include <tp/d_com_inf_game.h>
 
 namespace mod
-{
+{	
 	class ChestRandomizer
 	{
 		private:
@@ -13,10 +14,10 @@ namespace mod
 
 		public:
 			// Conditions used by the generator to determine wether a check is already reachable
-			u16 currentPlayerConditions;
+			u32 currentPlayerConditions;
 
 			// Layer 0 conditions, basically
-			u16 startConditions = 0b1010000000000001; // AND, IB, slingshot, small key (<-locked anyway)
+			u32 startConditions = 0b100000000000000100010; // AND, small key, master sword (<-locked anyway)
 
 			// Debug values
 			char lastSourceInfo[50];
@@ -28,6 +29,22 @@ namespace mod
 			u16 totalChecks;
 			u16 layerCheckCount;
 			u16 empty;
+			float rangeX = 400.0f;
+			float rangeY = 200.0f;
+			float rangeZ = 400.0f;
+			
+			u8 isProgressiveEnabled = 1;
+			
+			u8 isBugsanityEnabled = 1;
+			u8 isPoesanityEnabled = 1;
+			u8 isShopsanityEnabled = 1;
+			u8 areDungeonItemsRandomized = 1;
+			
+			u8 itemThatReplacesHalfMilk = 0;
+			u8 itemThatReplacesSlingShot = 0;
+			
+			tp::d_com_inf_game::ItemFlags* itemFlags;
+			tp::d_com_inf_game::ItemSlots* itemWeel;
 
 		public:
 			/**
@@ -44,6 +61,15 @@ namespace mod
 			 * @param item Internal Item ID of the item
 			 */
 			s32 getItemReplacement(const float pos[3], s32 item);
+			
+			
+			/**
+			 * Checks if the stage given is a boss room 
+			 * to know if we can spawn a HC
+			 * 
+			 * excludes hyrule castle since boss doesn't spawn heart container
+			 */
+			bool isStageBoss();			
 
 		private:
 			/**
@@ -65,5 +91,22 @@ namespace mod
 			 * Checks if the item should be locked in place
 			 */
 			bool isLocked(item::ItemCheck* check);
+			
+			/**
+			 * Checks if the stage given is a dungeon 
+			 * to prevent heart containers to spawn there so boss heart containers can spawn (doesn't fix it entirely based on Zephiles)
+			 *
+			 *includes miniboss rooms but not boss rooms
+			 *excludes hyrule castle since boss doesn't spawn heart container
+			 */
+			bool isStageADungeon(char* stage);
+			
+			/**
+			 * checks if item given is a type of bombs
+			 * to prevent problems with the game changing bomb type based on type of bombs in inventory
+			 *
+			 * excludes bomb bag+bombs
+			 */
+			bool isItemBombs(u8 itemID);
 	};
 }

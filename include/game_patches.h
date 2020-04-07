@@ -56,6 +56,24 @@ namespace mod::game_patch
 	 * and sets the flags accordingly
 	 */
 	void skipSewers();
+	
+	/**
+	 * Skips Midna's Desperate Hour
+	 * triggers the load to zelda's tower
+	 */
+	void skipMDH();
+	
+	/**
+	 * Removes midna from preventing you from leaving faron
+	 * changes the state of faron from 0 to 2
+	 */
+	void allowFaronEscape();
+
+	/**
+	* Adds the chests that disappear after KB3
+	* changes the state of faron from 1 to 3
+	*/
+	void setBublinState();
 
 	/**
 	 * Sets the flag after Ilia CS

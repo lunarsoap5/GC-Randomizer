@@ -36,8 +36,10 @@
 
 // d_item.o
 80098010:checkItemGet
+800983E4:item_func_UTUWA_HEART
 
 // d_a_alink.h
+8009DC6C:checkStageName
 800B2928:setStickData
 800BB6C4:checkHeavyStateOn
 8011A908:checkTreasureRupeeReturn
@@ -46,6 +48,12 @@
 
 // d_menu_collect.o
 801B3598:setWalletMaxNum
+
+// d_msg_flow.o
+8024BF88:query022
+
+// DynamicLink.o
+80263A5C:do_link
 
 // JKRExpHeap.o
 802CFF28:do_alloc_JKRExpHeap
