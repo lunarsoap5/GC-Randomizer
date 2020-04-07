@@ -76,6 +76,11 @@ namespace mod::game_patch
 	void setBublinState();
 
 	/**
+	* Opens the Snowpeak Ruins Doors
+	*/
+	void openSnowpeakDoors();
+
+	/**
 	 * Sets the flag after Ilia CS
 	 * which tells the game that you started
 	 * with sewers
