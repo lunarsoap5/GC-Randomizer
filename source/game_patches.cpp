@@ -60,7 +60,7 @@ namespace mod::game_patch
 	void killLinkHouseSpider()
 	{
 		// Kill Skulltula at Link's house
-		gameInfo.unk_958[0xA] |= 0x1;
+		gameInfo.localAreaNodes.unk_0[0xA] |= 0x1;
 	}
 
 	void increaseClimbSpeed()
@@ -136,26 +136,78 @@ namespace mod::game_patch
 		// Load back to Ordon Spring
 		tools::triggerSaveLoad(stage::allStages[Stage_Ordon_Spring], 0x1, 0x3, 0x4);
 	}
+	
+	void skipMDH()
+	{
+		strcpy(sysConsolePtr->consoleLine[20].line, "-> Skipping MDH");
+
+		// Load back to Ordon Spring
+		tools::triggerSaveLoad(stage::allStages[Stage_Hyrule_Castle_Sewers], 0x3, 0x0, 0xFF);
+	}
+	
+	void allowFaronEscape()
+	{
+		strcpy(sysConsolePtr->consoleLine[20].line, "state was not 0");
+		if (gameInfo.nextStageVars.nextRoom != 5 && tp::d_com_inf_game::current_state == '0')
+		{
+			char a = 2;
+			
+			strcpy(sysConsolePtr->consoleLine[20].line, "-> Allowing Faron Escape");
+			// reload faron woods as state 2
+			if (gameInfo.nextStageVars.nextSpawnPoint == 0xfc) {
+				return;
+			}
+			else if (gameInfo.nextStageVars.nextRoom == 0x0B) {
+				return;
+			}
+			else if (tp::d_com_inf_game::current_state == '2')
+			{
+				return;
+			}
+			else {
+				tools::triggerSaveLoad(gameInfo.nextStageVars.nextStage, gameInfo.nextStageVars.nextRoom, gameInfo.nextStageVars.nextSpawnPoint, a);
+			}
+		}
+	}
+
+	void setBublinState()
+	{
+		strcpy(sysConsolePtr->consoleLine[20].line, "state was not 1");
+		if (gameInfo.nextStageVars.nextRoom != 3 && (tp::d_com_inf_game::current_state == '1' || tp::d_com_inf_game::current_state == '2'))
+		{
+			if (tp::d_com_inf_game::current_state == '3')
+			{
+				return;
+			}
+			else
+			{
+				char a = 3;
+				strcpy(sysConsolePtr->consoleLine[20].line, "-> Setting Bublin State");
+				// reload bublin camp as state 3
+				tools::triggerSaveLoad(gameInfo.nextStageVars.nextStage, gameInfo.nextStageVars.nextRoom, gameInfo.nextStageVars.nextSpawnPoint, a);
+			}
+		}
+	}
 
 	void setFirstTimeWolf()
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set first time wolf");
 
-		gameInfo.scratchPad.wQuestLogData[0x030] |= 1;
+		gameInfo.scratchPad.unk_0[0x030] |= 1;
 	}
 
 	void setHuman()
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set human");
 
-		gameInfo.scratchPad.wQuestLogData[0x01E] = 0;
+		gameInfo.scratchPad.unk_0[0x01E] = 0;
 	}
 
 	void setWolf()
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set wolf");
 
-		gameInfo.scratchPad.wQuestLogData[0x01E] = 1;
+		gameInfo.scratchPad.unk_0[0x01E] = 1;
 	}
 
 	void giveSense()
@@ -179,10 +231,10 @@ namespace mod::game_patch
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Give MasterSword");
 
 		// Set Master sword inventory flag
-		gameInfo.scratchPad.wQuestLogData[0x0D2] |= 0x2;
+		gameInfo.scratchPad.itemFlags.itemFlags1.Master_Sword = 0b1;
 
 		// Equip Master sword (0x49 / 73)
-		gameInfo.scratchPad.wQuestLogData[0x014] = 0x49;
+		gameInfo.scratchPad.unk_0[0x014] = 0x49;
 	}
 
 	void giveMidna()
