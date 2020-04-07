@@ -170,6 +170,11 @@ namespace mod::game_patch
 		}
 	}
 
+	void openSnowpeakDoors()
+	{
+		gameInfo.localAreaNodes.unk_0[0x9] |= 0x0C;//unlock the living room doors in Snowpeak
+	}
+
 	void setBublinState()
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "state was not 1");

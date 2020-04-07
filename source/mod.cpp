@@ -296,6 +296,9 @@ namespace mod
 		//Set Bublin Camp State
 		eventListener->addLoadEvent(stage::allStages[Stage_Bublin_Camp], 0xFF, 0xFF, 0x1, 0xFF, game_patch::setBublinState, event::LoadEventAccuracy::Stage_Room_Spawn);
 
+		// Unlock Snowpeak Lving Room Doors
+		eventListener->addLoadEvent(stage::allStages[Stage_Snowpeak_Ruins], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::openSnowpeakDoors, event::LoadEventAccuracy::Stage_Room_Spawn);
+		
 		//   =================
 		//  | Function Hooks  |
 		//   =================
