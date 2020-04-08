@@ -154,10 +154,7 @@ namespace mod::game_patch
 			
 			strcpy(sysConsolePtr->consoleLine[20].line, "-> Allowing Faron Escape");
 			// reload faron woods as state 2
-			if (gameInfo.nextStageVars.nextSpawnPoint == 0xfc) {
-				return;
-			}
-			else if (gameInfo.nextStageVars.nextRoom == 0x0B) {
+			if (gameInfo.nextStageVars.nextRoom == 0x0B) {
 				return;
 			}
 			else if (tp::d_com_inf_game::current_state == '2')
@@ -165,7 +162,20 @@ namespace mod::game_patch
 				return;
 			}
 			else {
-				tools::triggerSaveLoad(gameInfo.nextStageVars.nextStage, gameInfo.nextStageVars.nextRoom, gameInfo.nextStageVars.nextSpawnPoint, a);
+				if (gameInfo.nextStageVars.nextSpawnPoint == 0xfc) {
+					if (gameInfo.nextStageVars.nextRoom == 0)
+					{
+						tools::triggerSaveLoad(gameInfo.nextStageVars.nextStage, gameInfo.nextStageVars.nextRoom, 0x0, a);
+					}
+					else
+					{
+						tools::triggerSaveLoad(gameInfo.nextStageVars.nextStage, gameInfo.nextStageVars.nextRoom, 0x2, a);
+					}
+				}
+				else
+				{
+					tools::triggerSaveLoad(gameInfo.nextStageVars.nextStage, gameInfo.nextStageVars.nextRoom, gameInfo.nextStageVars.nextSpawnPoint, a);
+				}
 			}
 		}
 	}
