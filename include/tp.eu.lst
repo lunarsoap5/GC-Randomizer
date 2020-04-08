@@ -145,3 +145,6 @@
 // JFWSystem.o
 // data
 80453180:systemConsole
+
+//currentState
+803A8393:current_state
