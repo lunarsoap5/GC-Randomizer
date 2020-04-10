@@ -152,7 +152,7 @@ namespace mod::game_patch
 		if (gameInfo.nextStageVars.nextRoom != 5)
 		{		
 			if (gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bossBeaten == 0b1 ||
-				gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Faron == 0b0)
+				gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Faron == 0b0 || (tp::d_com_inf_game::current_state == 0x65 && gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Faron == 0b0))
 			{
 				return;
 			}

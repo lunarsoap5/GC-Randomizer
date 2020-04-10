@@ -427,7 +427,7 @@ namespace mod
 			gameInfo.localAreaNodes.unk_0[0xC] |= 0xD1;//set flag for midna to think you followed the monkey in the mist
 			u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
             *tempAddress |= 0x400;//give ending blow		
-			gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Faron = 0b1;//set flag for vessel since we'll skip it by reloading
+			
 			gameInfo.nextStageVars.triggerLoad |= 1;
 			return item;
 		}

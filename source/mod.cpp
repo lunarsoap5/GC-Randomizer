@@ -564,6 +564,7 @@ namespace mod
 				tools::setCutscene(false, false);
 				if (frame_counter == num_frames)
 				{
+					gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Faron = 0b1;//set flag for vessel since we'll skip it by reloading
 					tools::setCutscene(true, false);
 				}
 				else
