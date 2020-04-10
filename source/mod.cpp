@@ -299,6 +299,9 @@ namespace mod
 		// Unlock Snowpeak Lving Room Doors
 		eventListener->addLoadEvent(stage::allStages[Stage_Snowpeak_Ruins], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::openSnowpeakDoors, event::LoadEventAccuracy::Stage_Room_Spawn);
 		
+		//unlock HF gates
+		eventListener->addLoadEvent(stage::allStages[Stage_Hyrule_Field], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::unlockHFGates, event::LoadEventAccuracy::Stage);
+
 		//   =================
 		//  | Function Hooks  |
 		//   =================
@@ -406,12 +409,12 @@ namespace mod
 		snprintf(currentPosX, 30, "%f", linkPos[0]);
 		snprintf(currentPosY, 30, "%f", linkPos[1]);
 		snprintf(currentPosZ, 30, "%f", linkPos[2]);
-		
-		if (trigerLoadSave == 1){
+
+		if (trigerLoadSave == 1) {
 			trigerLoadSave = 0;
 			tools::triggerSaveLoad(stage::allStages[stage], room, spawn, state);
 		}
-		
+
 		if (gameInfo.scratchPad.itemFlags.itemFlags1.Orange_Rupee == 0b0)
 		{//remove the item get animations for floor pickups (except silver rupee)
 			gameInfo.scratchPad.itemFlags.itemFlags1.Blue_Rupee = 0b1;
@@ -425,7 +428,7 @@ namespace mod
 			gameInfo.scratchPad.itemFlags.itemFlags1.Arrows_10 = 0b1;
 			gameInfo.scratchPad.itemFlags.itemFlags1.Arrows_1 = 0b1;
 		}
-		
+
 		if (enableNormalTime == 0 && setDay == 0)
 		{//set night
 			gameInfo.scratchPad.unk_0[0x34] = 0b01000010;
@@ -441,69 +444,69 @@ namespace mod
 			gameInfo.scratchPad.unk_0[0x37] = 0b00000000;
 		}
 		// Increment seed
-		if(!customSeed)
+		if (!customSeed)
 		{
 			tools::getRandom(0);
 		}
-		
+
 		// If loading has started check for LoadEvents
-		if(isLoading)
+		if (isLoading)
 		{
 			eventListener->checkLoadEvents();
 		}
 
-		if(controller::checkForButtonInputSingleFrame((controller::PadInputs::Button_R | controller::PadInputs::Button_Z)))
+		if (controller::checkForButtonInputSingleFrame((controller::PadInputs::Button_R | controller::PadInputs::Button_Z)))
 		{
 			// Toggle console			
 			system_console::setState(!sysConsolePtr->consoleEnabled, 0);
 		}
 
-		if(sysConsolePtr->consoleEnabled)
+		if (sysConsolePtr->consoleEnabled)
 		{
-			if(controller::checkForButtonInputSingleFrame((controller::PadInputs::Button_R | controller::PadInputs::Button_Start)))
+			if (controller::checkForButtonInputSingleFrame((controller::PadInputs::Button_R | controller::PadInputs::Button_Start)))
 			{
 				chestRandomizer->generate();
 			}
 
 			// Parse inputs of this frame
-			switch(tp::m_do_controller_pad::cpadInfo.buttonInputTrg)
+			switch (tp::m_do_controller_pad::cpadInfo.buttonInputTrg)
 			{
-				case controller::PadInputs::Button_A:
-					hudConsole->performAction(ConsoleActions::Option_Increase);
+			case controller::PadInputs::Button_A:
+				hudConsole->performAction(ConsoleActions::Option_Increase);
 				break;
 
-				case controller::PadInputs::Button_X:
-					hudConsole->performAction(ConsoleActions::Option_Increase, 10);
+			case controller::PadInputs::Button_X:
+				hudConsole->performAction(ConsoleActions::Option_Increase, 10);
 				break;
 
-				case controller::PadInputs::Button_B:
-					hudConsole->performAction(ConsoleActions::Option_Decrease);
+			case controller::PadInputs::Button_B:
+				hudConsole->performAction(ConsoleActions::Option_Decrease);
 				break;
 
-				case controller::PadInputs::Button_Y:
-					hudConsole->performAction(ConsoleActions::Option_Decrease, 10);
+			case controller::PadInputs::Button_Y:
+				hudConsole->performAction(ConsoleActions::Option_Decrease, 10);
 				break;
 
-				case controller::PadInputs::Button_DPad_Up:
-					hudConsole->performAction(ConsoleActions::Move_Up);
+			case controller::PadInputs::Button_DPad_Up:
+				hudConsole->performAction(ConsoleActions::Move_Up);
 				break;
 
-				case controller::PadInputs::Button_DPad_Down:
-					hudConsole->performAction(ConsoleActions::Move_Down);
+			case controller::PadInputs::Button_DPad_Down:
+				hudConsole->performAction(ConsoleActions::Move_Down);
 				break;
 
-				case controller::PadInputs::Button_DPad_Left:
-					hudConsole->performAction(ConsoleActions::Move_Left);
+			case controller::PadInputs::Button_DPad_Left:
+				hudConsole->performAction(ConsoleActions::Move_Left);
 				break;
 
-				case controller::PadInputs::Button_DPad_Right:
-					hudConsole->performAction(ConsoleActions::Move_Right);
+			case controller::PadInputs::Button_DPad_Right:
+				hudConsole->performAction(ConsoleActions::Move_Right);
 				break;
 			}
 			hudConsole->draw();
 		}
 
-		if(truePause && sysConsolePtr->consoleEnabled)
+		if (truePause && sysConsolePtr->consoleEnabled)
 		{
 			// Inputs handled, don't pass onto the game
 			tp::f_op_scene_req::freezeActors = 1;
@@ -515,18 +518,18 @@ namespace mod
 			tp::f_op_scene_req::freezeActors = 0;
 		}
 
-		if(itemSearchID != lastItemSearchID)
+		if (itemSearchID != lastItemSearchID)
 		{
 			lastItemSearchID = itemSearchID;
 
 			strcpy(itemSearchResults, "404");
 
-			for(u16 i = 0; i < chestRandomizer->totalChecks; i++)
+			for (u16 i = 0; i < chestRandomizer->totalChecks; i++)
 			{
 				item::ItemCheck* check = &item::checks[i];
 				if (check->destination)
 				{
-					if(check->destination->itemID == itemSearchID)
+					if (check->destination->itemID == itemSearchID)
 					{
 						// Found the source
 						snprintf(itemSearchResults, 40, "ID: %x Stage: %s Room: %d", check->itemID, check->stage, check->room);
@@ -534,18 +537,18 @@ namespace mod
 				}
 			}
 		}
-		else if(itemReverseSearchID != lastItemReverseSearchID)
+		else if (itemReverseSearchID != lastItemReverseSearchID)
 		{
 			lastItemReverseSearchID = itemReverseSearchID;
 
 			strcpy(itemReverseSearchResults, "404");
 
-			for(u16 i = 0; i < chestRandomizer->totalChecks; i++)
+			for (u16 i = 0; i < chestRandomizer->totalChecks; i++)
 			{
 				item::ItemCheck* check = &item::checks[i];
 				if (check->source)
 				{
-					if(check->source->itemID == itemReverseSearchID)
+					if (check->source->itemID == itemReverseSearchID)
 					{
 						// Found the source
 						snprintf(itemReverseSearchResults, 40, "ID: %x Stage: %s Room: %d", check->itemID, check->stage, check->room);
@@ -563,16 +566,17 @@ namespace mod
 				{
 					tools::setCutscene(true, false);
 				}
-				else 
+				else
 				{
 					frame_counter++;
 				}
 			}
-			else 
+			else
 			{
 				frame_counter = 0;
 			}
 		}
+
 
 		if(inputBuffering)
 		{

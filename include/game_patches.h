@@ -124,4 +124,10 @@ namespace mod::game_patch
 	 * Gives Midna Text that allows transformation
 	 */
 	void giveMidnaTransform();
+
+	/**
+	 * Removes the locks from the 2 bulblin gates in HF
+	 * change doesn't get saved so set it evry time you load into HF
+	 */
+	void unlockHFGates();
 }

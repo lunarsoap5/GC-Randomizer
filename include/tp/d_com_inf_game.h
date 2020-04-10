@@ -498,5 +498,6 @@ namespace tp::d_com_inf_game
 	{
 		extern GameInfo dComIfG_gameInfo;
 		extern u8 current_state;
+		extern u8 next_state;
 	}
 }
