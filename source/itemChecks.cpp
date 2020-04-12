@@ -12,9 +12,9 @@ namespace mod::item
 /* 2 */{0xEE, 8, stage::allStages[45], 14, 0x1, 0xFF, 0b000000000000000000100, 1221.9044190, 50.0000000, -7.9423170, nullptr, nullptr}, //North Faron Cave Key Chest
 /* 3 */{0x21, 3, stage::allStages[45], 14, 0x1, 0xFF, 0b110000000000000000100, 1528.0000000, 250.0000000, -22.0000000, nullptr, nullptr}, //North Faron Cave Heart Piece Chest
 /* 4 */{0x03, 7, stage::allStages[45], 6, 0x1, 0xFF, 0b000000000000000000100, -38292.5312500, 400.0000000, -23129.9550780, nullptr, nullptr}, //Small Chest North of Trill
-/* 5 */{0xED, 7, stage::allStages[65], 7, 0x0, 0xFF, 0b110010000000000000100, 128.7043760, -1077.0000000, -607.5000000, nullptr, nullptr}, //Link's Basement Chest
+/* 5 */{0xED, 7, stage::allStages[65], 7, 0x0, 0xFF, 0b110010000000000001000, 128.7043760, -1077.0000000, -607.5000000, nullptr, nullptr}, //Link's Basement Chest
 /* 6 */{0x03, 7, stage::allStages[6], 22, 0x1, 0xFF, 0b000000000000000000100, 900.0000000, 3110.0000000, 15825.0000000, nullptr, nullptr}, //FT Entrance Vine Chest
-/* 7 */{0x04, 7, stage::allStages[6], 0, 0x1, 0xFF, 0b000100000000000000100, 0.0000000, 2700.0000000, 5550.0000000, nullptr, nullptr}, //FT Central Chest Behind Stairs
+/* 7 */{0x04, 7, stage::allStages[6], 0, 0x1, 0xFF, 0b100100000000000000100, 0.0000000, 2700.0000000, 5550.0000000, nullptr, nullptr}, //FT Central Chest Behind Stairs
 /* 8 */{0x23, 2, stage::allStages[6], 0, 0x1, 0x1, 0b110000000000000000100, 550.0000000, 3301.0095210, 5325.0000000, nullptr, nullptr}, //FT Map Chest
 /* 9 */{0x20, 8, stage::allStages[6], 9, 0x1, 0xFF, 0b110000000000000000100, 6908.0000000, 3580.2719730, -3305.0000000, nullptr, nullptr}, //FT Windless Bridge Chest
 /* 10 */{0x03, 7, stage::allStages[6], 2, 0x1, 0xFF, 0b110000000000000100100, 11559.7548830, 3152.0000000, 3761.2187500, nullptr, nullptr}, //FT Second Monkey Under Bridge Chest

@@ -435,9 +435,7 @@ namespace mod
 		{//set tear counter to 16
 			gameInfo.scratchPad.unk_EC[0x29] = 16;
 			gameInfo.localAreaNodes.unk_0[0x9] |= 0x20;//give death mountain warp
-			gameInfo.localAreaNodes.unk_0[0x14] |= 1;//give midna jumps for top of sanctuary
-			u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
-            *tempAddress |= 0x800;//give shield attack		
+			gameInfo.localAreaNodes.unk_0[0x14] |= 1;//give midna jumps for top of sanctuary		
 			gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Eldin = 0b1;//set flag for vessel since we'll skip it by reloading
 			gameInfo.nextStageVars.triggerLoad |= 1;
 			return item;
@@ -447,8 +445,6 @@ namespace mod
 			gameInfo.scratchPad.unk_EC[0x2A] = 16;
 			gameInfo.localAreaNodes.unk_0[0xA] |= 0x4;//give lake hylia warp
 			gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xB] |= 0x8;//give castle town warp
-			u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
-            *tempAddress |= 0x200;//give Backslice
 			gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Lanayru = 0b1;//set flag for vessel since we'll skip it by reloading
 			gameInfo.nextStageVars.triggerLoad |= 1;
 			return item;
@@ -475,10 +471,11 @@ namespace mod
 				{
 					bool isOk = false;
 					
-					if (sourceCheck->type == item::ItemType::Bug || sourceCheck->type == item::ItemType::Dungeon || sourceCheck->itemID == items::Item::Heart_Container )
+					if (sourceCheck->type == item::ItemType::Bug || sourceCheck->type == item::ItemType::Dungeon || sourceCheck->itemID == items::Item::Heart_Container || sourceCheck->itemID == items::Item::Ball_and_Chain)
 					{//bugs have unique itemids so position doesn't matter
 					//dungeon items are unique in their dungeon
 					//there can only be one heart container per stage in vanilla, so position doesn't matter (also each one can be at 2 locations: if gotten after boss or if coming back)
+					//BaC can be anywhere in the room so don't check the position	
 						isOk = true;
 					}
 					else 
