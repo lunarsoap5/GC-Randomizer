@@ -288,8 +288,8 @@ namespace mod
 		eventListener->addLoadEvent(stage::allStages[Stage_Ordon_Village], 0x1, 0xFF, 0xFF, 0xFF, game_patch::killLinkHouseSpider, event::LoadEventAccuracy::Stage_Room);
 
 		// Skip MDH when the load happens
-		eventListener->addLoadEvent(stage::allStages[Stage_Hyrule_Field], 0xa, 0x0, 0xFF, 0xFF, game_patch::skipMDH, event::LoadEventAccuracy::Stage_Room_Spawn);
-		
+		//eventListener->addLoadEvent(stage::allStages[Stage_Castle_Town_Interiors], 0x6, 0xC, 0xFF, 0xFF, game_patch::skipMDH, event::LoadEventAccuracy::Stage_Room_Spawn);
+
 		// Allow Faron Escape
 		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0xFF, 0xFF, 0x0, 0xFF, game_patch::allowFaronEscape, event::LoadEventAccuracy::Stage_Room_Spawn);
 
@@ -301,6 +301,9 @@ namespace mod
 		
 		//unlock HF gates
 		eventListener->addLoadEvent(stage::allStages[Stage_Hyrule_Field], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::unlockHFGates, event::LoadEventAccuracy::Stage);
+
+		//skip goats 2
+		eventListener->addLoadEvent(stage::allStages[Stage_Ordon_Ranch], 0x0, 0x2, 0xFF, 0xFF, game_patch::skipGoats2, event::LoadEventAccuracy::Stage_Room_Spawn);
 
 		//   =================
 		//  | Function Hooks  |

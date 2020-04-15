@@ -171,6 +171,17 @@ namespace mod::game_patch
 		gameInfo.unk_978[0x7] |= 0x6;//2 = lanyru gate 4 = eldin gorge gate
 	}
 
+	void skipGoats2()
+	{
+		strcpy(sysConsolePtr->consoleLine[20].line, "-> Skipping Goats 2");
+
+		gameInfo.localAreaNodes.unk_0[0xE] |= 0x2;//set flag for Fado text before goats
+		gameInfo.localAreaNodes.unk_0[0x9] |= 0x60;//set flag for day 3 intro cs and goats 2 done		
+
+		// Load back to Ordon Spring
+		tools::triggerSaveLoad(stage::allStages[Stage_Ordon_Village], 0x0, 0x19, 0x8);
+	}
+
 	void openSnowpeakDoors()
 	{
 		gameInfo.localAreaNodes.unk_0[0x9] |= 0x0C;//unlock the living room doors in Snowpeak
