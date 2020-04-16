@@ -142,7 +142,9 @@ namespace mod::game_patch
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Skipping MDH");
 
 		// Load back to Ordon Spring
-		tools::triggerSaveLoad(stage::allStages[Stage_Hyrule_Castle_Sewers], 0x3, 0x0, 0xFF);
+		snprintf(gameInfo.nextStageVars.nextStage, 8, "%s", stage::allStages[Stage_Hyrule_Castle_Sewers]);
+		gameInfo.nextStageVars.nextRoom = 0x3;
+		gameInfo.nextStageVars.nextSpawnPoint = 0x0;
 	}
 	
 
@@ -161,7 +163,7 @@ namespace mod::game_patch
 				strcpy(sysConsolePtr->consoleLine[20].line, "-> Allowing Faron Escape");
 				// reload faron woods as state 2
 				//tools::triggerSaveLoad(gameInfo.nextStageVars.nextStage, gameInfo.nextStageVars.nextRoom, gameInfo.nextStageVars.nextSpawnPoint, a); --obsolete code
-				tp::d_com_inf_game::next_state = 0x2;
+				gameInfo.nextStageVars.nextState = 0x2;
 			}
 		}
 	}
@@ -197,7 +199,7 @@ namespace mod::game_patch
 				strcpy(sysConsolePtr->consoleLine[20].line, "-> Setting Bublin State");
 				// reload bublin camp as state 3
 				//tools::triggerSaveLoad(gameInfo.nextStageVars.nextStage, gameInfo.nextStageVars.nextRoom, gameInfo.nextStageVars.nextSpawnPoint, a);
-				tp::d_com_inf_game::next_state = 0x3;
+				gameInfo.nextStageVars.nextState = 0x3;
 			}
 			else
 			{

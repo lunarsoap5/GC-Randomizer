@@ -288,7 +288,7 @@ namespace mod
 		eventListener->addLoadEvent(stage::allStages[Stage_Ordon_Village], 0x1, 0xFF, 0xFF, 0xFF, game_patch::killLinkHouseSpider, event::LoadEventAccuracy::Stage_Room);
 
 		// Skip MDH when the load happens
-		//eventListener->addLoadEvent(stage::allStages[Stage_Castle_Town_Interiors], 0x6, 0xC, 0xFF, 0xFF, game_patch::skipMDH, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Castle_Town_Interiors], 0x6, 0xC, 0xFF, 0xFF, game_patch::skipMDH, event::LoadEventAccuracy::Stage_Room_Spawn);
 
 		// Allow Faron Escape
 		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0xFF, 0xFF, 0x0, 0xFF, game_patch::allowFaronEscape, event::LoadEventAccuracy::Stage_Room_Spawn);
@@ -479,7 +479,7 @@ namespace mod
 				break;
 
 			case controller::PadInputs::Button_X:
-				hudConsole->performAction(ConsoleActions::Option_Increase, 10);
+				hudConsole->performAction(ConsoleActions::Option_Increase, 0x10);
 				break;
 
 			case controller::PadInputs::Button_B:
@@ -487,7 +487,7 @@ namespace mod
 				break;
 
 			case controller::PadInputs::Button_Y:
-				hudConsole->performAction(ConsoleActions::Option_Decrease, 10);
+				hudConsole->performAction(ConsoleActions::Option_Decrease, 0x10);
 				break;
 
 			case controller::PadInputs::Button_DPad_Up:
