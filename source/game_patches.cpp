@@ -142,7 +142,7 @@ namespace mod::game_patch
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Skipping MDH");
 
 		// Load back to Ordon Spring
-		snprintf(gameInfo.nextStageVars.nextStage, 8, "%s", stage::allStages[Stage_Hyrule_Castle_Sewers]);
+		strncpy(gameInfo.nextStageVars.nextStage,stage::allStages[Stage_Hyrule_Castle_Sewers],sizeof(gameInfo.nextStageVars.nextStage) - 1);
 		gameInfo.nextStageVars.nextRoom = 0x3;
 		gameInfo.nextStageVars.nextSpawnPoint = 0x0;
 	}
