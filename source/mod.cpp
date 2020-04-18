@@ -70,6 +70,10 @@ namespace mod
 		 * Causes issues right now (argarok cannot be beaten)
 		 * game_patch::removeIBLimit();
 		 */
+		game_patch::isMDHSkipEnabled = 1;
+		game_patch::isForestEscapeEnabled = 1;
+		game_patch::isGateUnlockEnabled = 1;
+		game_patch::isGoatSkipEnabled = 1;
 
 		// Init rando
 		tools::randomSeed = 0x9e3779b97f4a7c15;
@@ -93,6 +97,11 @@ namespace mod
 		hudConsole->addOption(page, "Alpha:", &reinterpret_cast<u8*>(&sysConsolePtr->consoleColor)[3], 0xFF);
 		hudConsole->addOption(page, "True Pause:", &truePause, 0x1);
 		hudConsole->addOption(page, "Input Buffer:", &inputBuffering, 0x1);
+		hudConsole->addOption(page, "Skip Twilight?", &chestRandomizer->isTwilightSkipEnabled, 0x1);
+		hudConsole->addOption(page, "MDH skip?", &game_patch::isMDHSkipEnabled, 0x1);
+		hudConsole->addOption(page, "Faron Escape?", &game_patch::isForestEscapeEnabled, 0x1);
+		hudConsole->addOption(page, "open HF gates?", &game_patch::isGateUnlockEnabled, 0x1);
+		hudConsole->addOption(page, "skip goats2?", &game_patch::isGoatSkipEnabled, 0x1);
 
 		// Seed settings
 		page = hudConsole->addPage("Seed");

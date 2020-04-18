@@ -421,33 +421,56 @@ namespace mod
 		}
 		else if (item == items::Item::Vessel_Of_Light_Faron)
 		{//set tear counter to 16
-			gameInfo.scratchPad.unk_EC[0x28] = 16;
-			gameInfo.localAreaNodes.unk_0[0xB] |= 0x4;//give N faron warp
-			gameInfo.localAreaNodes.unk_0[0x8] = 0xFF;//give midna jumps in mist area
-			gameInfo.localAreaNodes.unk_0[0xC] |= 0xD1;//set flag for midna to think you followed the monkey in the mist
-			u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
-            *tempAddress |= 0x400;//give ending blow		
-			
-			gameInfo.nextStageVars.triggerLoad |= 1;
-			return item;
+			if (isTwilightSkipEnabled == 1)
+			{
+				gameInfo.scratchPad.unk_EC[0x28] = 16;
+				gameInfo.localAreaNodes.unk_0[0xB] |= 0x4;//give N faron warp
+				gameInfo.localAreaNodes.unk_0[0x8] = 0xFF;//give midna jumps in mist area
+				gameInfo.localAreaNodes.unk_0[0xC] |= 0xD1;//set flag for midna to think you followed the monkey in the mist
+				u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
+				*tempAddress |= 0x400;//give ending blow		
+
+				gameInfo.nextStageVars.triggerLoad |= 1;
+				return item;
+			}
+			else
+			{
+				u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
+				*tempAddress |= 0x400;//give ending blow
+				return item;
+			}
 		}
 		else if (item == items::Item::Vessel_Of_Light_Eldin)
 		{//set tear counter to 16
-			gameInfo.scratchPad.unk_EC[0x29] = 16;
-			gameInfo.localAreaNodes.unk_0[0x9] |= 0x20;//give death mountain warp
-			gameInfo.localAreaNodes.unk_0[0x14] |= 1;//give midna jumps for top of sanctuary		
-			gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Eldin = 0b1;//set flag for vessel since we'll skip it by reloading
-			gameInfo.nextStageVars.triggerLoad |= 1;
-			return item;
+			if (isTwilightSkipEnabled == 1)
+			{
+				gameInfo.scratchPad.unk_EC[0x29] = 16;
+				gameInfo.localAreaNodes.unk_0[0x9] |= 0x20;//give death mountain warp
+				gameInfo.localAreaNodes.unk_0[0x14] |= 1;//give midna jumps for top of sanctuary		
+				gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Eldin = 0b1;//set flag for vessel since we'll skip it by reloading
+				gameInfo.nextStageVars.triggerLoad |= 1;
+				return item;
+			}
+			else 
+			{
+				return item;
+			}
 		}
 		else if (item == items::Item::Vessel_Of_Light_Lanayru)
 		{//set tear counter to 16
-			gameInfo.scratchPad.unk_EC[0x2A] = 16;
-			gameInfo.localAreaNodes.unk_0[0xA] |= 0x4;//give lake hylia warp
-			gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xB] |= 0x8;//give castle town warp
-			gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Lanayru = 0b1;//set flag for vessel since we'll skip it by reloading
-			gameInfo.nextStageVars.triggerLoad |= 1;
-			return item;
+			if (isTwilightSkipEnabled == 1)
+			{
+				gameInfo.scratchPad.unk_EC[0x2A] = 16;
+				gameInfo.localAreaNodes.unk_0[0xA] |= 0x4;//give lake hylia warp
+				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xB] |= 0x8;//give castle town warp
+				gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Lanayru = 0b1;//set flag for vessel since we'll skip it by reloading
+				gameInfo.nextStageVars.triggerLoad |= 1;
+				return item;
+			}
+			else
+			{
+				return item;
+			}
 		}
 		
 		for(u16 i = 0; i < totalChecks; i++)
