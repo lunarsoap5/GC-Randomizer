@@ -1,6 +1,9 @@
 #pragma once
 
 #include "defines.h"
+#include <tp/d_com_inf_game.h>
+
+
 
 /**
  * Contains functions that fix certain cutscenes
@@ -135,4 +138,9 @@ namespace mod::game_patch
 	 * when spawning in goats 2, will warp you to Illia taking Epona CS
 	 */
 	void skipGoats2();
+
+	static u8 isMDHSkipEnabled = 1;
+	static u8 isForestEscapeEnabled = 1;
+	static u8 isGateUnlockEnabled = 1;
+	static u8 isGoatSkipEnabled = 1;
 }
