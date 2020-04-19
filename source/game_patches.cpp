@@ -194,7 +194,11 @@ namespace mod::game_patch
 			gameInfo.localAreaNodes.unk_0[0x9] |= 0x60;//set flag for day 3 intro cs and goats 2 done		
 
 			// Load back to Ordon Spring
-			tools::triggerSaveLoad(stage::allStages[Stage_Ordon_Village], 0x0, 0x19, 0x8);
+			tools::triggerSaveLoad(stage::allStages[Stage_Ordon_Village], 0x0, 0x18, 0x7);
+			/*strncpy(gameInfo.nextStageVars.nextStage, stage::allStages[Stage_Hyrule_Castle_Sewers], sizeof(gameInfo.nextStageVars.nextStage) - 1);
+			gameInfo.nextStageVars.nextRoom = 0x3;
+			gameInfo.nextStageVars.nextSpawnPoint = 0x0;*/
+
 		}
 	}
 
