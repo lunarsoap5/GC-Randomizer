@@ -2,6 +2,7 @@
 #include "defines.h"
 #include "stage.h"
 #include "tools.h"
+#include "singleton.h"
 
 #include <tp/d_menu_collect.h>
 #include <tp/d_a_alink.h>
@@ -140,7 +141,7 @@ namespace mod::game_patch
 	
 	void skipMDH()
 	{
-		if (isMDHSkipEnabled)
+		if (Singleton::getInstance()->isMDHSkipEnabled == 1)
 		{
 			strcpy(sysConsolePtr->consoleLine[20].line, "-> Skipping MDH");
 
@@ -154,9 +155,9 @@ namespace mod::game_patch
 
 	void allowFaronEscape()
 	{
-		strcpy(sysConsolePtr->consoleLine[20].line, "state was not 0");
-		if (isForestEscapeEnabled)
+		if (Singleton::getInstance()->isForestEscapeEnabled == 1)
 		{
+			strcpy(sysConsolePtr->consoleLine[20].line, "state was not 0");
 			if (gameInfo.nextStageVars.nextRoom != 5)
 			{
 				if (gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bossBeaten == 0b1 ||
@@ -171,14 +172,13 @@ namespace mod::game_patch
 					//tools::triggerSaveLoad(gameInfo.nextStageVars.nextStage, gameInfo.nextStageVars.nextRoom, gameInfo.nextStageVars.nextSpawnPoint, a); --obsolete code
 					gameInfo.nextStageVars.nextState = 0x2;
 				}
-
 			}
 		}
 	}
 
 	void unlockHFGates()
 	{
-		if (isGateUnlockEnabled)
+		if (Singleton::getInstance()->isGateUnlockEnabled == 1)
 		{
 			gameInfo.unk_978[0x7] |= 0x6;//2 = lanyru gate 4 = eldin gorge gate
 		}
@@ -186,7 +186,7 @@ namespace mod::game_patch
 
 	void skipGoats2()
 	{
-		if (isGoatSkipEnabled)
+		if (Singleton::getInstance()->isGoatSkipEnabled == 1)
 		{
 			strcpy(sysConsolePtr->consoleLine[20].line, "-> Skipping Goats 2");
 

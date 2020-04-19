@@ -13,6 +13,7 @@
 #include "itemChecks.h"
 #include "HUDConsole.h"
 #include "items.h"
+#include "singleton.h"
 
 #include <tp/f_op_scene_req.h>
 #include <tp/m_Do_controller_pad.h>
@@ -70,10 +71,6 @@ namespace mod
 		 * Causes issues right now (argarok cannot be beaten)
 		 * game_patch::removeIBLimit();
 		 */
-		game_patch::isMDHSkipEnabled = 1;
-		game_patch::isForestEscapeEnabled = 1;
-		game_patch::isGateUnlockEnabled = 1;
-		game_patch::isGoatSkipEnabled = 1;
 
 		// Init rando
 		tools::randomSeed = 0x9e3779b97f4a7c15;
@@ -97,11 +94,7 @@ namespace mod
 		hudConsole->addOption(page, "Alpha:", &reinterpret_cast<u8*>(&sysConsolePtr->consoleColor)[3], 0xFF);
 		hudConsole->addOption(page, "True Pause:", &truePause, 0x1);
 		hudConsole->addOption(page, "Input Buffer:", &inputBuffering, 0x1);
-		hudConsole->addOption(page, "Skip Twilight?", &chestRandomizer->isTwilightSkipEnabled, 0x1);
-		hudConsole->addOption(page, "MDH skip?", &game_patch::isMDHSkipEnabled, 0x1);
-		hudConsole->addOption(page, "Faron Escape?", &game_patch::isForestEscapeEnabled, 0x1);
-		hudConsole->addOption(page, "open HF gates?", &game_patch::isGateUnlockEnabled, 0x1);
-		hudConsole->addOption(page, "skip goats2?", &game_patch::isGoatSkipEnabled, 0x1);
+
 
 		// Seed settings
 		page = hudConsole->addPage("Seed");
@@ -127,7 +120,8 @@ namespace mod
 		hudConsole->addOption(page, "Bugsanity?", &chestRandomizer->isBugsanityEnabled, 0x1);
 		hudConsole->addOption(page, "Poesanity?", &chestRandomizer->isPoesanityEnabled, 0x1);
 		hudConsole->addOption(page, "Shopsanity?", &chestRandomizer->isShopsanityEnabled, 0x1);	
-		hudConsole->addOption(page, "Dungeon Items?", &chestRandomizer->areDungeonItemsRandomized, 0x1);	
+		hudConsole->addOption(page, "Dungeon Items?", &chestRandomizer->areDungeonItemsRandomized, 0x1);
+		
 		
 		
 		hudConsole->addWatch(page, "Function:", &lastItemFunc, 's', WatchInterpretation::_str);
@@ -158,6 +152,12 @@ namespace mod
 		
 		// Game info
 		page = hudConsole->addPage("Game Info");
+
+		hudConsole->addOption(page, "MDH Skip?", &Singleton::getInstance()->isMDHSkipEnabled, 0x1);
+		hudConsole->addOption(page, "Faron Escape?", &Singleton::getInstance()->isForestEscapeEnabled, 0x1);
+		hudConsole->addOption(page, "Open HF gates?", &Singleton::getInstance()->isGateUnlockEnabled, 0x1);
+		hudConsole->addOption(page, "Skip Goats 2?", &Singleton::getInstance()->isGoatSkipEnabled, 0x1);
+		hudConsole->addOption(page, "Skip Twilight?", &chestRandomizer->isTwilightSkipEnabled, 0x1);
 		
 		/*hudConsole->addOption(page, "Item half milk", &chestRandomizer->itemThatReplacesHalfMilk, 0xFF); //for testing only
 		hudConsole->addOption(page, "Item slingshot", &chestRandomizer->itemThatReplacesSlingShot, 0xFF); //for testing only
