@@ -19,6 +19,7 @@ namespace mod
 		u8 isGateUnlockEnabled;
 		u8 isGoatSkipEnabled;
 		u8 isMSPuzzleSkipEnabled;
+		u8 isCartEscortSkipEnabled;
 
 		private:
 

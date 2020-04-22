@@ -143,4 +143,9 @@ namespace mod::game_patch
 	 * opens the door the the master sword in sacred grove
 	 */
 	void skipGrovePuzzle();
+
+	/**
+	 * when you spawn into the Cart Escort, game will spawn you in Kakariko Afterwards
+	 */
+	void skipCartEscort();
 }
