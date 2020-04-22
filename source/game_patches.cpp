@@ -161,7 +161,7 @@ namespace mod::game_patch
 			if (gameInfo.nextStageVars.nextRoom != 5)
 			{
 				if (gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bossBeaten == 0b1 ||
-					gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Faron == 0b0 || (tp::d_com_inf_game::current_state == 0x65 && gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Faron == 0b0))
+					gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.unk_EC[0x28] != 16 || (tp::d_com_inf_game::current_state == 0x65 && gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Faron == 0b0))
 				{
 					return;
 				}
@@ -186,19 +186,17 @@ namespace mod::game_patch
 
 	void skipGoats2()
 	{
-		if (Singleton::getInstance()->isGoatSkipEnabled == 1)
-		{
-			strcpy(sysConsolePtr->consoleLine[20].line, "-> Skipping Goats 2");
+		if (gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Faron == 0b0)
+		{//goats 2
+			if (Singleton::getInstance()->isGoatSkipEnabled == 1)
+			{
+				strcpy(sysConsolePtr->consoleLine[20].line, "-> Skipping Goats 2");
 
-			gameInfo.localAreaNodes.unk_0[0xE] |= 0x2;//set flag for Fado text before goats
-			gameInfo.localAreaNodes.unk_0[0x9] |= 0x60;//set flag for day 3 intro cs and goats 2 done		
-
-			// Load back to Ordon Spring
-			tools::triggerSaveLoad(stage::allStages[Stage_Ordon_Village], 0x0, 0x18, 0x7);
-			/*strncpy(gameInfo.nextStageVars.nextStage, stage::allStages[Stage_Hyrule_Castle_Sewers], sizeof(gameInfo.nextStageVars.nextStage) - 1);
-			gameInfo.nextStageVars.nextRoom = 0x3;
-			gameInfo.nextStageVars.nextSpawnPoint = 0x0;*/
-
+				gameInfo.localAreaNodes.unk_0[0xE] |= 0x2;//set flag for Fado text before goats
+				gameInfo.localAreaNodes.unk_0[0x9] |= 0x60;//set flag for day 3 intro cs and goats 2 done
+				// Load back to Ordon Spring
+				tools::triggerSaveLoad(stage::allStages[Stage_Ordon_Village], 0x0, 0x19, 0x8);
+			}
 		}
 	}
 
@@ -223,6 +221,15 @@ namespace mod::game_patch
 			{
 				return;
 			}
+		}
+	}
+
+	void skipGrovePuzzle()
+	{
+		if (Singleton::getInstance()->isMSPuzzleSkipEnabled == 1 && (gameInfo.localAreaNodes.unk_0[0xB] & 0x4) == 0)
+		{
+			strcpy(sysConsolePtr->consoleLine[20].line, "Skipping MS Puzzle");
+			gameInfo.localAreaNodes.unk_0[0xB] |= 0x4;//skip Sacred Grove Puzzle
 		}
 	}
 
