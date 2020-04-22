@@ -23,6 +23,7 @@ namespace mod
 		isGateUnlockEnabled = 1;
 		isGoatSkipEnabled = 1;
 		isMSPuzzleSkipEnabled = 1;
+		isCartEscortSkipEnabled = 1;
 	}
 
 } 

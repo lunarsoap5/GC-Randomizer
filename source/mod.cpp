@@ -158,7 +158,8 @@ namespace mod
 		hudConsole->addOption(page, "Open HF gates?", &Singleton::getInstance()->isGateUnlockEnabled, 0x1);
 		hudConsole->addOption(page, "Skip Twilight?", &chestRandomizer->isTwilightSkipEnabled, 0x1);
 		hudConsole->addOption(page, "Skip Goats 2?", &Singleton::getInstance()->isGoatSkipEnabled, 0x1);
-		hudConsole->addOption(page, "skip MS puzzle?", &Singleton::getInstance()->isMSPuzzleSkipEnabled, 0x1);
+		hudConsole->addOption(page, "Skip MS Puzzle?", &Singleton::getInstance()->isMSPuzzleSkipEnabled, 0x1);
+		hudConsole->addOption(page, "Skip Cart Escort?", &Singleton::getInstance()->isCartEscortSkipEnabled, 0x1);
 
 		/*hudConsole->addOption(page, "Item half milk", &chestRandomizer->itemThatReplacesHalfMilk, 0xFF); //for testing only
 		hudConsole->addOption(page, "Item slingshot", &chestRandomizer->itemThatReplacesSlingShot, 0xFF); //for testing only
@@ -317,6 +318,9 @@ namespace mod
 		
 		//skip MS Puzzle
 		eventListener->addLoadEvent(stage::allStages[Stage_Sacred_Grove], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::skipGrovePuzzle, event::LoadEventAccuracy::Stage);
+
+		//skip Cart Escort
+		eventListener->addLoadEvent(stage::allStages[Stage_Hyrule_Field], 0xC, 0x2, 0xFF, 0xFF, game_patch::skipCartEscort, event::LoadEventAccuracy::Stage_Room_Spawn);
 
 
 		//   =================

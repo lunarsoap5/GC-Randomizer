@@ -233,6 +233,14 @@ namespace mod::game_patch
 		}
 	}
 
+	void skipCartEscort()
+	{
+		if (Singleton::getInstance()->isCartEscortSkipEnabled == 1)
+		{
+			tools::triggerSaveLoad(stage::allStages[Stage_Kakariko_Interiors], 0x2, 0x3, 0xD);
+		}
+	}
+
 	void setFirstTimeWolf()
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set first time wolf");
