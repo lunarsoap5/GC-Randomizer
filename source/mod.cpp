@@ -157,9 +157,9 @@ namespace mod
 		hudConsole->addOption(page, "Faron Escape?", &Singleton::getInstance()->isForestEscapeEnabled, 0x1);
 		hudConsole->addOption(page, "Open HF gates?", &Singleton::getInstance()->isGateUnlockEnabled, 0x1);
 		hudConsole->addOption(page, "Skip Twilight?", &chestRandomizer->isTwilightSkipEnabled, 0x1);
-		hudConsole->addOption(page, "Skip Goats 2?", &Singleton::getInstance()->isGoatSkipEnabled, 0x1);
+		hudConsole->addOption(page, "Skip Goats?", &Singleton::getInstance()->isGoatSkipEnabled, 0x1);
 		hudConsole->addOption(page, "Skip MS Puzzle?", &Singleton::getInstance()->isMSPuzzleSkipEnabled, 0x1);
-		hudConsole->addOption(page, "Skip Cart Escort?", &Singleton::getInstance()->isCartEscortSkipEnabled, 0x1);
+		hudConsole->addOption(page, "Skip Escort?", &Singleton::getInstance()->isCartEscortSkipEnabled, 0x1);
 
 		/*hudConsole->addOption(page, "Item half milk", &chestRandomizer->itemThatReplacesHalfMilk, 0xFF); //for testing only
 		hudConsole->addOption(page, "Item slingshot", &chestRandomizer->itemThatReplacesSlingShot, 0xFF); //for testing only
@@ -314,7 +314,7 @@ namespace mod
 		eventListener->addLoadEvent(stage::allStages[Stage_Hyrule_Field], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::unlockHFGates, event::LoadEventAccuracy::Stage);
 
 		//skip goats 2
-		eventListener->addLoadEvent(stage::allStages[Stage_Ordon_Ranch], 0x0, 0x3, 0xFF, 0xFF, game_patch::skipGoats2, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Ordon_Ranch], 0x0, 0x3, 0xFF, 0xFF, game_patch::skipGoats, event::LoadEventAccuracy::Stage_Room_Spawn);
 		
 		//skip MS Puzzle
 		eventListener->addLoadEvent(stage::allStages[Stage_Sacred_Grove], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::skipGrovePuzzle, event::LoadEventAccuracy::Stage);

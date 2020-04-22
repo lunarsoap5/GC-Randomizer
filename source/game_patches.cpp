@@ -184,9 +184,19 @@ namespace mod::game_patch
 		}
 	}
 
-	void skipGoats2()
+	void skipGoats()
 	{
-		if (gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Faron == 0b0)
+		if (gameInfo.scratchPad.itemFlags.itemFlags1.Wooden_Sword == 0b0)
+		{//goats 1
+			if (Singleton::getInstance()->isGoatSkipEnabled == 1)
+			{
+				strcpy(sysConsolePtr->consoleLine[20].line, "-> Skipping Goats 1");
+
+				// Load back to Ordon ranch after goats 1
+				tools::triggerSaveLoad(stage::allStages[Stage_Ordon_Ranch], 0x0, 0x4, 0x7);
+			}
+		}
+		else if (gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Faron == 0b0)
 		{//goats 2
 			if (Singleton::getInstance()->isGoatSkipEnabled == 1)
 			{
@@ -194,7 +204,10 @@ namespace mod::game_patch
 
 				gameInfo.localAreaNodes.unk_0[0xE] |= 0x2;//set flag for Fado text before goats
 				gameInfo.localAreaNodes.unk_0[0x9] |= 0x60;//set flag for day 3 intro cs and goats 2 done
-				// Load back to Ordon Spring
+				//gameInfo.localAreaNodes.unk_0[0x9] |= 0x40;//set flag for day 3 intro cs and goats 2 done		
+
+
+				// Load back to Ordon village
 				tools::triggerSaveLoad(stage::allStages[Stage_Ordon_Village], 0x0, 0x19, 0x8);
 			}
 		}
