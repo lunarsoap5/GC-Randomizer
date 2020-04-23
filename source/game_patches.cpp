@@ -261,6 +261,33 @@ namespace mod::game_patch
 		gameInfo.scratchPad.unk_0[0x030] |= 1;
 	}
 
+	void setLanayruWolf()
+	{
+		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set wolf");
+
+		if ((gameInfo.scratchPad.unk_0[0x01E] == 0 || gameInfo.scratchPad.itemFlags.itemFlags1.Master_Sword == 0b0) && gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Lanayru == 0b0)
+		{
+
+			strncpy(gameInfo.nextStageVars.nextStage, stage::allStages[Stage_Hyrule_Field], sizeof(gameInfo.nextStageVars.nextStage) - 1);
+			gameInfo.nextStageVars.nextRoom = 0x9;
+			gameInfo.nextStageVars.nextSpawnPoint = 0xA;
+		}
+		else 
+		{
+			return;
+		}
+		if (tp::d_com_inf_game::can_warp > 0xD0)
+		{
+			return;
+		}
+		else
+		{
+			tp::d_com_inf_game::can_warp |= 0xD4;
+		}
+		
+		
+	}
+
 	void setHuman()
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set human");

@@ -421,7 +421,7 @@ namespace mod
 		}
 		else if (item == items::Item::Vessel_Of_Light_Faron)
 		{//set tear counter to 16
-			if (isTwilightSkipEnabled == 1)
+			if (isTwilightSkipEnabled)
 			{
 				gameInfo.scratchPad.unk_EC[0x28] = 16;
 				gameInfo.localAreaNodes.unk_0[0xB] |= 0x4;//give N faron warp
@@ -442,7 +442,7 @@ namespace mod
 		}
 		else if (item == items::Item::Vessel_Of_Light_Eldin)
 		{//set tear counter to 16
-			if (isTwilightSkipEnabled == 1)
+			if (isTwilightSkipEnabled)
 			{
 				gameInfo.scratchPad.unk_EC[0x29] = 16;
 				gameInfo.localAreaNodes.unk_0[0x9] |= 0x20;//give death mountain warp
@@ -641,12 +641,7 @@ namespace mod
 										item = items::Item::Ancient_Sky_Book_partly_filled;
 										itemFlags->itemFlags4.Null_DB = 0b1;
 									}
-									else if (itemFlags->itemFlags4.Null_DA == 0b0)
-									{//letter 6
-										item = items::Item::Ancient_Sky_Book_partly_filled;
-										itemFlags->itemFlags4.Null_DA = 0b1;
-									}
-									else if (itemFlags->itemFlags4.Null_DA == 0b1)
+									else if (itemFlags->itemFlags4.Null_DB == 0b1)
 									{
 										item = items::Item::Ancient_Sky_Book_completed;
 									}
@@ -682,12 +677,7 @@ namespace mod
 										item = items::Item::Ancient_Sky_Book_partly_filled;
 										itemFlags->itemFlags4.Null_DB = 0b1;
 									}
-									else if (itemFlags->itemFlags4.Null_DA == 0b0)
-									{//letter 6
-										item = items::Item::Ancient_Sky_Book_partly_filled;
-										itemFlags->itemFlags4.Null_DA = 0b1;
-									}
-									else if (itemFlags->itemFlags4.Null_DA == 0b1)
+									else if (itemFlags->itemFlags4.Null_DB == 0b1)
 									{
 										item = items::Item::Ancient_Sky_Book_completed;
 									}
@@ -723,12 +713,7 @@ namespace mod
 										item = items::Item::Ancient_Sky_Book_partly_filled;
 										itemFlags->itemFlags4.Null_DB = 0b1;
 									}
-									else if (itemFlags->itemFlags4.Null_DA == 0b0)
-									{//letter 6
-										item = items::Item::Ancient_Sky_Book_partly_filled;
-										itemFlags->itemFlags4.Null_DA = 0b1;
-									}
-									else if (itemFlags->itemFlags4.Null_DA == 0b1)
+									else if (itemFlags->itemFlags4.Null_DB == 0b1)
 									{
 										item = items::Item::Ancient_Sky_Book_completed;
 									}

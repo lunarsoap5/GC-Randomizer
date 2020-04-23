@@ -321,6 +321,9 @@ namespace mod
 
 		//skip Cart Escort
 		eventListener->addLoadEvent(stage::allStages[Stage_Hyrule_Field], 0xC, 0x2, 0xFF, 0xFF, game_patch::skipCartEscort, event::LoadEventAccuracy::Stage_Room_Spawn);
+		
+		//Fix Lanayru Softlock
+		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0x0, 0x5, 0xE, 0xFF, game_patch::setLanayruWolf, event::LoadEventAccuracy::Stage_Room_Spawn);
 
 
 		//   =================
@@ -598,6 +601,31 @@ namespace mod
 				frame_counter = 0;
 			}
 		}
+
+		/*if (gameInfo.scratchPad.unk_0[0x019] == 0)
+		{
+			const char* walletText = "Wallet";
+			strncpy(tp::d_com_inf_game::wallet_text, walletText, sizeof(tp::d_com_inf_game::wallet_text) - 1);
+
+			const char* walletDescription = "A wallet from your childhood. It holds up to 1,000 Rupees.";
+			strncpy(tp::d_com_inf_game::wallet_description, walletDescription, sizeof(tp::d_com_inf_game::wallet_description) - 1);
+		}
+		else if (gameInfo.scratchPad.unk_0[0x019] == 1)
+		{
+			const char* walletText = "Big Wallet";
+			strncpy(tp::d_com_inf_game::wallet_text, walletText, sizeof(tp::d_com_inf_game::wallet_text) - 1);
+
+			const char* walletDescription = "A wallet given to you by Agitha, princess of the insect kingdom. It can hold 5,000 Rupees.";
+			strncpy(tp::d_com_inf_game::wallet_description, walletDescription, sizeof(tp::d_com_inf_game::wallet_description) - 1);
+		}
+		else if (gameInfo.scratchPad.unk_0[0x019] == 2)
+		{
+			const char* walletText = "Giant Wallet";
+			strncpy(tp::d_com_inf_game::wallet_text, walletText, sizeof(tp::d_com_inf_game::wallet_text) - 1);
+
+			const char* walletDescription = "The wallet given by Agitha to benefactors of the insect kingdom. It can hold up to 9,999 Rupees.";
+			strncpy(tp::d_com_inf_game::wallet_description, walletDescription, sizeof(tp::d_com_inf_game::wallet_description) - 1);
+		}*/
 
 
 		if(inputBuffering)
