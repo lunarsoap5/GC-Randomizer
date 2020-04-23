@@ -149,3 +149,6 @@
 
 //currentState
 803B8000:current_state
+
+//canWarp
+80400AF6:can_warp

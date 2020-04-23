@@ -149,3 +149,12 @@
 
 //currentState
 803A66B3:current_state
+
+//walletText
+80bbc749:wallet_text
+
+//walletdescription
+80BBD835:wallet_description
+
+//canwarp
+804069B6:can_warp

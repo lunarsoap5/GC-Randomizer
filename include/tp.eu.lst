@@ -150,4 +150,5 @@
 //currentState
 803A8393:current_state
 
-//strncpy
+//canWarp
+80408956:can_warp

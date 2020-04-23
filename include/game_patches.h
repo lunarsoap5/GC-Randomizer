@@ -148,4 +148,6 @@ namespace mod::game_patch
 	 * when you spawn into the Cart Escort, game will spawn you in Kakariko Afterwards
 	 */
 	void skipCartEscort();
+
+	void setLanayruWolf();
 }
