@@ -161,7 +161,7 @@ namespace mod::game_patch
 			if (gameInfo.nextStageVars.nextRoom != 5)
 			{
 				if (gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bossBeaten == 0b1 ||
-					gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.unk_EC[0x28] != 16 || (tp::d_com_inf_game::current_state == 0x65 && gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Faron == 0b0))
+					gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.tearCounters.Faron != 16 || (tp::d_com_inf_game::current_state == 0x65 && gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Faron == 0b0))
 				{
 					return;
 				}
@@ -180,7 +180,7 @@ namespace mod::game_patch
 	{
 		if (Singleton::getInstance()->isGateUnlockEnabled == 1)
 		{
-			gameInfo.unk_978[0x7] |= 0x6;//2 = lanyru gate 4 = eldin gorge gate
+			gameInfo.unk_979[0x7] |= 0x6;//2 = lanyru gate 4 = eldin gorge gate
 		}
 	}
 
@@ -258,14 +258,14 @@ namespace mod::game_patch
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set first time wolf");
 
-		gameInfo.scratchPad.unk_0[0x030] |= 1;
+		gameInfo.scratchPad.unk_17[0x19] |= 1;
 	}
 
 	void setLanayruWolf()
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set wolf");
 
-		if ((gameInfo.scratchPad.unk_0[0x01E] == 0 || gameInfo.scratchPad.itemFlags.itemFlags1.Master_Sword == 0b0) && gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Lanayru == 0b0)
+		if (gameInfo.scratchPad.unk_17[0x7] == 0 && gameInfo.scratchPad.itemFlags.itemFlags1.Master_Sword == 0b0 && gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Lanayru == 0b0)
 		{
 
 			strncpy(gameInfo.nextStageVars.nextStage, stage::allStages[Stage_Hyrule_Field], sizeof(gameInfo.nextStageVars.nextStage) - 1);
@@ -292,14 +292,14 @@ namespace mod::game_patch
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set human");
 
-		gameInfo.scratchPad.unk_0[0x01E] = 0;
+		gameInfo.scratchPad.unk_17[0x7] = 0;
 	}
 
 	void setWolf()
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set wolf");
 
-		gameInfo.scratchPad.unk_0[0x01E] = 1;
+		gameInfo.scratchPad.unk_17[0x7] = 1;
 	}
 
 	void giveSense()
@@ -326,7 +326,7 @@ namespace mod::game_patch
 		gameInfo.scratchPad.itemFlags.itemFlags1.Master_Sword = 0b1;
 
 		// Equip Master sword (0x49 / 73)
-		gameInfo.scratchPad.unk_0[0x014] = 0x49;
+		gameInfo.scratchPad.equipedItems.sword = 0x49;
 	}
 
 	void giveMidna()

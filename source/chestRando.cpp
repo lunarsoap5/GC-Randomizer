@@ -20,7 +20,7 @@ namespace mod
 		// Reset
 		
 		itemFlags = &gameInfo.scratchPad.itemFlags;
-		itemWeel = &gameInfo.scratchPad.itemWeel;		
+		itemWeel = &gameInfo.scratchPad.itemWheel;		
 		
 		currentPlayerConditions = startConditions;
 		currentSeed = tools::randomSeed;
@@ -417,13 +417,13 @@ namespace mod
 		}
 		else if (item == items::Item::Poe_Soul)
 		{//decrease poe counter
-			gameInfo.scratchPad.unk_EC[0x20]--;
+			gameInfo.scratchPad.poeCount--;
 		}
 		else if (item == items::Item::Vessel_Of_Light_Faron)
 		{//set tear counter to 16
 			if (isTwilightSkipEnabled)
 			{
-				gameInfo.scratchPad.unk_EC[0x28] = 16;
+				gameInfo.scratchPad.tearCounters.Faron = 16;
 				gameInfo.localAreaNodes.unk_0[0xB] |= 0x4;//give N faron warp
 				gameInfo.localAreaNodes.unk_0[0x8] = 0xFF;//give midna jumps in mist area
 				gameInfo.localAreaNodes.unk_0[0xC] |= 0xD1;//set flag for midna to think you followed the monkey in the mist
@@ -444,7 +444,7 @@ namespace mod
 		{//set tear counter to 16
 			if (isTwilightSkipEnabled)
 			{
-				gameInfo.scratchPad.unk_EC[0x29] = 16;
+				gameInfo.scratchPad.tearCounters.Eldin = 16;
 				gameInfo.localAreaNodes.unk_0[0x9] |= 0x20;//give death mountain warp
 				gameInfo.localAreaNodes.unk_0[0x14] |= 1;//give midna jumps for top of sanctuary		
 				gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Eldin = 0b1;//set flag for vessel since we'll skip it by reloading
@@ -460,7 +460,7 @@ namespace mod
 		{//set tear counter to 16
 			if (isTwilightSkipEnabled == 1)
 			{
-				gameInfo.scratchPad.unk_EC[0x2A] = 16;
+				gameInfo.scratchPad.tearCounters.Lanayru = 16;
 				gameInfo.localAreaNodes.unk_0[0xA] |= 0x4;//give lake hylia warp
 				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xB] |= 0x8;//give castle town warp
 				gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Lanayru = 0b1;//set flag for vessel since we'll skip it by reloading
@@ -841,9 +841,9 @@ namespace mod
 								item = items::Item::Dominion_Rod_Charged;
 								gameInfo.scratchPad.eventBits[0x25] |= 0x80;//set flag to charge dominion rod
 							}
-							else if (item == items::Item::Poe_Soul)
+							else if (item == items::Item::Poe_Soul && gameInfo.scratchPad.poeCount < 60)
 							{//increase poe counter
-								gameInfo.scratchPad.unk_EC[0x20]++;
+								gameInfo.scratchPad.poeCount++;
 							}
 							return item;
 						}

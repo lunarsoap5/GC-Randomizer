@@ -172,7 +172,7 @@ namespace mod
 		hudConsole->addWatch(page, "CurrentPosX:", &currentPosX, 's', WatchInterpretation::_str);
 		hudConsole->addWatch(page, "CurrentPosY:", &currentPosY, 's', WatchInterpretation::_str);
 		hudConsole->addWatch(page, "CurrentPosZ:", &currentPosZ, 's', WatchInterpretation::_str);	
-		hudConsole->addWatch(page, "Time of day:", &gameInfo.scratchPad.unk_0[0x34], 'd', WatchInterpretation::_u32);
+		hudConsole->addWatch(page, "Sky Angle:", &skyAngle, 'd', WatchInterpretation::_u32);
 		
 		//event info
 		page = hudConsole->addPage("Event Info");
@@ -433,6 +433,7 @@ namespace mod
 		snprintf(currentPosX, 30, "%f", linkPos[0]);
 		snprintf(currentPosY, 30, "%f", linkPos[1]);
 		snprintf(currentPosZ, 30, "%f", linkPos[2]);
+		skyAngle = (u32)gameInfo.scratchPad.skyAngle;
 
 		if (trigerLoadSave == 1) {
 			trigerLoadSave = 0;
@@ -455,17 +456,11 @@ namespace mod
 
 		if (enableNormalTime == 0 && setDay == 0)
 		{//set night
-			gameInfo.scratchPad.unk_0[0x34] = 0b01000010;
-			gameInfo.scratchPad.unk_0[0x35] = 0b00101001;
-			gameInfo.scratchPad.unk_0[0x36] = 0b01000001;
-			gameInfo.scratchPad.unk_0[0x37] = 0b10000000;
+			gameInfo.scratchPad.skyAngle = 0;
 		}
 		else if (enableNormalTime == 0 && setDay == 1)
 		{//set day
-			gameInfo.scratchPad.unk_0[0x34] = 0b01000010;
-			gameInfo.scratchPad.unk_0[0x35] = 0b11000001;
-			gameInfo.scratchPad.unk_0[0x36] = 0b11011000;
-			gameInfo.scratchPad.unk_0[0x37] = 0b00000000;
+			gameInfo.scratchPad.skyAngle = 180;
 		}
 		// Increment seed
 		if (!customSeed)
@@ -589,6 +584,11 @@ namespace mod
 				if (frame_counter == num_frames)
 				{
 					gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Faron = 0b1;//set flag for vessel since we'll skip it by reloading
+					if (Singleton::getInstance()->isForestEscapeEnabled == 1)
+					{
+						// Set Epona tamed
+						gameInfo.scratchPad.eventBits[0x6] |= 0x1;
+					}
 					tools::setCutscene(true, false);
 				}
 				else
