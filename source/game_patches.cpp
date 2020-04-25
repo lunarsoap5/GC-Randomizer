@@ -272,20 +272,20 @@ namespace mod::game_patch
 			gameInfo.nextStageVars.nextRoom = 0x9;
 			gameInfo.nextStageVars.nextSpawnPoint = 0xA;
 		}
-		else 
+		else
 		{
 			return;
 		}
-		if (tp::d_com_inf_game::can_warp > 0xD0)
+		if (tp::d_com_inf_game::can_warp > 0xD4)
 		{
 			return;
 		}
 		else
 		{
-			tp::d_com_inf_game::can_warp |= 0xD4;
+			tp::d_com_inf_game::can_warp = 0xD4;
 		}
-		
-		
+
+
 	}
 
 	void setHuman()
