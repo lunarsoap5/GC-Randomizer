@@ -182,7 +182,7 @@ namespace mod
 		page = hudConsole->addPage("Skips 2");
 		hudConsole->addOption(page, "Early CiTS?", &Singleton::getInstance()->isEarlyCiTSEnabled, 0x1);
 		hudConsole->addOption(page, "Early Desert?", &Singleton::getInstance()->isEarlyDesertEnabled, 0x1);
-		hudConsole->addOption(page, "Boss Keysey?", &Singleton::getInstance()->isEarlyDesertEnabled, 0x1);
+		hudConsole->addOption(page, "Boss Keysey?", &Singleton::getInstance()->isBossKeyseyEnabled, 0x1);
 		//color
 		/*page = hudConsole->addPage("Tunic Color1");
 

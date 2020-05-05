@@ -249,7 +249,7 @@ namespace mod::game_patch
 
 	void unlockBossDoors()
 	{
-		if (Singleton::getInstance()->isMSPuzzleSkipEnabled == 1 && (gameInfo.localAreaNodes.unk_0[0xB] & 0x4) == 0)
+		if (Singleton::getInstance()->isBossKeyseyEnabled == 1 && (gameInfo.localAreaNodes.unk_0[0xB] & 0x4) == 0)
 		{
 			gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.bigKeyGotten = 0b1; //unlock Diababa Door
 			gameInfo.scratchPad.allAreaNodes.Goron_Mines.dungeon.bigKeyGotten = 0b1; //unlock Fryus Door
@@ -345,7 +345,7 @@ namespace mod::game_patch
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set first time wolf");
 
-		gameInfo.scratchPad.form |= 1;
+		gameInfo.scratchPad.unk_1F[0x11] |= 1;
 	}
 
 	void setLanayruWolf()
