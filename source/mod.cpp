@@ -526,15 +526,6 @@ namespace mod
 			}
 		);
 
-		createItem_trampoline = patch::hookFunction(tp::f_op_actor_mng::createItem,
-			[](const float pos[3], s32 item, s32 unk3, s32 unk4, const float unk5[3], const float unk6[3], s32 unk7)
-			{
-				// Call replacement function
-				item = global::modPtr->procItemCreateFunc(pos, item, "createItem");
-
-				return global::modPtr->createItem_trampoline(pos, item, unk3, unk4, unk5, unk6, unk7);
-			}
-		);
 
 		evt_control_Skipper_trampoline = patch::hookFunction(tp::evt_control::skipper,
 			[](void* evtPtr)

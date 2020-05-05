@@ -13,6 +13,5 @@ namespace tp::f_op_actor_mng
 		s32 createItemForMidBoss(const float pos[3], s32 item, s32 unk3, const float unk4[3], const float unk5[3], s32 unk6, s32 unk7);
 		s32 createItemForDirectGet(const float pos[3], s32 item, s32 unk3, const float unk4[3], const float unk5[3], float unk6, float unk7);
 		s32 createItemForSimpleDemo(const float pos[3], s32 item, s32 unk3, const float unk4[3], const float unk5[3], float unk6, float unk7);
-		s32 createItem(const float pos[3], s32 item, s32 unk3, s32 unk4, const float unk5[3], const float unk6[3], s32 unk7);
 	}
 }

@@ -32,7 +32,6 @@
 8001C174:createItemForMidBoss
 8001C1B8:createItemForDirectGet
 8001C1FC:createItemForSimpleDemo
-8001c240:createItem
 
 // d_map_path_dmap.o
 8003EE5C:getMapPlayerPos
