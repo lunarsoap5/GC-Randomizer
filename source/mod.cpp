@@ -444,6 +444,12 @@ namespace mod
 		//Sets the flags to open up the game
 		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0x1, 0x15, 0xFF, 0xFF, game_patch::openWorld, event::LoadEventAccuracy::Stage_Room_Spawn_State);
 
+		//early CiTS
+		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::earlyCiTS, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		//early Desert
+		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::earlyDesert, event::LoadEventAccuracy::Stage_Room_Spawn);
+
 
 
 		//   =================

@@ -433,7 +433,6 @@ namespace mod
 			gameInfo.localAreaNodes.unk_0[0x8] |= 0x1;//give midna jumps in mist area
 			u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
 			*tempAddress |= 0x400;//give ending blow		
-			tools::setItemFlag(ItemFlags::Vessel_Of_Light_Faron);//set flag for vessel since we'll skip it by reloading
 			gameInfo.localAreaNodes.unk_0[0x12] |= 0x4;//mark read the midna text when you warp to N Faron for bridge
 			gameInfo.nextStageVars.triggerLoad |= 1;
 			return item;

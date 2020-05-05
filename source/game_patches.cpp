@@ -249,7 +249,7 @@ namespace mod::game_patch
 
 	void unlockBossDoors()
 	{
-		if (Singleton::getInstance()->isBossKeyseyEnabled == 1 && (gameInfo.localAreaNodes.unk_0[0xB] & 0x4) == 0)
+		if (Singleton::getInstance()->isBossKeyseyEnabled == 1)
 		{
 			gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.bigKeyGotten = 0b1; //unlock Diababa Door
 			gameInfo.scratchPad.allAreaNodes.Goron_Mines.dungeon.bigKeyGotten = 0b1; //unlock Fryus Door
@@ -293,43 +293,39 @@ namespace mod::game_patch
 
 	void openWorld()
 	{
+		{
 		// Set Event Flags to make life easier
 		gameInfo.scratchPad.eventBits[0x1B] = 0x78; //skip the monkey escort
 		gameInfo.scratchPad.eventBits[0x40] |= 0x8; //have been to desert (prevents cannon warp crash)
 		u16* secondTempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0xFA]);
-		*secondTempAddress |= 0x500;//make it so you only have to donate 300 Rupees to Charlo
+		*secondTempAddress |= 0x500;//make it so you only have to donate 500 Rupees to Charlo
 		gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x14] |= 0x10; //allow bombs to be sold at Barnes Shop without beating Mines
-		gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x17] |= 0x40; //allow water bombs to be sold at Barnes Shop without beating Mines
-		
-
-		//Hardcoded Skips. Once the game starts they can not be changed
-		if (Singleton::getInstance()->isEarlyDesertEnabled == 1)
-		{
-			earlyDesert();
+		gameInfo.scratchPad.allAreaNodes.Gerudo_Desert.unk_0[0x13] |= 0x40;//watched the CS when entering the desert
+		unlockBossDoors();
 		}
-
-		if (Singleton::getInstance()->isBossKeyseyEnabled == 1)
-		{
-			unlockBossDoors();
-		}
-		
 	}
 
 	void earlyCiTS()
 	{
-		if (Singleton::getInstance()->isCannonRepaired == 0)
+		if (Singleton::getInstance()->isEarlyCiTSEnabled == 1)
 		{
-			if (gameInfo.scratchPad.tearCounters.Lanayru == 16)
+			if (Singleton::getInstance()->isCannonRepaired == 0)
 			{
-				gameInfo.scratchPad.eventBits[0x3B] |= 0x8; //repairs Cannon at lake
+				if (gameInfo.scratchPad.tearCounters.Lanayru == 16)
+				{
+					gameInfo.scratchPad.eventBits[0x3B] |= 0x8; //repairs Cannon at lake
 					Singleton::getInstance()->isCannonRepaired = 1;
+				}
 			}
 		}
 	}
 
 	void earlyDesert()
 	{
-		gameInfo.scratchPad.eventBits[0x26] |= 0x80; //Allow you to use the cannon in the desert
+		if (Singleton::getInstance()->isEarlyDesertEnabled == 1 && gameInfo.scratchPad.eventBits[0x26] < 0x80 && tools::checkItemFlag(ItemFlags::Master_Sword))
+		{
+			gameInfo.scratchPad.eventBits[0x26] |= 0x80; //Allow you to use the cannon in the desert
+		}
 	}
 
 
@@ -352,7 +348,7 @@ namespace mod::game_patch
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set wolf");
 
-		if (gameInfo.scratchPad.form == 0 && !tools::checkItemFlag(ItemFlags::Master_Sword) && !tools::checkItemFlag(ItemFlags::Vessel_Of_Light_Lanayru) && tp::d_com_inf_game::current_state == 0x31)
+		if (gameInfo.scratchPad.form == 0 && !tools::checkItemFlag(ItemFlags::Master_Sword) && !tools::checkItemFlag(ItemFlags::Vessel_Of_Light_Lanayru))
 		{
 
 			strncpy(gameInfo.nextStageVars.nextStage, stage::allStages[Stage_Hyrule_Field], sizeof(gameInfo.nextStageVars.nextStage) - 1);

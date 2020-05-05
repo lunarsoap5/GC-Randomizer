@@ -26,7 +26,7 @@ namespace mod::item
 /* 16 */{0x26, 2, stage::allStages[6], 1, 0x1, 0x1, 0b100100000000000000100, 9225.0009770, 3471.9599610, 8465.1347660, nullptr, nullptr}, //FT Big Key Chest
 /* 17 */{0x03, 7, stage::allStages[6], 1, 0x1, 0xFF, 0b000000000000000000100, 10261.0000000, 3175.0000000, 8295.0000000, nullptr, nullptr}, //FT East Water Cave Chest
 /* 18 */{0x20, 8, stage::allStages[6], 10, 0x2, 0xFF, 0b000100000010000000000, 1174.2510990, 5002.3901370, -9219.0937500, nullptr, nullptr}, //FT North Deku Like Chest
-/* 19 */{0x04, 7, stage::allStages[6], 11, 0x2, 0xFF, 0b000100000000000100000, 11183.0000000, 3806.5500490, -6305.0000000, nullptr, nullptr}, //FT East Tile Worm Chest
+/* 19 */{0x04, 7, stage::allStages[6], 11, 0x2, 0xFF, 0b100100000000000100000, 11183.0000000, 3806.5500490, -6305.0000000, nullptr, nullptr}, //FT East Tile Worm Chest
 /* 20 */{0x04, 7, stage::allStages[68], 2, 0x2, 0xFF, 0b000000000000000000000, -70.0000000, -6.0440000, -670.0000000, nullptr, nullptr}, //Kakariko Inn Small Chest
 /* 21 */{0x45, 0, stage::allStages[65], 0, 0x2, 0x2, 0b000000000000000000000, 320.8111880, 9.7100000, 1017.9390870, nullptr, nullptr}, //Iron Boots Chest
 /* 22 */{0x04, 7, stage::allStages[3], 1, 0x3, 0xFF, 0b001000000000000000000, 1050.0000000, -258.1840820, 13750.0000000, nullptr, nullptr}, //GM Entrance Small Chest
