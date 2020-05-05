@@ -150,4 +150,16 @@ namespace mod::game_patch
 	void skipCartEscort();
 
 	void setLanayruWolf();
+
+	void skipKB1();
+
+	void fixLanayruFaron();
+
+	void openWorld();
+
+	void earlyCiTS();
+
+	void earlyDesert();
+
+	void unlockBossDoors();
 }

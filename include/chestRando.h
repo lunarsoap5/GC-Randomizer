@@ -39,12 +39,12 @@ namespace mod
 			u8 isShopsanityEnabled = 1;
 			u8 areDungeonItemsRandomized = 1;
 			u8 isTwilightSkipEnabled = 1;
+			u8 isKeysanityEnabled = 1;
 			
 			u8 itemThatReplacesHalfMilk = 0;
 			u8 itemThatReplacesSlingShot = 0;
 			
-			tp::d_com_inf_game::ItemFlags* itemFlags;
-			tp::d_com_inf_game::ItemSlots* itemWeel;
+			tp::d_com_inf_game::ItemSlots* itemWheel;
 
 		public:
 			/**
@@ -108,5 +108,15 @@ namespace mod
 			 * excludes bomb bag+bombs
 			 */
 			bool isItemBombs(u8 itemID);
+
+			/**
+			 * checks if item given is a bottle content without a bottle
+			 */
+			bool isItemBottleFill(u8 itemID);
+
+			/**
+			 *
+			 */
+			void handleKeysanity();
 	};
 }

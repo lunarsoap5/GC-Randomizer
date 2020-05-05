@@ -20,6 +20,10 @@ namespace mod
 		u8 isGoatSkipEnabled;
 		u8 isMSPuzzleSkipEnabled;
 		u8 isCartEscortSkipEnabled;
+		u8 isEarlyCiTSEnabled;
+		u8 isCannonRepaired;
+		u8 isEarlyDesertEnabled;
+		u8 isBossKeyseyEnabled;
 
 		private:
 

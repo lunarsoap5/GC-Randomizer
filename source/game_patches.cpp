@@ -134,6 +134,7 @@ namespace mod::game_patch
 
 		// Set sewers flags (zelda cutscenes, unchained wolf link, bla)
 		gameInfo.scratchPad.eventBits[0x05] |= 0x7A;
+		gameInfo.scratchPad.equipedItems.sword = 0x3F;
 
 		// Load back to Ordon Spring
 		tools::triggerSaveLoad(stage::allStages[Stage_Ordon_Spring], 0x1, 0x3, 0x4);
@@ -160,8 +161,8 @@ namespace mod::game_patch
 			strcpy(sysConsolePtr->consoleLine[20].line, "state was not 0");
 			if (gameInfo.nextStageVars.nextRoom != 5)
 			{
-				if (gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bossBeaten == 0b1 ||
-					gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.tearCounters.Faron != 16 || (tp::d_com_inf_game::current_state == 0x65 && gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Faron == 0b0))
+				if (gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten == 0b1 ||
+					gameInfo.scratchPad.tearCounters.Faron != 16 || (tp::d_com_inf_game::current_state == 0x65 && !tools::checkItemFlag(ItemFlags::Vessel_Of_Light_Faron)))
 				{
 					return;
 				}
@@ -186,7 +187,7 @@ namespace mod::game_patch
 
 	void skipGoats()
 	{
-		if (gameInfo.scratchPad.itemFlags.itemFlags1.Wooden_Sword == 0b0)
+		if (tp::d_com_inf_game::current_state == 0x63)
 		{//goats 1
 			if (Singleton::getInstance()->isGoatSkipEnabled == 1)
 			{
@@ -196,7 +197,7 @@ namespace mod::game_patch
 				tools::triggerSaveLoad(stage::allStages[Stage_Ordon_Ranch], 0x0, 0x4, 0x7);
 			}
 		}
-		else if (gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Faron == 0b0)
+		else if (tp::d_com_inf_game::current_state == 0x39)
 		{//goats 2
 			if (Singleton::getInstance()->isGoatSkipEnabled == 1)
 			{
@@ -246,6 +247,92 @@ namespace mod::game_patch
 		}
 	}
 
+	void unlockBossDoors()
+	{
+		if (Singleton::getInstance()->isMSPuzzleSkipEnabled == 1 && (gameInfo.localAreaNodes.unk_0[0xB] & 0x4) == 0)
+		{
+			gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.bigKeyGotten = 0b1; //unlock Diababa Door
+			gameInfo.scratchPad.allAreaNodes.Goron_Mines.dungeon.bigKeyGotten = 0b1; //unlock Fryus Door
+			gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bigKeyGotten = 0b1; //unlock Morpheel Door
+			gameInfo.scratchPad.allAreaNodes.Arbiters_Grounds.dungeon.bigKeyGotten = 0b1; //unlock Stallord Door
+			gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bigKeyGotten = 0b1; //unlock Blizzetta Door
+			gameInfo.scratchPad.allAreaNodes.Temple_of_Time.dungeon.bigKeyGotten = 0b1; //unlock Armaghoma Door
+			gameInfo.scratchPad.allAreaNodes.City_in_the_Sky.dungeon.bigKeyGotten = 0b1; //unlock Argorok Door
+			gameInfo.scratchPad.allAreaNodes.Palace_of_Twilight.dungeon.bigKeyGotten = 0b1; //unlock Zant Door
+			gameInfo.scratchPad.allAreaNodes.Hyrule_Castle.dungeon.bigKeyGotten = 0b1; //unlock Ganon Door
+		}
+	}
+	
+	/* Still in the works
+	void unlockDungeonDoors()
+	{
+		if (Singleton::getInstance()->isMSPuzzleSkipEnabled == 1 && (gameInfo.localAreaNodes.unk_0[0xB] & 0x4) == 0)
+		{
+			//Forest Temple
+			gameInfo.scratchPad.allAreaNodes.Forest_Temple.unk_0[0xA] |= 0x8; //unlock Second Monkey Door
+			gameInfo.scratchPad.allAreaNodes.Forest_Temple.unk_0[0xB] |= 0x80; //unlock Gale Puzzle Monkey Door
+
+			//Goron Mines
+			
+
+			//Lakebed Temple
+
+			//Arbiter's Grounds
+
+			//Snowpeak Ruins
+
+			//Temple of Time
+
+			//City in the Sky
+
+			//Palace of Twilight
+
+			//Hyrule Castle
+		}
+	}*/
+
+	void openWorld()
+	{
+		// Set Event Flags to make life easier
+		gameInfo.scratchPad.eventBits[0x1B] = 0x78; //skip the monkey escort
+		gameInfo.scratchPad.eventBits[0x40] |= 0x8; //have been to desert (prevents cannon warp crash)
+		u16* secondTempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0xFA]);
+		*secondTempAddress |= 0x700;//make it so you only have to donate 300 Rupees to Charlo
+		gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x14] |= 0x10; //allow bombs to be sold at Barnes Shop without beating Mines
+		gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x17] |= 0x40; //allow water bombs to be sold at Barnes Shop without beating Mines
+		
+
+		//Hardcoded Skips. Once the game starts they can not be changed
+		if (Singleton::getInstance()->isEarlyDesertEnabled == 1)
+		{
+			earlyDesert();
+		}
+
+		if (Singleton::getInstance()->isBossKeyseyEnabled == 1)
+		{
+			unlockBossDoors();
+		}
+		
+	}
+
+	void earlyCiTS()
+	{
+		if (Singleton::getInstance()->isCannonRepaired == 0)
+		{
+			if (gameInfo.scratchPad.tearCounters.Lanayru == 16)
+			{
+				gameInfo.scratchPad.eventBits[0x3B] |= 0x8; //repairs Cannon at lake
+					Singleton::getInstance()->isCannonRepaired = 1;
+			}
+		}
+	}
+
+	void earlyDesert()
+	{
+		gameInfo.scratchPad.eventBits[0x26] |= 0x80; //Allow you to use the cannon in the desert
+	}
+
+
 	void skipCartEscort()
 	{
 		if (Singleton::getInstance()->isCartEscortSkipEnabled == 1)
@@ -258,21 +345,21 @@ namespace mod::game_patch
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set first time wolf");
 
-		gameInfo.scratchPad.unk_17[0x19] |= 1;
+		gameInfo.scratchPad.form |= 1;
 	}
 
 	void setLanayruWolf()
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set wolf");
 
-		if (gameInfo.scratchPad.unk_17[0x7] == 0 && gameInfo.scratchPad.itemFlags.itemFlags1.Master_Sword == 0b0 && gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Lanayru == 0b0)
+		if (gameInfo.scratchPad.form == 0 && !tools::checkItemFlag(ItemFlags::Master_Sword) && !tools::checkItemFlag(ItemFlags::Vessel_Of_Light_Lanayru) && tp::d_com_inf_game::current_state == 0x31)
 		{
 
 			strncpy(gameInfo.nextStageVars.nextStage, stage::allStages[Stage_Hyrule_Field], sizeof(gameInfo.nextStageVars.nextStage) - 1);
 			gameInfo.nextStageVars.nextRoom = 0x9;
 			gameInfo.nextStageVars.nextSpawnPoint = 0xA;
 		}
-		else
+		else 
 		{
 			return;
 		}
@@ -284,22 +371,43 @@ namespace mod::game_patch
 		{
 			tp::d_com_inf_game::can_warp = 0xD4;
 		}
+		
+		
+	}
 
-
+	void fixLanayruFaron()
+	{
+		if (Singleton::getInstance()->isGateUnlockEnabled == 1)
+		{
+			strcpy(sysConsolePtr->consoleLine[20].line, "state was not 0");
+			if (gameInfo.nextStageVars.nextRoom != 5)
+			{
+				if (gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.tearCounters.Faron != 16 || (tp::d_com_inf_game::current_state == 0x65 && !tools::checkItemFlag(ItemFlags::Vessel_Of_Light_Faron)))
+				{
+					return;
+				}
+				else if (gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.bossBeaten == 0b1)
+				{
+					strcpy(sysConsolePtr->consoleLine[20].line, "-> Allowing Faron Escape");
+					// reload faron woods as state 2
+					gameInfo.nextStageVars.nextState = 0x2;
+				}
+			}
+		}
 	}
 
 	void setHuman()
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set human");
 
-		gameInfo.scratchPad.unk_17[0x7] = 0;
+		gameInfo.scratchPad.form = 0;
 	}
 
 	void setWolf()
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set wolf");
 
-		gameInfo.scratchPad.unk_17[0x7] = 1;
+		gameInfo.scratchPad.form = 1;
 	}
 
 	void giveSense()
@@ -323,7 +431,7 @@ namespace mod::game_patch
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Give MasterSword");
 
 		// Set Master sword inventory flag
-		gameInfo.scratchPad.itemFlags.itemFlags1.Master_Sword = 0b1;
+		tools::setItemFlag(ItemFlags::Master_Sword);
 
 		// Equip Master sword (0x49 / 73)
 		gameInfo.scratchPad.equipedItems.sword = 0x49;
@@ -343,5 +451,16 @@ namespace mod::game_patch
 
 		// Set Midna Transform flag (gets set at Master Sword)
 		gameInfo.scratchPad.eventBits[0xD] |= 0x4;
+	}
+
+	void skipKB1()
+	{
+		strcpy(sysConsolePtr->consoleLine[20].line, "-> Skipping KB1");
+
+		// Load back to Ordon Spring
+		strncpy(gameInfo.nextStageVars.nextStage, stage::allStages[Stage_Title_Screen], sizeof(gameInfo.nextStageVars.nextStage) - 1);
+		gameInfo.nextStageVars.nextRoom = 0x0;
+		gameInfo.nextStageVars.nextSpawnPoint = 0x1;
+		gameInfo.nextStageVars.nextState = 0x4;
 	}
 }

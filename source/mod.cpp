@@ -116,11 +116,11 @@ namespace mod
 		// Debug
 		page = hudConsole->addPage("Debug Info");
 		
-		hudConsole->addOption(page, "Progressive Items?", &chestRandomizer->isProgressiveEnabled, 0x1);
 		hudConsole->addOption(page, "Bugsanity?", &chestRandomizer->isBugsanityEnabled, 0x1);
 		hudConsole->addOption(page, "Poesanity?", &chestRandomizer->isPoesanityEnabled, 0x1);
 		hudConsole->addOption(page, "Shopsanity?", &chestRandomizer->isShopsanityEnabled, 0x1);	
 		hudConsole->addOption(page, "Dungeon Items?", &chestRandomizer->areDungeonItemsRandomized, 0x1);
+		hudConsole->addOption(page, "Keysanity?", &chestRandomizer->isKeysanityEnabled, 0x1);
 		
 		
 		
@@ -150,8 +150,8 @@ namespace mod
 		hudConsole->addWatch(page, "MetadataY:", &lastItemDataY, 's', WatchInterpretation::_str);
 		hudConsole->addWatch(page, "MetadataZ:", &lastItemDataZ, 's', WatchInterpretation::_str);
 		
-		// Game info
-		page = hudConsole->addPage("Game Info");
+		// Game info 1
+		page = hudConsole->addPage("Skips 1");
 
 		hudConsole->addOption(page, "MDH Skip?", &Singleton::getInstance()->isMDHSkipEnabled, 0x1);
 		hudConsole->addOption(page, "Faron Escape?", &Singleton::getInstance()->isForestEscapeEnabled, 0x1);
@@ -161,6 +161,8 @@ namespace mod
 		hudConsole->addOption(page, "Skip MS Puzzle?", &Singleton::getInstance()->isMSPuzzleSkipEnabled, 0x1);
 		hudConsole->addOption(page, "Skip Escort?", &Singleton::getInstance()->isCartEscortSkipEnabled, 0x1);
 
+
+		
 		/*hudConsole->addOption(page, "Item half milk", &chestRandomizer->itemThatReplacesHalfMilk, 0xFF); //for testing only
 		hudConsole->addOption(page, "Item slingshot", &chestRandomizer->itemThatReplacesSlingShot, 0xFF); //for testing only
 		hudConsole->addOption(page, "Normal Time:", &enableNormalTime, 0x1); //for testing only
@@ -173,6 +175,59 @@ namespace mod
 		hudConsole->addWatch(page, "CurrentPosY:", &currentPosY, 's', WatchInterpretation::_str);
 		hudConsole->addWatch(page, "CurrentPosZ:", &currentPosZ, 's', WatchInterpretation::_str);	
 		hudConsole->addWatch(page, "Sky Angle:", &skyAngle, 'd', WatchInterpretation::_u32);
+		hudConsole->addWatch(page, "colorPointer:", &gameInfo.ColorPtr, 'x', WatchInterpretation::_u32);
+		hudConsole->addWatch(page, "colorResult:", &colorResult, 'x', WatchInterpretation::_u16);
+
+		//Game info 2
+		page = hudConsole->addPage("Skips 2");
+		hudConsole->addOption(page, "Early CiTS?", &Singleton::getInstance()->isEarlyCiTSEnabled, 0x1);
+		hudConsole->addOption(page, "Early Desert?", &Singleton::getInstance()->isEarlyDesertEnabled, 0x1);
+		hudConsole->addOption(page, "Boss Keysey?", &Singleton::getInstance()->isEarlyDesertEnabled, 0x1);
+		//color
+		/*page = hudConsole->addPage("Tunic Color1");
+
+		hudConsole->addOption(page, "Top toggle:", &topToggle, 0x1);
+		hudConsole->addOption(page, "Red top:", &redTop, 0xFF);
+		hudConsole->addOption(page, "Green top:", &greenTop, 0xFF);
+		hudConsole->addOption(page, "Blue top:", &blueTop, 0xFF);
+		hudConsole->addOption(page, "Bottom toggle:", &bottomToggle, 0x1);
+		hudConsole->addOption(page, "Red bottom:", &redBottom, 0xFF);
+		hudConsole->addOption(page, "Green bottom:", &greenBottom, 0xFF);
+		hudConsole->addOption(page, "Blue bottom:", &blueBottom, 0xFF); */
+
+			//buttons
+			/*page = hudConsole->addPage("Button texts");
+
+			hudConsole->addOption(page, "A button:", &gameInfo.aButtonText, 0xFF);
+			hudConsole->addOption(page, "Y button:", &gameInfo.yButtonText, 0xFF);
+			hudConsole->addOption(page, "X button:", &gameInfo.xButtonText, 0xFF);
+			hudConsole->addOption(page, "B button:", &gameInfo.bButtonText, 0xFF);
+			hudConsole->addOption(page, "R button:", &gameInfo.rButtonText, 0xFF);
+			hudConsole->addOption(page, "stick button:", &gameInfo.stickButtonText, 0xFF);
+			hudConsole->addOption(page, "start button:", &gameInfo.startButtonText, 0xFF);
+			hudConsole->addOption(page, "C button:", &gameInfo.cButtonText, 0xFF);
+			hudConsole->addOption(page, "X item:", &gameInfo.xItem, 0xFF);
+			hudConsole->addOption(page, "Y item:", &gameInfo.yItem, 0xFF);
+			hudConsole->addWatch(page, "A button:", &gameInfo.aButtonText, 'x', WatchInterpretation::_u8);
+			hudConsole->addWatch(page, "Y button:", &gameInfo.yButtonText, 'x', WatchInterpretation::_u8);
+			hudConsole->addWatch(page, "X button:", &gameInfo.xButtonText, 'x', WatchInterpretation::_u8);
+			hudConsole->addWatch(page, "B button:", &gameInfo.bButtonText, 'x', WatchInterpretation::_u8);
+			hudConsole->addWatch(page, "R button:", &gameInfo.rButtonText, 'x', WatchInterpretation::_u8);
+			hudConsole->addWatch(page, "stick:", &gameInfo.stickButtonText, 'x', WatchInterpretation::_u8);
+			hudConsole->addWatch(page, "start button:", &gameInfo.startButtonText, 'x', WatchInterpretation::_u8);
+			hudConsole->addWatch(page, "C button:", &gameInfo.cButtonText, 'x', WatchInterpretation::_u8);
+			hudConsole->addWatch(page, "scoop:", &scoopResult, 'x', WatchInterpretation::_u16);
+			hudConsole->addWatch(page, "check:", &checkResult, 'x', WatchInterpretation::_u16);
+			hudConsole->addWatch(page, "items:", &itemsResult, 'x', WatchInterpretation::_u16);
+			hudConsole->addWatch(page, "map:", &mapResult, 'x', WatchInterpretation::_u16);
+		hudConsole->addWatch(page, "equip:", &equipResult, 'x', WatchInterpretation::_u16);
+		hudConsole->addWatch(page, "back:", &backResult, 'x', WatchInterpretation::_u16);
+		hudConsole->addWatch(page, "zoom in:", &zoomInResult, 'x', WatchInterpretation::_u16);
+		hudConsole->addWatch(page, "zoom out:", &zoomOutResult, 'x', WatchInterpretation::_u16);
+		hudConsole->addWatch(page, "move:", &moveResult, 'x', WatchInterpretation::_u16);
+		hudConsole->addWatch(page, "throw:", &throwResult, 'x', WatchInterpretation::_u16);*/
+
+
 		
 		//event info
 		page = hudConsole->addPage("Event Info");
@@ -276,6 +331,61 @@ namespace mod
 		hudConsole->addOption(page, "spawn:", &spawn, 0xFF); //for testing only
 		hudConsole->addOption(page, "state:", &state, 0xFF); //for testing only
 		hudConsole->addOption(page, "trigger:", &trigerLoadSave, 0x1); //for testing only*/
+
+		/*page = hudConsole->addPage("testing adr1");
+
+
+		hudConsole->addWatch(page, "D:", &gameInfo.scratchPad.equipedItems.unk, 'x', WatchInterpretation::_u8);
+		hudConsole->addWatch(page, "17:", &gameInfo.scratchPad.unk_17[0x0], 'x', WatchInterpretation::_u16);
+		hudConsole->addWatch(page, "1A:", &gameInfo.scratchPad.unk_1A[0x0], 'x', WatchInterpretation::_u32);
+		hudConsole->addWatch(page, "1F:", &gameInfo.scratchPad.unk_1F[0x0], 'x', WatchInterpretation::_u64);
+		hudConsole->addWatch(page, "27:", &gameInfo.scratchPad.unk_1F[0x8], 'x', WatchInterpretation::_u64);
+		hudConsole->addWatch(page, "2F:", &gameInfo.scratchPad.unk_1F[0x10], 'x', WatchInterpretation::_u16);
+		hudConsole->addWatch(page, "32:", &gameInfo.scratchPad.unk_32[0x0], 'x', WatchInterpretation::_u16);
+		hudConsole->addWatch(page, "38:", &gameInfo.scratchPad.unk_38[0x0], 'x', WatchInterpretation::_u64);
+		hudConsole->addWatch(page, "62:", &gameInfo.scratchPad.movingActors.link.unk_62[0x0], 'x', WatchInterpretation::_u16);
+		hudConsole->addWatch(page, "7A:", &gameInfo.scratchPad.movingActors.unk_7A[0x0], 'x', WatchInterpretation::_u32);//actual size:0x3
+
+		page = hudConsole->addPage("testing adr2");
+
+		hudConsole->addWatch(page, "7E:", &gameInfo.scratchPad.movingActors.unk_7E[0x0], 'x', WatchInterpretation::_u16);
+		hudConsole->addWatch(page, "99:", &gameInfo.scratchPad.unk_99[0x0], 'x', WatchInterpretation::_u32);//actual size:0x3
+		hudConsole->addWatch(page, "F0:", &gameInfo.scratchPad.ammo.unk_F0, 'x', WatchInterpretation::_u32);
+		hudConsole->addWatch(page, "F5:", &gameInfo.scratchPad.ammo.unk_F5, 'x', WatchInterpretation::_u32);//actual size:0x3
+		hudConsole->addWatch(page, "FC:", &gameInfo.scratchPad.unk_FC[0x0], 'x', WatchInterpretation::_u64);
+		hudConsole->addWatch(page, "104:", &gameInfo.scratchPad.unk_FC[0x8], 'x', WatchInterpretation::_u64);//actual size:0x5
+		hudConsole->addWatch(page, "10B:", &gameInfo.scratchPad.unk_10B, 'x', WatchInterpretation::_u8);
+		hudConsole->addWatch(page, "10D:", &gameInfo.scratchPad.unk_10D[0x0], 'x', WatchInterpretation::_u64);//actual size:0x7
+		hudConsole->addWatch(page, "115:", &gameInfo.scratchPad.unk_115[0x0], 'x', WatchInterpretation::_u64);//actual size:0x7
+		hudConsole->addWatch(page, "120:", &gameInfo.scratchPad.unk_120[0x0], 'x', WatchInterpretation::_u64);//actual size:0x6
+
+		page = hudConsole->addPage("testing adr2");
+
+		hudConsole->addWatch(page, "128:", &gameInfo.scratchPad.unk_128[0x0], 'x', WatchInterpretation::_u64);
+		hudConsole->addWatch(page, "130:", &gameInfo.scratchPad.unk_128[0x8], 'x', WatchInterpretation::_u64);
+		hudConsole->addWatch(page, "138:", &gameInfo.scratchPad.unk_128[0x10], 'x', WatchInterpretation::_u64);
+		hudConsole->addWatch(page, "140:", &gameInfo.scratchPad.unk_128[0x18], 'x', WatchInterpretation::_u64);
+		hudConsole->addWatch(page, "148:", &gameInfo.scratchPad.unk_128[0x20], 'x', WatchInterpretation::_u64);
+		hudConsole->addWatch(page, "150:", &gameInfo.scratchPad.unk_128[0x28], 'x', WatchInterpretation::_u64);
+		hudConsole->addWatch(page, "158:", &gameInfo.scratchPad.unk_128[0x30], 'x', WatchInterpretation::_u64);
+		hudConsole->addWatch(page, "160:", &gameInfo.scratchPad.unk_128[0x38], 'x', WatchInterpretation::_u64);
+		hudConsole->addWatch(page, "168:", &gameInfo.scratchPad.unk_128[0x40], 'x', WatchInterpretation::_u32);
+		hudConsole->addWatch(page, "178:", &gameInfo.scratchPad.fishingJournal.unk_178[0x0], 'x', WatchInterpretation::_u64);
+
+		page = hudConsole->addPage("testing adr3");
+
+		hudConsole->addWatch(page, "180:", &gameInfo.scratchPad.fishingJournal.unk_178[0x8], 'x', WatchInterpretation::_u64);
+		hudConsole->addWatch(page, "188:", &gameInfo.scratchPad.fishingJournal.unk_178[0x10], 'x', WatchInterpretation::_u32);
+		hudConsole->addWatch(page, "192:", &gameInfo.scratchPad.unk_192[0x0], 'x', WatchInterpretation::_u64);
+		hudConsole->addWatch(page, "19A:", &gameInfo.scratchPad.unk_192[0x8], 'x', WatchInterpretation::_u64);
+		hudConsole->addWatch(page, "1A2:", &gameInfo.scratchPad.unk_192[0x10], 'x', WatchInterpretation::_u64);
+		hudConsole->addWatch(page, "1AA:", &gameInfo.scratchPad.unk_192[0x18], 'x', WatchInterpretation::_u64);
+		hudConsole->addWatch(page, "1B2:", &gameInfo.scratchPad.unk_192[0x20], 'x', WatchInterpretation::_u16);
+		hudConsole->addWatch(page, "1C4:", &gameInfo.scratchPad.unk_1C4, 'x', WatchInterpretation::_u8);
+		hudConsole->addWatch(page, "1D5:", &gameInfo.scratchPad.unk_1D5[0x0], 'x', WatchInterpretation::_u64);
+		hudConsole->addWatch(page, "1DD:", &gameInfo.scratchPad.unk_1D5[0x8], 'x', WatchInterpretation::_u32);
+		hudConsole->addWatch(page, "1E4:", &gameInfo.scratchPad.unk_1E4[0x0], 'x', WatchInterpretation::_u64);
+		hudConsole->addWatch(page, "1EC:", &gameInfo.scratchPad.unk_1E4[0x8], 'x', WatchInterpretation::_u32);*/
 		
 		
 		// Print
@@ -324,6 +434,16 @@ namespace mod
 		
 		//Fix Lanayru Softlock
 		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0x0, 0x5, 0xE, 0xFF, game_patch::setLanayruWolf, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		//Skip KB1
+		eventListener->addLoadEvent(stage::allStages[Stage_Kakariko_Village], 0x0, 0x22, 0xA, 0xFF, game_patch::skipKB1, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		//Set the state of Faron if the player decides to do lanayru twilight before faron
+		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0xFF, 0xFF, 0x0, 0xFF, game_patch::fixLanayruFaron, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		//Sets the flags to open up the game
+		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0x1, 0x15, 0xFF, 0xFF, game_patch::openWorld, event::LoadEventAccuracy::Stage_Room_Spawn_State);
+
 
 
 		//   =================
@@ -396,6 +516,26 @@ namespace mod
 			}
 		);
 
+		createItemForSimpleDemo_trampoline = patch::hookFunction(tp::f_op_actor_mng::createItemForSimpleDemo,
+			[](const float pos[3], s32 item, s32 unk3, const float unk4[3], const float unk5[3], float unk6, float unk7)
+			{
+				// Call replacement function
+				item = global::modPtr->procItemCreateFunc(pos, item, "createItemForSimpleDemo");
+
+				return global::modPtr->createItemForSimpleDemo_trampoline(pos, item, unk3, unk4, unk5, unk6, unk7);
+			}
+		);
+
+		createItem_trampoline = patch::hookFunction(tp::f_op_actor_mng::createItem,
+			[](const float pos[3], s32 item, s32 unk3, s32 unk4, const float unk5[3], const float unk6[3], s32 unk7)
+			{
+				// Call replacement function
+				item = global::modPtr->procItemCreateFunc(pos, item, "createItem");
+
+				return global::modPtr->createItem_trampoline(pos, item, unk3, unk4, unk5, unk6, unk7);
+			}
+		);
+
 		evt_control_Skipper_trampoline = patch::hookFunction(tp::evt_control::skipper,
 			[](void* evtPtr)
 			{
@@ -435,23 +575,134 @@ namespace mod
 		snprintf(currentPosZ, 30, "%f", linkPos[2]);
 		skyAngle = (u32)gameInfo.scratchPad.skyAngle;
 
+		if (gameInfo.ColorPtr != nullptr)
+		{
+			if (topToggle == 0)
+			{
+				gameInfo.ColorPtr->redTopToggle = 0x4;
+				gameInfo.ColorPtr->greenTopToggle = 0x4;
+				gameInfo.ColorPtr->blueTopToggle = 0x4;
+			}
+			else
+			{
+				gameInfo.ColorPtr->redTopToggle = 0x0;
+				gameInfo.ColorPtr->greenTopToggle = 0x0;
+				gameInfo.ColorPtr->blueTopToggle = 0x0;
+			}
+			gameInfo.ColorPtr->redTop = redTop;
+			gameInfo.ColorPtr->greenTop = greenTop;
+			gameInfo.ColorPtr->blueTop = blueTop;
+			if (bottomToggle == 0)
+			{
+				gameInfo.ColorPtr->redBottomToggle = 0x4;
+				gameInfo.ColorPtr->greenBottomToggle = 0x4;
+				gameInfo.ColorPtr->blueBottomToggle = 0x4;
+			}
+			else
+			{
+				gameInfo.ColorPtr->redBottomToggle = 0x0;
+				gameInfo.ColorPtr->greenBottomToggle = 0x0;
+				gameInfo.ColorPtr->blueBottomToggle = 0x0;
+			}
+			gameInfo.ColorPtr->redBottom = redBottom;
+			gameInfo.ColorPtr->greenBottom = greenBottom;
+			gameInfo.ColorPtr->blueBottom = blueBottom;
+			/*u16 last14 = 0;
+			for(colorResult = 0x0; colorResult < 0x6000; colorResult++)
+			{
+
+				if (gameInfo.ColorPtr->unk_0[colorResult] == 0x14)
+				{
+					if (colorResult - last14 == 8)
+					{
+						break;
+					}
+					else
+					{
+						last14 = colorResult;
+					}
+				}
+			}*/
+		}
+
+		/*scoopResult = 0;scoopResult = 0;
+		checkResult = 0;
+		itemsResult = 0;
+		mapResult = 0;
+		equipResult = 0;
+		backResult = 0;
+		zoomInResult = 0;
+		zoomOutResult = 0;
+		moveResult = 0;
+		throwResult = 0;
+		for (u16 i = 0x0; i < 0xD3; i++)
+		{
+			if (gameInfo.unk_5de4[i] == 0x6C && scoopResult == 0)
+			{
+				scoopResult = i;
+			}
+			if (gameInfo.unk_5de4[i] == 0x4D && skipResult == 0)
+			{
+				skipResult = i;
+			}
+			if (gameInfo.unk_5de4[i] == 0x72 && actionResult == 0)
+			{
+				actionResult = i;
+			}
+			if (gameInfo.unk_5de4[i] == 0x60 && itemsResult == 0)
+			{
+				itemsResult = i;
+			}
+			if (gameInfo.unk_5de4[i] == 0x5F && mapResult == 0)
+			{
+				mapResult = i;
+			}
+			if ((gameInfo.unk_5de4[i] == 0x29 || gameInfo.unk_5de4[i] == 0x3D || gameInfo.unk_5de4[i] == 0x69) && zoomResult == 0)
+			{
+				zoomResult = i;
+			}
+			if ((gameInfo.unk_5de4[i] == 0x5E || gameInfo.unk_5de4[i] == 0x8 || gameInfo.unk_5de4[i] == 0x80) && checkResult == 0)
+			{
+				checkResult = i;
+			}
+			if (gameInfo.unk_5de4[i] == 0x54 && equipResult == 0)
+			{
+				equipResult = i;
+			}
+			if ((gameInfo.unk_5de4[i] == 0x12 || gameInfo.unk_5de4[i] == 0x6A) && backResult == 0)
+			{
+				backResult = i;
+			}
+			if (gameInfo.unk_5de4[i] == 0x7D && zoomInResult == 0)
+			{
+				zoomInResult = i;
+			}
+			if (gameInfo.unk_5de4[i] == 0x7E && zoomOutResult == 0)
+			{
+				zoomOutResult = i;
+			}
+			if (gameInfo.unk_5de4[i] == 0x78 && moveResult == 0)
+			{
+				moveResult = i;
+			}
+			if ((gameInfo.unk_5de4[i] == 0x13 || gameInfo.unk_5de4[i] == 0x50))
+			{
+				throwResult = i;
+			}		
+		}*/
+
 		if (trigerLoadSave == 1) {
 			trigerLoadSave = 0;
 			tools::triggerSaveLoad(stage::allStages[stage], room, spawn, state);
 		}
 
-		if (gameInfo.scratchPad.itemFlags.itemFlags1.Orange_Rupee == 0b0)
+		if (!tools::checkItemFlag(ItemFlags::Orange_Rupee))
 		{//remove the item get animations for floor pickups (except silver rupee)
-			gameInfo.scratchPad.itemFlags.itemFlags1.Blue_Rupee = 0b1;
-			gameInfo.scratchPad.itemFlags.itemFlags1.Yellow_Rupee = 0b1;
-			gameInfo.scratchPad.itemFlags.itemFlags1.Red_Rupee = 0b1;
-			gameInfo.scratchPad.itemFlags.itemFlags1.Purple_Rupee = 0b1;
-			gameInfo.scratchPad.itemFlags.itemFlags1.Orange_Rupee = 0b1;
-			gameInfo.scratchPad.itemFlags.itemFlags1.Seeds_50 = 0b1;
-			gameInfo.scratchPad.itemFlags.itemFlags1.Arrows_30 = 0b1;
-			gameInfo.scratchPad.itemFlags.itemFlags1.Arrows_20 = 0b1;
-			gameInfo.scratchPad.itemFlags.itemFlags1.Arrows_10 = 0b1;
-			gameInfo.scratchPad.itemFlags.itemFlags1.Arrows_1 = 0b1;
+			u32 loopAmount = sizeof(item::itemGetAnimationFlags) / sizeof(item::itemGetAnimationFlags[0]);
+			for (u32 i = 0; i < loopAmount; i++)
+			{
+				tools::setItemFlag(static_cast<ItemFlags>(item::itemGetAnimationFlags[i]));
+			}
 		}
 
 		if (enableNormalTime == 0 && setDay == 0)
@@ -478,6 +729,20 @@ namespace mod
 		{
 			// Toggle console			
 			system_console::setState(!sysConsolePtr->consoleEnabled, 0);
+		}
+		else if (enableQuickTransform == 1 && gameInfo.rButtonText == 0 && (gameInfo.bButtonText == 0x3 || gameInfo.bButtonText == 0x26) &&
+			tools::checkItemFlag(ItemFlags::Master_Sword) && controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_R))
+		{
+			// Make sure Link is actually loaded
+			tp::d_com_inf_game::LinkMapVars* linkMapPtr = gameInfo.linkMapPtr;
+			if (linkMapPtr)
+			{
+				if (!((linkMapPtr->isTargeting & 0x400000) != 0 && gameInfo.scratchPad.form == 0))
+				{
+					// Transform
+					tp::d_a_alink::procCoMetamorphoseInit(linkMapPtr);
+				}
+			}
 		}
 
 		if (sysConsolePtr->consoleEnabled)
@@ -583,12 +848,12 @@ namespace mod
 				tools::setCutscene(false, false);
 				if (frame_counter == num_frames)
 				{
-					gameInfo.scratchPad.itemFlags.itemFlags3.Vessel_Of_Light_Faron = 0b1;//set flag for vessel since we'll skip it by reloading
 					if (Singleton::getInstance()->isForestEscapeEnabled == 1)
 					{
 						// Set Epona tamed
 						gameInfo.scratchPad.eventBits[0x6] |= 0x1;
 					}
+					tools::setItemFlag(ItemFlags::Vessel_Of_Light_Faron);//set flag for vessel since we'll skip it by reloading
 					tools::setCutscene(true, false);
 				}
 				else
@@ -601,6 +866,9 @@ namespace mod
 				frame_counter = 0;
 			}
 		}
+
+		
+
 
 		/*if (gameInfo.scratchPad.unk_0[0x019] == 0)
 		{
@@ -633,6 +901,12 @@ namespace mod
 			tp::m_do_controller_pad::cpadInfo.buttonInputTrg = tp::m_do_controller_pad::cpadInfo.buttonInput;
 		}
 
+		giveAllStoryItems();
+
+		reorderItemWheel();
+
+		giveAllScents();
+
 		// Call original function
 		fapGm_Execute_trampoline();
 	}
@@ -645,7 +919,9 @@ namespace mod
 		snprintf(lastItemDataY, 30, "%f", pos[1]);
 		snprintf(lastItemDataZ, 30, "%f", pos[2]);
 		// Runs once when Link picks up an item with text and is holding it towards the camera
-		if(randoEnabled && strcmp(funcIdentifier, "createItemForDirectGet") != 0 && strcmp(funcIdentifier, "createItemForBoss") != 0 && strcmp(funcIdentifier, "createItemForMidBoss") != 0)
+		if (randoEnabled && strcmp(funcIdentifier, "createItemForDirectGet") != 0 && strcmp(funcIdentifier, "createItemForBoss") != 0 &&
+			strcmp(funcIdentifier, "createItemForMidBoss") != 0 && strcmp(funcIdentifier, "createItemForSimpleDemo") != 0 && strcmp(funcIdentifier, "createItem") != 0 &&
+			strcmp(funcIdentifier, "createDemoItem") != 0)
 		{
 			item = chestRandomizer->getItemReplacement(pos, item);
 		}
@@ -741,6 +1017,336 @@ namespace mod
 		if (!chestRandomizer->isStageBoss())
 		{
 			gameInfo.localAreaNodes.dungeon.containerGotten = 0b0;
+		}
+	}
+
+	void Mod::giveAllScents()
+	{
+		//code to have all scents at once you need to unlock them tho
+		if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Hyrule_Field]))
+		{
+			if (tools::checkItemFlag(ItemFlags::Youths_Scent) &&
+				(tp::d_kankyo::env_light.currentRoom == 3 || tp::d_kankyo::env_light.currentRoom == 2))
+			{
+				gameInfo.scratchPad.equipedItems.scent = items::Item::Youths_Scent;
+			}
+			else if (tools::checkItemFlag(ItemFlags::Ilias_Scent) &&
+				(tp::d_kankyo::env_light.currentRoom == 9 || tp::d_kankyo::env_light.currentRoom == 10))
+			{
+				gameInfo.scratchPad.equipedItems.scent = items::Item::Ilias_Scent;
+			}
+		}
+		else if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Kakariko_Village]))
+		{
+			if (tools::checkItemFlag(ItemFlags::Youths_Scent))
+			{
+				gameInfo.scratchPad.equipedItems.scent = items::Item::Youths_Scent;
+			}
+		}
+		else if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Outside_Castle_Town]))
+		{
+			if (tools::checkItemFlag(ItemFlags::Ilias_Scent) && tp::d_kankyo::env_light.currentRoom == 8)
+			{
+				gameInfo.scratchPad.equipedItems.scent = items::Item::Ilias_Scent;
+			}
+		}
+		else if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Castle_Town]))
+		{
+			if (tools::checkItemFlag(ItemFlags::Medicine_Scent))
+			{
+				gameInfo.scratchPad.equipedItems.scent = items::Item::Medicine_Scent;
+			}
+			else if (tools::checkItemFlag(ItemFlags::Ilias_Scent))
+			{
+				gameInfo.scratchPad.equipedItems.scent = items::Item::Ilias_Scent;
+			}
+		}
+		else if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Zoras_Domain]) || tp::d_a_alink::checkStageName(stage::allStages[Stage_Snowpeak]))
+		{
+			if (tools::checkItemFlag(ItemFlags::Reekfish_Scent))
+			{
+				gameInfo.scratchPad.equipedItems.scent = items::Item::Reekfish_Scent;
+			}
+		}
+		else if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Arbiters_Grounds]))
+		{
+			if (tools::checkItemFlag(ItemFlags::Poe_Scent))
+			{
+				gameInfo.scratchPad.equipedItems.scent = items::Item::Poe_Scent;
+			}
+		}
+		else
+		{
+			if (tools::checkItemFlag(ItemFlags::Medicine_Scent))
+			{
+				gameInfo.scratchPad.equipedItems.scent = items::Item::Medicine_Scent;
+			}
+			else if (tools::checkItemFlag(ItemFlags::Reekfish_Scent))
+			{
+				gameInfo.scratchPad.equipedItems.scent = items::Item::Reekfish_Scent;
+			}
+			else if (tools::checkItemFlag(ItemFlags::Poe_Scent))
+			{
+				gameInfo.scratchPad.equipedItems.scent = items::Item::Poe_Scent;
+			}
+			else if (tools::checkItemFlag(ItemFlags::Ilias_Scent))
+			{
+				gameInfo.scratchPad.equipedItems.scent = items::Item::Ilias_Scent;
+			}
+			else if (tools::checkItemFlag(ItemFlags::Youths_Scent))
+			{
+				gameInfo.scratchPad.equipedItems.scent = items::Item::Youths_Scent;
+			}
+		}
+	}
+
+	void Mod::giveAllStoryItems()
+	{
+		if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Lake_Hylia]))
+		{
+			if (tools::checkItemFlag(ItemFlags::Aurus_Memo))
+			{
+				gameInfo.scratchPad.itemWheel.Story = items::Item::Aurus_Memo;
+			}
+		}
+		else if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Snowpeak]) || tp::d_a_alink::checkStageName(stage::allStages[Stage_Kakariko_Graveyard]) ||
+			tp::d_a_alink::checkStageName(stage::allStages[Stage_Zoras_Domain]))
+		{
+			if (tools::checkItemFlag(ItemFlags::Asheis_Sketch))
+			{
+				gameInfo.scratchPad.itemWheel.Story = items::Item::Asheis_Sketch;
+			}
+		}
+		else if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Kakariko_Interiors]) && tp::d_kankyo::env_light.currentRoom == 0)
+		{
+			if (tools::checkItemFlag(ItemFlags::Ilias_Charm))
+			{
+				gameInfo.scratchPad.itemWheel.Story = items::Item::Ilias_Charm;
+			}
+			else if (tools::checkItemFlag(ItemFlags::Wooden_Statue))
+			{
+				gameInfo.scratchPad.itemWheel.Story = items::Item::Wooden_Statue;
+			}
+			else if (tools::checkItemFlag(ItemFlags::Renardos_Letter))
+			{
+				gameInfo.scratchPad.itemWheel.Story = items::Item::Renardos_Letter;
+			}
+		}
+		else if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Outside_Castle_Town]) && tp::d_kankyo::env_light.currentRoom == 3)
+		{
+			if (tools::checkItemFlag(ItemFlags::Wooden_Statue))
+			{
+				gameInfo.scratchPad.itemWheel.Story = items::Item::Wooden_Statue;
+			}
+		}
+		else if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Castle_Town_Shops]) && tp::d_kankyo::env_light.currentRoom == 2)
+		{
+			if (tools::checkItemFlag(ItemFlags::Invoice))
+			{
+				gameInfo.scratchPad.itemWheel.Story = items::Item::Invoice;
+			}
+		}
+		else if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Castle_Town_Interiors]) && tp::d_kankyo::env_light.currentRoom == 5)
+		{
+			if (tools::checkItemFlag(ItemFlags::Invoice))
+			{
+				gameInfo.scratchPad.itemWheel.Story = items::Item::Invoice;
+			}
+			else if (tools::checkItemFlag(ItemFlags::Renardos_Letter))
+			{
+				gameInfo.scratchPad.itemWheel.Story = items::Item::Renardos_Letter;
+			}
+		}
+		else if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Hidden_Village]) || tp::d_a_alink::checkStageName(stage::allStages[Stage_Impaz_House]))
+		{
+			if (tools::checkItemFlag(ItemFlags::Ilias_Charm))
+			{
+				gameInfo.scratchPad.itemWheel.Story = items::Item::Ilias_Charm;
+			}
+		}
+		else
+		{
+			if (tools::checkItemFlag(ItemFlags::Horse_Call))
+			{//finished Ilia Quest
+				gameInfo.scratchPad.itemWheel.Story = items::Item::NullItem;
+			}
+			else if (tools::checkItemFlag(ItemFlags::Ilias_Charm))
+			{
+				gameInfo.scratchPad.itemWheel.Story = items::Item::Ilias_Charm;
+			}
+			else if (tools::checkItemFlag(ItemFlags::Wooden_Statue))
+			{
+				gameInfo.scratchPad.itemWheel.Story = items::Item::Wooden_Statue;
+			}
+			else if (tools::checkItemFlag(ItemFlags::Invoice))
+			{
+				gameInfo.scratchPad.itemWheel.Story = items::Item::Invoice;
+			}
+			else if (tools::checkItemFlag(ItemFlags::Renardos_Letter))
+			{
+				gameInfo.scratchPad.itemWheel.Story = items::Item::Renardos_Letter;
+			}
+
+			if (tools::checkItemFlag(ItemFlags::Coral_Earring))
+			{//given sketch
+				gameInfo.scratchPad.itemWheel.Story = items::Item::NullItem;
+			}
+			else if (tools::checkItemFlag(ItemFlags::Asheis_Sketch))
+			{
+				gameInfo.scratchPad.itemWheel.Story = items::Item::Asheis_Sketch;
+			}
+
+			if (gameInfo.scratchPad.movingActors.exploredRegions.Desert == 0b1)
+			{//given memo
+				gameInfo.scratchPad.itemWheel.Story = items::Item::NullItem;
+			}
+			else if (tools::checkItemFlag(ItemFlags::Aurus_Memo))
+			{
+				gameInfo.scratchPad.itemWheel.Story = items::Item::Aurus_Memo;
+			}
+
+		}
+	}
+
+	void Mod::reorderItemWheel()
+	{
+		u8 currentSlot = 0x0;
+		if (tools::checkItemFlag(ItemFlags::Clawshots))
+		{
+			gameInfo.scratchPad.itemWheel.Double_Clawshot = items::Item::Clawshots;
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0xA;
+			currentSlot++;
+		}
+		if (tools::checkItemFlag(ItemFlags::Dominion_Rod))
+		{
+			gameInfo.scratchPad.itemWheel.Dominion_Rod = items::Item::Dominion_Rod;
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0x8;
+			currentSlot++;
+		}
+		if (tools::checkItemFlag(ItemFlags::Ball_and_Chain))
+		{
+			gameInfo.scratchPad.itemWheel.Ball_and_Chain = items::Item::Ball_and_Chain;
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0x6;
+			currentSlot++;
+		}
+		if (tools::checkItemFlag(ItemFlags::Spinner))
+		{
+			gameInfo.scratchPad.itemWheel.Spinner = items::Item::Spinner;
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0x2;
+			currentSlot++;
+		}
+		if (tools::checkItemFlag(ItemFlags::Clawshot))
+		{
+			gameInfo.scratchPad.itemWheel.Clawshot = items::Item::Clawshot;
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0x9;
+			currentSlot++;
+		}
+		if (tools::checkItemFlag(ItemFlags::Heros_Bow))
+		{
+			gameInfo.scratchPad.itemWheel.Bow = items::Item::Heros_Bow;
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0x4;
+			currentSlot++;
+		}
+		if (tools::checkItemFlag(ItemFlags::Iron_Boots))
+		{
+			gameInfo.scratchPad.itemWheel.Iron_Boots = items::Item::Iron_Boots;
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0x3;
+			currentSlot++;
+		}
+		if (tools::checkItemFlag(ItemFlags::Boomerang))
+		{
+			gameInfo.scratchPad.itemWheel.Boomerang = items::Item::Boomerang;
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0x0;
+			currentSlot++;
+		}
+		if (tools::checkItemFlag(ItemFlags::Lantern))
+		{
+			gameInfo.scratchPad.itemWheel.Lantern = items::Item::Lantern;
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0x1;
+			currentSlot++;
+		}
+		if (tools::checkItemFlag(ItemFlags::Slingshot))
+		{
+			gameInfo.scratchPad.itemWheel.Slingshot = items::Item::Slingshot;
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0x17;
+			currentSlot++;
+		}
+		if (gameInfo.scratchPad.itemWheel.Fishing_Rod != 0xFF)
+		{
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0x14;
+			currentSlot++;
+		}
+		if (tools::checkItemFlag(ItemFlags::Hawkeye))
+		{
+			gameInfo.scratchPad.itemWheel.Hawkeye = items::Item::Hawkeye;
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0x5;
+			currentSlot++;
+		}
+		if (gameInfo.scratchPad.itemWheel.Bomb_Bag_1 != 0xFF)
+		{
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0xF;
+			currentSlot++;
+		}
+		if (gameInfo.scratchPad.itemWheel.Bomb_Bag_2 != 0xFF)
+		{
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0x10;
+			currentSlot++;
+		}
+		if (gameInfo.scratchPad.itemWheel.Bomb_Bag_3 != 0xFF)
+		{
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0x11;
+			currentSlot++;
+		}
+		if (gameInfo.scratchPad.itemWheel.Bottle_1 != 0xFF)
+		{
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0xB;
+			currentSlot++;
+		}
+		if (gameInfo.scratchPad.itemWheel.Bottle_2 != 0xFF)
+		{
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0xC;
+			currentSlot++;
+		}
+		if (gameInfo.scratchPad.itemWheel.Bottle_3 != 0xFF)
+		{
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0xD;
+			currentSlot++;
+		}
+		if (gameInfo.scratchPad.itemWheel.Bottle_4 != 0xFF)
+		{
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0xE;
+			currentSlot++;
+		}
+		if (gameInfo.scratchPad.itemWheel.Story != 0xFF)
+		{
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0x13;
+			currentSlot++;
+		}
+		if (gameInfo.scratchPad.itemWheel.Ooccoo != 0xFF)
+		{
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0x12;
+			currentSlot++;
+		}
+		if (gameInfo.scratchPad.itemWheel.Sky_Book != 0xFF)
+		{
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0x16;
+			currentSlot++;
+		}
+		if (tools::checkItemFlag(ItemFlags::Horse_Call))
+		{
+			gameInfo.scratchPad.itemWheel.Horse_Call = items::Item::Horse_Call;
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0x15;
+			currentSlot++;
+		}
+		if (gameInfo.scratchPad.itemWheel.Item_Slot != 0xFF)
+		{
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0x7;
+			currentSlot++;
+		}
+
+		for (u16 i = currentSlot; i < sizeof(gameInfo.scratchPad.itemSlotsOrder) / sizeof(u8); i++)
+		{
+			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0xFF;
 		}
 	}
 }
