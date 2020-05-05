@@ -343,7 +343,7 @@ namespace mod::item
 /* 332 */{0x2B, 12, stage::allStages[47], 3, 0x3, 0xFF, 0b001000000000000000000, -6545.0000000, -125.0000000, -2275.0000000, nullptr, nullptr}, //Wooden Shield (Goron)
 /* 333 */{0x21, 3, stage::allStages[46], 0, 0x4, 0xFF, 0b000001000000000000000, -900.000000, 0.780221, 6600.000000, nullptr, nullptr}, //Bow Shooting Game Heart Piece
 /* 334 */{0x21, 3, stage::allStages[53], 2, 0x5, 0xFF, 0b000000000000000000000, -4142.703125, 0.000000, -569.375000, nullptr, nullptr}, //Donation Heart Piece
-/* 335 */{ 0x21, 3, stage::allStages[62], 0, 0x8, 0xFF, 0b101000000010000000000, -2678.128906, -167.094162, 2246.794186, nullptr, nullptr },
+/* 335 */{ 0x21, 3, stage::allStages[62], 0, 0xFF, 0xFF, 0b101000000010000000000, -2678.128906, -167.094162, 2246.794186, nullptr, nullptr },
 /* 336 */{ 0x21, 3, stage::allStages[56], 0, 0x8, 0xFF, 0b000000000000000000000, -25148.583984, -200.000000, 9814.881836, nullptr, nullptr },
 /* 337 */{ 0x21, 3, stage::allStages[61], 0, 0x8, 0xFF, 0b000000000000000000000, 3618.216797, 232.476608, 541.905518, nullptr, nullptr },
 /* 338 */{ 0x21, 3, stage::allStages[55], 1, 0x8, 0xFF, 0b000000000000000000000, 4708.924805, 260.000000, -3120.967529, nullptr, nullptr },

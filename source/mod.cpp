@@ -839,11 +839,6 @@ namespace mod
 				tools::setCutscene(false, false);
 				if (frame_counter == num_frames)
 				{
-					if (Singleton::getInstance()->isForestEscapeEnabled == 1)
-					{
-						// Set Epona tamed
-						gameInfo.scratchPad.eventBits[0x6] |= 0x1;
-					}
 					tools::setItemFlag(ItemFlags::Vessel_Of_Light_Faron);//set flag for vessel since we'll skip it by reloading
 					tools::setCutscene(true, false);
 				}

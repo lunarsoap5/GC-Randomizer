@@ -7,6 +7,7 @@
 #include "array.h"
 #include "stage.h"
 #include "keyPlacement.h"
+#include "singleton.h"
 
 #include <tp/d_com_inf_game.h>
 #include <tp/d_a_alink.h>
@@ -443,6 +444,8 @@ namespace mod
 			gameInfo.localAreaNodes.unk_0[0x9] |= 0x20;//give death mountain warp
 			gameInfo.localAreaNodes.unk_0[0x14] |= 1;//give midna jumps for top of sanctuary	
 			tools::setItemFlag(ItemFlags::Vessel_Of_Light_Eldin);//set flag for vessel since we'll skip it by reloading
+			// Set Epona tamed
+			gameInfo.scratchPad.eventBits[0x6] |= 0x1;
 			gameInfo.nextStageVars.triggerLoad |= 1;
 			return item;
 		}
@@ -638,7 +641,11 @@ namespace mod
 										item = items::Item::Ancient_Sky_Book_completed;
 										gameInfo.scratchPad.eventBits[0x25] |= 0x40; //Set the Owl Statue in Kak to be able to be moved
 										gameInfo.scratchPad.eventBits[0x5F] |= 0x20; //Shad leaves so you can warp
-										gameInfo.scratchPad.eventBits[0x3B] |= 0x8; //repairs Cannon at lake
+										if (Singleton::getInstance()->isCannonRepaired == 0)
+										{
+											gameInfo.scratchPad.eventBits[0x3B] |= 0x8; //repairs Cannon at lake
+											Singleton::getInstance()->isCannonRepaired = 1;
+										}
 									}
 								}
 								else if (item == items::Item::Ancient_Sky_Book_partly_filled)
@@ -677,7 +684,11 @@ namespace mod
 										item = items::Item::Ancient_Sky_Book_completed;
 										gameInfo.scratchPad.eventBits[0x25] |= 0x40; //Set the Owl Statue in Kak to be able to be moved
 										gameInfo.scratchPad.eventBits[0x5F] |= 0x20; //Shad leaves so you can warp
-										gameInfo.scratchPad.eventBits[0x3B] |= 0x8; //repairs Cannon at lake
+										if (Singleton::getInstance()->isCannonRepaired == 0)
+										{
+											gameInfo.scratchPad.eventBits[0x3B] |= 0x8; //repairs Cannon at lake
+											Singleton::getInstance()->isCannonRepaired = 1;
+										}
 									}
 								}
 								else if (item == items::Item::Bomb_Bag_Regular_Bombs)
