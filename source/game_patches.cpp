@@ -291,20 +291,6 @@ namespace mod::game_patch
 		}
 	}*/
 
-	void openWorld()
-	{
-		{
-		// Set Event Flags to make life easier
-		gameInfo.scratchPad.eventBits[0x1B] = 0x78; //skip the monkey escort
-		gameInfo.scratchPad.eventBits[0x40] |= 0x8; //have been to desert (prevents cannon warp crash)
-		u16* secondTempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0xFA]);
-		*secondTempAddress |= 0x500;//make it so you only have to donate 500 Rupees to Charlo
-		gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x14] |= 0x10; //allow bombs to be sold at Barnes Shop without beating Mines
-		gameInfo.scratchPad.allAreaNodes.Gerudo_Desert.unk_0[0x13] |= 0x40;//watched the CS when entering the desert
-		unlockBossDoors();
-		}
-	}
-
 	void earlyCiTS()
 	{
 		if (Singleton::getInstance()->isEarlyCiTSEnabled == 1)

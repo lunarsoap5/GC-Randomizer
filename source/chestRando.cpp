@@ -428,34 +428,68 @@ namespace mod
 		}
 		else if (item == items::Item::Vessel_Of_Light_Faron)
 		{//set tear counter to 16
-			gameInfo.scratchPad.tearCounters.Faron = 16;
-			gameInfo.localAreaNodes.unk_0[0xB] |= 0x4;//give N faron warp
-			gameInfo.localAreaNodes.unk_0[0x8] |= 0x1;//give midna jumps in mist area
-			u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
-			*tempAddress |= 0x400;//give ending blow		
-			gameInfo.localAreaNodes.unk_0[0x12] |= 0x4;//mark read the midna text when you warp to N Faron for bridge
-			gameInfo.nextStageVars.triggerLoad |= 1;
-			return item;
+			if (isTwilightSkipEnabled)
+			{
+				gameInfo.scratchPad.tearCounters.Faron = 16;
+				gameInfo.localAreaNodes.unk_0[0xB] |= 0x4;//give N faron warp
+				gameInfo.localAreaNodes.unk_0[0x8] = 0xFF;//give midna jumps in mist area
+				gameInfo.localAreaNodes.unk_0[0xC] |= 0x80;//set flag for midna to think you followed the monkey in the mist
+				gameInfo.scratchPad.eventBits[0x1B] = 0x78; //skip the monkey escort
+				u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
+				*tempAddress |= 0x400;//give ending blow	
+				gameInfo.localAreaNodes.unk_0[0x12] |= 0x4;//mark read the midna text when you warp to N Faron for bridge
+				gameInfo.nextStageVars.triggerLoad |= 1;
+				return item;
+			}
+			else
+			{
+				u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
+				*tempAddress |= 0x400;//give ending blow
+				gameInfo.localAreaNodes.unk_0[0x12] |= 0x4;//mark read the midna text when you warp to N Faron for bridge
+				gameInfo.localAreaNodes.unk_0[0xC] |= 0x80;//set flag for midna to think you followed the monkey in the mist
+				gameInfo.scratchPad.eventBits[0x1B] = 0x78; //skip the monkey escort
+				return item;
+			}
 		}
 		else if (item == items::Item::Vessel_Of_Light_Eldin)
 		{//set tear counter to 16
-			gameInfo.scratchPad.tearCounters.Eldin = 16;
-			gameInfo.localAreaNodes.unk_0[0x9] |= 0x20;//give death mountain warp
-			gameInfo.localAreaNodes.unk_0[0x14] |= 1;//give midna jumps for top of sanctuary	
-			tools::setItemFlag(ItemFlags::Vessel_Of_Light_Eldin);//set flag for vessel since we'll skip it by reloading
-			// Set Epona tamed
-			gameInfo.scratchPad.eventBits[0x6] |= 0x1;
-			gameInfo.nextStageVars.triggerLoad |= 1;
-			return item;
+			if (isTwilightSkipEnabled)
+			{
+				gameInfo.scratchPad.tearCounters.Eldin = 16;
+				gameInfo.localAreaNodes.unk_0[0x9] |= 0x20;//give death mountain warp
+				gameInfo.localAreaNodes.unk_0[0x14] |= 1;//give midna jumps for top of sanctuary		
+				tools::setItemFlag(ItemFlags::Vessel_Of_Light_Eldin);//set flag for vessel since we'll skip it by reloading
+				gameInfo.nextStageVars.triggerLoad |= 1;
+				return item;
+			}
+			else
+			{
+				return item;
+			}
 		}
 		else if (item == items::Item::Vessel_Of_Light_Lanayru)
 		{//set tear counter to 16
-			gameInfo.scratchPad.tearCounters.Lanayru = 16;
-			gameInfo.localAreaNodes.unk_0[0xA] |= 0x4;//give lake hylia warp
-			gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xB] |= 0x8;//give castle town warp
-			tools::setItemFlag(ItemFlags::Vessel_Of_Light_Lanayru);//set flag for vessel since we'll skip it by reloading
-			gameInfo.nextStageVars.triggerLoad |= 1;
-			return item;
+			if (isTwilightSkipEnabled == 1)
+			{
+				gameInfo.scratchPad.tearCounters.Lanayru = 16;
+				gameInfo.localAreaNodes.unk_0[0xA] |= 0x4;//give lake hylia warp
+				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xB] |= 0x8;//give castle town warp
+				gameInfo.scratchPad.eventBits[0x40] |= 0x8; //have been to desert (prevents cannon warp crash)
+				gameInfo.scratchPad.allAreaNodes.Gerudo_Desert.unk_0[0x13] |= 0x40;//watched the CS when entering the desert
+				u16* secondTempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0xF7]);
+				*secondTempAddress |= 0x500;//make it so you only have to donate 500 Rupees to Charlo
+				tools::setItemFlag(ItemFlags::Vessel_Of_Light_Lanayru);//set flag for vessel since we'll skip it by reloading
+				gameInfo.nextStageVars.triggerLoad |= 1;
+				return item;
+			}
+			else
+			{
+				gameInfo.scratchPad.eventBits[0x40] |= 0x8; //have been to desert (prevents cannon warp crash)
+				gameInfo.scratchPad.allAreaNodes.Gerudo_Desert.unk_0[0x13] |= 0x40;//watched the CS when entering the desert
+				u16* secondTempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0xF7]);
+				*secondTempAddress |= 0x500;//make it so you only have to donate 500 Rupees to Charlo
+				return item;
+			}
 		}
 
 		for (u16 i = 0; i < totalChecks; i++)
@@ -511,6 +545,13 @@ namespace mod
 							rangeX = 3000.0f;
 							rangeY = 3000.0f;
 							rangeZ = 3000.0f;
+						}
+						else if (sourceCheck->itemID == items::Item::Small_Key && ((0 == strcmp("D_MN05", sourceCheck->stage) && sourceCheck->room == 5)))
+						{
+
+							rangeX = 550.0f;
+								rangeY = 550.0f;
+								rangeZ = 850.0f;
 						}
 						if (tools::fCompare(sourceCheck->position[0], pos[0]) < rangeX)
 						{

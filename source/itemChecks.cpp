@@ -18,7 +18,7 @@ namespace mod::item
 /* 8 */{0x23, 2, stage::allStages[6], 0, 0x1, 0x1, 0b110000000000000000100, 550.0000000, 3301.0095210, 5325.0000000, nullptr, nullptr}, //FT Map Chest
 /* 9 */{0x20, 8, stage::allStages[6], 9, 0x1, 0xFF, 0b110000000000000000100, 6908.0000000, 3580.2719730, -3305.0000000, nullptr, nullptr}, //FT Windless Bridge Chest
 /* 10 */{0x03, 7, stage::allStages[6], 2, 0x1, 0xFF, 0b110000000000000100100, 11559.7548830, 3152.0000000, 3761.2187500, nullptr, nullptr}, //FT Second Monkey Under Bridge Chest
-/* 11 */{0x20, 8, stage::allStages[6], 5, 0x1, 0xFF, 0b100000000000000100100, -9363.2304690, 3302.0000000, 5701.7978520, nullptr, nullptr}, //FT Totem Pole Chest
+/* 11 */{0x20, 8, stage::allStages[6], 5, 0x1, 0xFF, 0b100000000000000100100, -9108.924805, 3302.0000000, 5547.310059, nullptr, nullptr}, //FT Totem Pole Chest
 /* 12 */{0x04, 7, stage::allStages[6], 5, 0x1, 0xFF, 0b100000000000000100100, -11721.1455080, 3750.0000000, 4717.8212890, nullptr, nullptr}, //FT West Tile Worm Small Chest
 /* 13 */{0x21, 3, stage::allStages[6], 3, 0x1, 0xFF, 0b110000000000000000100, -4000.0000000, 2955.5900880, 9075.0000000, nullptr, nullptr}, //FT Deku Like Heart Piece Chest
 /* 14 */{0x21, 3, stage::allStages[6], 5, 0x1, 0xFF, 0b110100000000000100100, -14275.0000000, 3402.7832030, 6150.0000000, nullptr, nullptr}, //FT West Tile Worm Heart Piece Chest
@@ -31,7 +31,7 @@ namespace mod::item
 /* 21 */{0x45, 0, stage::allStages[65], 0, 0x2, 0x2, 0b000000000000000000000, 320.8111880, 9.7100000, 1017.9390870, nullptr, nullptr}, //Iron Boots Chest
 /* 22 */{0x04, 7, stage::allStages[3], 1, 0x3, 0xFF, 0b001000000000000000000, 1050.0000000, -258.1840820, 13750.0000000, nullptr, nullptr}, //GM Entrance Small Chest
 /* 23 */{0x20, 8, stage::allStages[3], 3, 0x3, 0xFF, 0b001000000000000000000, 2700.0000000, -1378.3521730, 5175.0000000, nullptr, nullptr}, //GM Main Magnet Room Bottom Chest
-/* 24 */{0x23, 2, stage::allStages[3], 14, 0x3, 0x3, 0b001000000000000000000, -15984.1562500, -710.5994260, 1504.4143070, nullptr, nullptr}, //GM Map Chest
+/* 24 */{0x23, 2, stage::allStages[3], 14, 0x3, 0x3, 0b001000000000000100000, -15984.1562500, -710.5994260, 1504.4143070, nullptr, nullptr}, //GM Map Chest
 /* 25 */{0x04, 7, stage::allStages[3], 14, 0x3, 0xFF, 0b001000000000000000000, -16176.0000000, -561.3822020, 895.0000000, nullptr, nullptr}, //GM Gor Amato Small Chest
 /* 26 */{0x21, 3, stage::allStages[3], 4, 0x3, 0xFF, 0b001000000000000000000, -5625.0000000, 448.7841190, 75.0000000, nullptr, nullptr}, //GM Magnet Maze Heart Piece Chest
 /* 27 */{0x20, 8, stage::allStages[3], 6, 0x3, 0xFF, 0b001000000000000000000, 1125.0000000, 600.0000000, -4725.0000000, nullptr, nullptr}, //GM Switch Room Underwater Chest
@@ -336,7 +336,6 @@ namespace mod::item
 /* 326 */{ 0x82, 4, stage::allStages[57], 16, 0xFF, 0x13, 0b000000000000000000000, -51480.0000000, -6425.0000000, 34034.0000000, nullptr, nullptr },
 /* 327 */{ 0x83, 4, stage::allStages[63], 0, 0xFF, 0x13, 0b000000000000000000000, 2360.0000000, 104.0000000, -1150.0000000, nullptr, nullptr },
 /* 328 */{ 0x84, 4, stage::allStages[68], 0, 0xFF, 0x13, 0b000000000000000000000, -386.0000000, 0.0000000, 393.0000000, nullptr, nullptr }, //Horse Call
-
 /* 329 */{0x9d, 9, stage::allStages[45], 4, 0x1, 0xFF, 0b000000000000000000000, -13659.433594, -0.454284, -14367.083008, nullptr, nullptr}, //Coro Bottle
 /* 330 */{0x75, 9, stage::allStages[73], 5, 0xFF, 0xFF, 0b000000000000000000000, 4250.363281, 134.492020, 1813.639648, nullptr, nullptr}, //Jovani Bottle
 //TODO/* 331 not randomized*///{0x60, 9, stage::allStages[62], 0, 0x5, 0xFF, 0b000000000000000000000, -13659.0000000, 0.0000000, -14367.0000000, nullptr, nullptr},

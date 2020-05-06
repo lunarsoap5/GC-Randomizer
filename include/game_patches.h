@@ -155,8 +155,6 @@ namespace mod::game_patch
 
 	void fixLanayruFaron();
 
-	void openWorld();
-
 	void earlyCiTS();
 
 	void earlyDesert();
