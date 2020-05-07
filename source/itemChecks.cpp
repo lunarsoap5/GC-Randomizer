@@ -6,7 +6,7 @@
 
 namespace mod::item
 {
-	ItemCheck checks[491] = {
+	ItemCheck checks[492] = {
 /* 0 */{0x3F, 1, stage::allStages[65], 4, 0x0, 0x0, 0b000000000000000000000, -1.6259740, 0.0000000, -207.4881290, nullptr, nullptr}, //Wooden Sword Chest
 /* 1 */{0x03, 7, stage::allStages[40], 0, 0x1, 0xFF, 0b110000000000000000100, -3550.8691410, 4450.0000000, -694.8996580, nullptr, nullptr}, // South Faron Cave Small Chest
 /* 2 */{0xEE, 8, stage::allStages[45], 14, 0x1, 0xFF, 0b000000000000000000100, 1221.9044190, 50.0000000, -7.9423170, nullptr, nullptr}, //North Faron Cave Key Chest
@@ -338,7 +338,7 @@ namespace mod::item
 /* 328 */{ 0x84, 4, stage::allStages[68], 0, 0xFF, 0x13, 0b000000000000000000000, -386.0000000, 0.0000000, 393.0000000, nullptr, nullptr }, //Horse Call
 /* 329 */{0x9d, 9, stage::allStages[45], 4, 0x1, 0xFF, 0b000000000000000000000, -13659.433594, -0.454284, -14367.083008, nullptr, nullptr}, //Coro Bottle
 /* 330 */{0x75, 9, stage::allStages[73], 5, 0xFF, 0xFF, 0b000000000000000000000, 4250.363281, 134.492020, 1813.639648, nullptr, nullptr}, //Jovani Bottle
-//TODO/* 331 not randomized*///{0x60, 9, stage::allStages[62], 0, 0x5, 0xFF, 0b000000000000000000000, -13659.0000000, 0.0000000, -14367.0000000, nullptr, nullptr},
+/*TODO 331 not randomized*/{ 0x60, 9, stage::allStages[62], 0, 0x5, 0xFF, 0b000000000000000000000, -13659.0000000, 0.0000000, -14367.0000000, nullptr, nullptr },
 /* 332 */{0x2B, 12, stage::allStages[47], 3, 0x3, 0xFF, 0b001000000000000000000, -6545.0000000, -125.0000000, -2275.0000000, nullptr, nullptr}, //Wooden Shield (Goron)
 /* 333 */{0x21, 3, stage::allStages[46], 0, 0x4, 0xFF, 0b000001000000000000000, -900.000000, 0.780221, 6600.000000, nullptr, nullptr}, //Bow Shooting Game Heart Piece
 /* 334 */{0x21, 3, stage::allStages[53], 2, 0x5, 0xFF, 0b000000000000000000000, -4142.703125, 0.000000, -569.375000, nullptr, nullptr}, //Donation Heart Piece
@@ -438,7 +438,7 @@ namespace mod::item
 /*#16*/{ 0xe0, 11, stage::allStages[37], 2, 0x8, 0xFF, 0b100000000010000000010, -1026.819824, 1.152117, -161.420013, nullptr, nullptr },
 /*#17*/{ 0xe0, 11, stage::allStages[37], 2, 0x8, 0xFF, 0b100000000010000000010, -286.849121, 3.514773, -895.548218, nullptr, nullptr },
 /*#18*/{ 0xe0, 11, stage::allStages[59], 0, 0x8, 0xFF, 0b100000000010000000010, -2024.554443, 16.013172, 11583.281250, nullptr, nullptr },
-/*#19*/{ 0xe0, 11, stage::allStages[55], 3, 0x8, 0xFF, 0b000000000000000000010, 1812.931274, 0.000000, 1155.415161, nullptr, nullptr },
+/*#19*/{ 0xe0, 11, stage::allStages[55], 1, 0x8, 0xFF, 0b000000000000000000010, 1812.931274, 0.000000, 1155.415161, nullptr, nullptr },
 /*#20*/{ 0xe0, 11, stage::allStages[55], 3, 0x8, 0xFF, 0b000000000000000000010, 283.265228, 840.000000, -12366.407227, nullptr, nullptr },
 /*#21*/{ 0xe0, 11, stage::allStages[48], 0, 0x8, 0xFF, 0b000000000000000000010, 12836.060547, 100.000000, 178.608246, nullptr, nullptr },
 /*#22*/{ 0xe0, 11, stage::allStages[48], 0, 0x8, 0xFF, 0b000000000000000000010, 14444.615234, 256.835815, -527.642578, nullptr, nullptr },

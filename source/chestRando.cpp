@@ -53,7 +53,6 @@ namespace mod
 				placeCheck(&item::checks[i], &item::checks[i]);
 			}
 		}
-
 		handleKeysanity();
 
 		//do needed items in order
@@ -290,7 +289,8 @@ namespace mod
 		{
 		case item::ItemType::Key:
 			// Small Keys + ordon pumpkin and cheese
-			if (isKeysanityEnabled == 0 || !isStageADungeon(check->stage))
+			if (isKeysanityEnabled == 0 || check->itemID == items::Item::Gate_Keys ||
+				(Singleton::getInstance()->isForestEscapeEnabled == 1 && check->itemID == items::Item::Coro_Key))
 			{
 				result = true;
 			}
@@ -346,6 +346,10 @@ namespace mod
 
 		case items::Item::Master_Sword:
 			result = true;
+			break;
+
+		case items::Item::Empty_Bottle:
+			result = true;//fishing hole bottle
 			break;
 
 		case items::Item::Ancient_Sky_Book_empty:
@@ -994,7 +998,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::FT_1[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do FT_2
@@ -1006,7 +1012,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::FT_2[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do FT_3
@@ -1018,7 +1026,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::FT_3[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do FT_4
@@ -1030,7 +1040,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::FT_4[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 
@@ -1043,7 +1055,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::GM_1[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do GM_2
@@ -1055,7 +1069,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::GM_2[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do GM_3
@@ -1067,7 +1083,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::GM_3[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 
@@ -1080,7 +1098,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::LBT_1[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do LBT_2
@@ -1092,7 +1112,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::LBT_2[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do LBT_3
@@ -1104,7 +1126,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::LBT_3[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 
@@ -1117,7 +1141,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::AG_1[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do AG_2
@@ -1129,7 +1155,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::AG_2[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do AG_3
@@ -1141,7 +1169,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::AG_3[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do AG_4
@@ -1153,7 +1183,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::AG_4[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do AG_5
@@ -1165,7 +1197,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::AG_5[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 
@@ -1178,7 +1212,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::SPR_1[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do SPR_2
@@ -1190,7 +1226,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::SPR_2[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do SPR_3
@@ -1202,7 +1240,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::SPR_3[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do SPR_4
@@ -1214,7 +1254,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::SPR_4[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do SPR_5
@@ -1226,7 +1268,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::SPR_5[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do SPR_6
@@ -1238,7 +1282,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::SPR_6[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 
@@ -1251,7 +1297,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::ToT_1[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do ToT_2
@@ -1263,7 +1311,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::ToT_2[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do ToT_3
@@ -1275,7 +1325,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::ToT_3[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));;
 				placeCheck(sourceCheck, destCheck);
 			}
 
@@ -1288,7 +1340,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::CitS_1[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 
@@ -1301,7 +1355,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::PoT_1[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do PoT_2
@@ -1313,7 +1369,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::PoT_2[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do PoT_3
@@ -1325,7 +1383,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::PoT_3[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do PoT_4
@@ -1337,7 +1397,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::PoT_4[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do PoT_5
@@ -1349,7 +1411,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::PoT_5[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do PoT_6
@@ -1361,7 +1425,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::PoT_6[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do PoT_7
@@ -1373,7 +1439,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::PoT_7[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 
@@ -1386,7 +1454,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::HC_1[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do HC_2
@@ -1398,7 +1468,9 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::HC_2[index]];
-				} while (sourceCheck->destination);
+				}
+			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
 			//do HC_3
@@ -1410,9 +1482,45 @@ namespace mod
 				{
 					index = tools::getRandom(length);
 					sourceCheck = &item::checks[keyPlacement::HC_3[index]];
-				} while (sourceCheck->destination);
+				} 
+				while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+					(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 				placeCheck(sourceCheck, destCheck);
 			}
+
+			//do F_1
+			length = sizeof(keyPlacement::F_1) / sizeof(u16);
+			destCheck = &item::checks[keyPlacement::F_keys[0]];
+			do
+			{
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::F_1[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
+			placeCheck(sourceCheck, destCheck);
+			//do F_2
+			length = sizeof(keyPlacement::F_2) / sizeof(u16);
+			destCheck = &item::checks[keyPlacement::F_keys[1]];
+			do
+			{
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::F_2[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
+			placeCheck(sourceCheck, destCheck);
+
+			//do GD_1
+			length = sizeof(keyPlacement::GD_1) / sizeof(u16);
+			destCheck = &item::checks[keyPlacement::GD_keys[0]];
+			do
+			{
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::GD_1[index]];
+			} 
+			while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
+				placeCheck(sourceCheck, destCheck);
+			
 		}
 	}
 }
