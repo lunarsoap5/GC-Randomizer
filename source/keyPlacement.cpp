@@ -27,27 +27,25 @@ namespace mod::keyPlacement
 		344,//ooccoo
 		17//Water Cave Chest
 	};
-	u16 FT_3[10]
+	u16 FT_3[9]
 	{
 		6,//entry
 		8,//map
 		9,//Windless Bridge Chest
 		344,//ooccoo
 		17,//Water Cave Chest
-		10,//mokey 2
 		13,//PoH deku ike
 		11,//totem key
 		12,//Small Chest West Tile
 		343//big baba
 	};
-	u16 FT_4[10]
+	u16 FT_4[9]
 	{
 		6,//entry
 		8,//map
 		9,//Windless Bridge Chest
 		344,//ooccoo
 		17,//Water Cave Chest
-		10,//mokey 2
 		13,//PoH deku ike
 		11,//totem key
 		12,//Small Chest West Tile
@@ -354,12 +352,15 @@ namespace mod::keyPlacement
 	{
 		219//West Wing Chest 1
 	};
-	u16 CitS_1[4]
+	u16 CitS_1[7]
 	{
 		217,//Underwater Chest 1
 		218,//Underwater Chest 2
 		219,//West Wing Chest 1
-		350//ooccoo
+		350,//ooccoo
+		488,//Lantern_Oil
+		489,//Red_Potion
+		490//Blue_Potion
 	};
 
 	u16 PoT_keys[7]

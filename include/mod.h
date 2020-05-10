@@ -114,6 +114,23 @@ namespace mod
 			u16 zoomInResult;
 			u16 zoomOutResult;
 			u16 moveResult;
+			u16 throwResult;
+
+			u8 bottle4Contents;
+			u8 bottleTrickOn = 0;
+			u8 allowBottleItemsShopAnytime = 1;
+			u8 shieldTrickOn = 0;
+			u8 hadHShield;
+			u8 hadOShield;
+			u8 hadWShield;
+			u8 bombBagTrickOn = 0;
+			u8 bombBag1Contents;
+			u8 bombBag2Contents;
+			u8 bombBag3Contents;
+			u8 bombBag1Ammo;
+			u8 bombBag2Ammo;
+			u8 bombBag3Ammo;
+
 			
 		// Functions
 		private:
@@ -150,6 +167,17 @@ namespace mod
 			 * gives the unlocked scent that can be seen in the current area (defaults to most advanced one obtained)
 			 */
 			void giveAllScents();
+
+			/**
+			 * renders all shop items buyable no matter what you have in you inv
+			 * only works for bottle items for now
+			 */
+			void allowShopItemsAnytime();
+
+			/**
+			 * checks if the current stage contains a shop
+			 */
+			bool isStageShop();
 
 		// Private members
 		//private:

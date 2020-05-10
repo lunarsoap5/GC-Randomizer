@@ -83,7 +83,7 @@ namespace mod
 		strcpy(sysConsolePtr->consoleLine[21].line, "+/- Value: A/B/X/Y  Console  :  R + Z");
 		strcpy(sysConsolePtr->consoleLine[22].line, " Generate: R + Start (auto on new file)");
 		strcpy(sysConsolePtr->consoleLine[23].line, "Bring up the console to use commands");
-		strcpy(sysConsolePtr->consoleLine[24].line, "https://rando.tpspeed.run | Twitter: @theAECX");
+		strcpy(sysConsolePtr->consoleLine[24].line, "rando.tpspeed.run | Twitter: @ztprandomizer");
 
 		u8 page = 0;
 
@@ -196,6 +196,7 @@ namespace mod
 		hudConsole->addOption(page, "Early CiTS?", &Singleton::getInstance()->isEarlyCiTSEnabled, 0x1);
 		hudConsole->addOption(page, "Early Desert?", &Singleton::getInstance()->isEarlyDesertEnabled, 0x1);
 		hudConsole->addOption(page, "Boss Keysey?", &Singleton::getInstance()->isBossKeyseyEnabled, 0x1);
+		hudConsole->addOption(page, "No Bottle Req?", &allowBottleItemsShopAnytime, 0x1);
 		//color
 		/*page = hudConsole->addPage("Tunic Color1");
 
@@ -940,6 +941,8 @@ namespace mod
 
 		reorderItemWheel();
 
+		allowShopItemsAnytime();
+
 		giveAllScents();
 
 		// Call original function
@@ -1243,6 +1246,179 @@ namespace mod
 		}
 	}
 
+	void Mod::allowShopItemsAnytime()
+	{
+		u8 hasEmptyBottleAlready = 1;
+		if (gameInfo.scratchPad.itemWheel.Bottle_1 != items::Item::Empty_Bottle && gameInfo.scratchPad.itemWheel.Bottle_2 != items::Item::Empty_Bottle &&
+			gameInfo.scratchPad.itemWheel.Bottle_3 != items::Item::Empty_Bottle && gameInfo.scratchPad.itemWheel.Bottle_4 != items::Item::Empty_Bottle)
+		{
+			hasEmptyBottleAlready = 0;
+		}
+
+		if (isStageShop())
+		{
+			if ((tp::d_a_alink::checkStageName("R_SP160") && tp::d_kankyo::env_light.currentRoom == 4) ||
+				(tp::d_a_alink::checkStageName("F_SP108") && tp::d_kankyo::env_light.currentRoom == 4) ||
+				(tp::d_a_alink::checkStageName("F_SP116") && (tp::d_kankyo::env_light.currentRoom == 0 || tp::d_kankyo::env_light.currentRoom == 3)))
+			{//Coro shop/castle goron shop
+				if (gameInfo.aButtonText == 0x1C)
+				{//about to speak to merchant
+					if (allowBottleItemsShopAnytime == 1 && hasEmptyBottleAlready == 0)
+					{
+						if (gameInfo.scratchPad.itemWheel.Bottle_4 != items::Item::Empty_Bottle)
+						{
+							bottle4Contents = gameInfo.scratchPad.itemWheel.Bottle_4;
+						}
+						gameInfo.scratchPad.itemWheel.Bottle_4 = items::Item::Empty_Bottle;
+						bottleTrickOn = 1;
+					}
+					if (tools::checkItemFlag(ItemFlags::Hylian_Shield))
+					{
+						hadHShield = 1;
+						tools::clearItemFlag(ItemFlags::Hylian_Shield);
+						shieldTrickOn = 1;
+					}
+				}
+				if (gameInfo.aButtonText == 0x22)
+				{//selecting if you wanna buy or not
+					if (bottleTrickOn == 1)
+					{
+						bottleTrickOn = 2;
+					}
+					if (shieldTrickOn == 1)
+					{
+						shieldTrickOn = 2;
+					}
+				}
+				if (gameInfo.aButtonText == 0x23)
+				{
+					if (bottleTrickOn == 2)
+					{
+						gameInfo.scratchPad.itemWheel.Bottle_4 = bottle4Contents;
+						bottleTrickOn = 0;
+					}
+					if (shieldTrickOn == 2)
+					{
+						if (hadHShield == 1)
+						{
+							tools::setItemFlag(ItemFlags::Hylian_Shield);
+						}
+						shieldTrickOn = 0;
+					}
+				}
+				if (gameInfo.aButtonText == 0x6 || gameInfo.aButtonText == 0x79)
+				{//leaving
+					if (bottleTrickOn == 1)
+					{
+						gameInfo.scratchPad.itemWheel.Bottle_4 = bottle4Contents;
+						bottleTrickOn = 0;
+					}
+					if (shieldTrickOn == 1)
+					{
+						if (hadHShield == 1)
+						{
+							tools::setItemFlag(ItemFlags::Hylian_Shield);
+						}
+						shieldTrickOn = 0;
+					}
+				}
+			}
+			else
+			{//normal shops
+				if (gameInfo.bButtonText == 0x2A)
+				{//is in shop and is selecting an item
+					if (allowBottleItemsShopAnytime == 1 && hasEmptyBottleAlready == 0)
+					{
+						if (gameInfo.scratchPad.itemWheel.Bottle_4 != items::Item::Empty_Bottle)
+						{
+							bottle4Contents = gameInfo.scratchPad.itemWheel.Bottle_4;
+						}
+						gameInfo.scratchPad.itemWheel.Bottle_4 = items::Item::Empty_Bottle;
+						bottleTrickOn = 1;
+					}
+					if (tools::checkItemFlag(ItemFlags::Hylian_Shield))
+					{
+						hadHShield = 1;
+						tools::clearItemFlag(ItemFlags::Hylian_Shield);
+						shieldTrickOn = 1;
+					}
+					if (tools::checkItemFlag(ItemFlags::Wooden_Shield))
+					{
+						hadWShield = 1;
+						tools::clearItemFlag(ItemFlags::Wooden_Shield);
+						shieldTrickOn = 1;
+					}
+					if (tools::checkItemFlag(ItemFlags::Ordon_Shield))
+					{
+						hadOShield = 1;
+						tools::clearItemFlag(ItemFlags::Ordon_Shield);
+						shieldTrickOn = 1;
+					}
+
+					if (!tools::checkItemFlag(ItemFlags::Null_DA) && bombBagTrickOn == 0 && tp::d_a_alink::checkStageName("R_SP109") && tp::d_kankyo::env_light.currentRoom == 1)
+					{
+						bombBag1Contents = gameInfo.scratchPad.itemWheel.Bomb_Bag_1;
+						bombBag2Contents = gameInfo.scratchPad.itemWheel.Bomb_Bag_2;
+						bombBag3Contents = gameInfo.scratchPad.itemWheel.Bomb_Bag_3;
+						bombBag1Ammo = gameInfo.scratchPad.ammo.bombs1;
+						bombBag2Ammo = gameInfo.scratchPad.ammo.bombs2;
+						bombBag3Ammo = gameInfo.scratchPad.ammo.bombs3;
+						gameInfo.scratchPad.itemWheel.Bomb_Bag_1 = 0xFF;
+						gameInfo.scratchPad.itemWheel.Bomb_Bag_2 = 0xFF;
+						gameInfo.scratchPad.itemWheel.Bomb_Bag_3 = 0xFF;
+						bombBagTrickOn = 1;
+					}
+
+				}
+				if (gameInfo.aButtonText == 0x23)
+				{//is in shop and is exiting the item select mode
+					if (bottleTrickOn == 1)
+					{
+						gameInfo.scratchPad.itemWheel.Bottle_4 = bottle4Contents;
+						bottleTrickOn = 0;
+					}
+					if (shieldTrickOn == 1)
+					{
+						if (hadHShield == 1)
+						{
+							tools::setItemFlag(ItemFlags::Hylian_Shield);
+						}
+						if (hadWShield == 1)
+						{
+							tools::setItemFlag(ItemFlags::Wooden_Shield);
+						}
+						if (hadOShield == 1)
+						{
+							tools::setItemFlag(ItemFlags::Ordon_Shield);
+						}
+						shieldTrickOn = 0;
+					}
+					if (bombBagTrickOn == 1)
+					{
+						gameInfo.scratchPad.itemWheel.Bomb_Bag_1 = bombBag1Contents;
+						gameInfo.scratchPad.itemWheel.Bomb_Bag_2 = bombBag2Contents;
+						gameInfo.scratchPad.itemWheel.Bomb_Bag_3 = bombBag3Contents;
+						gameInfo.scratchPad.ammo.bombs1 = bombBag1Ammo;
+						gameInfo.scratchPad.ammo.bombs2 = bombBag2Ammo;
+						gameInfo.scratchPad.ammo.bombs3 = bombBag3Ammo;
+						bombBagTrickOn = 0;
+					}
+				}
+				if (tools::checkItemFlag(ItemFlags::Null_DA) && bombBagTrickOn == 1)
+				{//bought bomb bag check
+					gameInfo.scratchPad.itemWheel.Bomb_Bag_1 = bombBag1Contents;
+					gameInfo.scratchPad.itemWheel.Bomb_Bag_2 = bombBag2Contents;
+					gameInfo.scratchPad.itemWheel.Bomb_Bag_3 = bombBag3Contents;
+					gameInfo.scratchPad.ammo.bombs1 = bombBag1Ammo;
+					gameInfo.scratchPad.ammo.bombs2 = bombBag2Ammo;
+					gameInfo.scratchPad.ammo.bombs3 = bombBag3Ammo;
+					bombBagTrickOn = 0;
+				}
+			}
+		}
+	}
+
+
 	void Mod::reorderItemWheel()
 	{
 		u8 currentSlot = 0x0;
@@ -1383,5 +1559,18 @@ namespace mod
 		{
 			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0xFF;
 		}
+	}
+
+	bool Mod::isStageShop()
+	{
+		u8 totalShopStages = sizeof(stage::shopStages) / sizeof(stage::shopStages[0]);
+		for (u8 i = 0; i < totalShopStages; i++)
+		{
+			if (tp::d_a_alink::checkStageName(stage::shopStages[i]))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }

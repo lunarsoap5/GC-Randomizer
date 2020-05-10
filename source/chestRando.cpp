@@ -496,6 +496,11 @@ namespace mod
 			}
 		}
 
+		else if (item == items::Item::Bomb_Bag_Regular_Bombs || item == items::Item::Bomb_Bag_Water_Bombs || item == items::Item::Bomb_Bag_Bombslings)
+		{//set flag for Barne's bomb bag check
+			tools::setItemFlag(ItemFlags::Null_DA);
+		}
+
 		for (u16 i = 0; i < totalChecks; i++)
 		{
 			sourceCheck = &item::checks[i];
@@ -513,7 +518,9 @@ namespace mod
 					(item == items::Item::Ooccoo_FT && sourceCheck->itemID == items::Item::Ooccoo_Dungeon) ||
 					(item == items::Item::Lantern_Refill_Shop && sourceCheck->itemID == items::Item::Lantern_Oil_Shop) ||
 					(item == items::Item::Lantern_Refill_Scooped && sourceCheck->itemID == items::Item::Lantern_Oil_Scooped) ||
-					(sourceCheck->itemID == items::Item::Superb_Soup && (item == items::Item::Simple_Soup || item == items::Item::Good_Soup)))
+					(sourceCheck->itemID == items::Item::Superb_Soup && (item == items::Item::Simple_Soup || item == items::Item::Good_Soup)) ||
+					(item == items::Item::Bomb_Bag_Water_Bombs && sourceCheck->itemID == items::Item::Bomb_Bag_Regular_Bombs) ||
+					(item == items::Item::Bomb_Bag_Bombslings && sourceCheck->itemID == items::Item::Bomb_Bag_Regular_Bombs))
 				{
 					bool isOk = false;
 
@@ -1499,15 +1506,19 @@ namespace mod
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 			placeCheck(sourceCheck, destCheck);
 			//do F_2
-			length = sizeof(keyPlacement::F_2) / sizeof(u16);
-			destCheck = &item::checks[keyPlacement::F_keys[1]];
-			do
+			if (Singleton::getInstance()->isForestEscapeEnabled == 0)
 			{
-				index = tools::getRandom(length);
-				sourceCheck = &item::checks[keyPlacement::F_2[index]];
-			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
-				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-			placeCheck(sourceCheck, destCheck);
+				//do F_2
+				length = sizeof(keyPlacement::F_2) / sizeof(u16);
+				destCheck = &item::checks[keyPlacement::F_keys[1]];
+				do
+				{
+					index = tools::getRandom(length);
+					sourceCheck = &item::checks[keyPlacement::F_2[index]];
+				} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+					(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
+				placeCheck(sourceCheck, destCheck);
+			}
 
 			//do GD_1
 			length = sizeof(keyPlacement::GD_1) / sizeof(u16);
