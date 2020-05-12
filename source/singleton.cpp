@@ -29,6 +29,7 @@ namespace mod
 		isEarlyDesertEnabled = 1;
 		isBossKeyseyEnabled = 1;
 		isSewerSkipEnabled = 1;
+		isKB1Skipped = 1;
 	}
 
 } 

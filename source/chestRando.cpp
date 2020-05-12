@@ -471,19 +471,34 @@ namespace mod
 				gameInfo.localAreaNodes.unk_0[0x9] |= 0x20;//give death mountain warp
 				gameInfo.localAreaNodes.unk_0[0x14] |= 1;//give midna jumps for top of sanctuary		
 				tools::setItemFlag(ItemFlags::Vessel_Of_Light_Eldin);//set flag for vessel since we'll skip it by reloading
-				gameInfo.scratchPad.eventBits[0x7] = 0xCE; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
 				gameInfo.scratchPad.eventBits[0x6] |= 0x1; //tame Epona
-				gameInfo.scratchPad.eventBits[0xA] |= 0x8; //Beat KB1
-				gameInfo.scratchPad.eventBits[0x14] |= 0x10; //Put Bo Outside
+				if (Singleton::getInstance()->isKB1Skipped == 1)
+				{
+					gameInfo.scratchPad.eventBits[0xA] |= 0x8; //Beat KB1
+					gameInfo.scratchPad.eventBits[0x14] |= 0x10; //Put Bo Outside
+					gameInfo.scratchPad.eventBits[0x7] = 0xCE; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
+				}
+				else
+				{
+					gameInfo.scratchPad.eventBits[0x7] = 0x46; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
+				}
 				gameInfo.nextStageVars.triggerLoad |= 1;
 				return item;
 			}
 			else
 			{
-				gameInfo.scratchPad.eventBits[0x7] = 0xCE; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
-				gameInfo.scratchPad.eventBits[0xA] |= 0x8; //Beat KB1
-				gameInfo.scratchPad.eventBits[0x14] |= 0x10; //Put Bo Outside
 				gameInfo.scratchPad.eventBits[0x6] |= 0x1; //tame Epona
+				if (Singleton::getInstance()->isKB1Skipped == 1)
+				{
+					gameInfo.scratchPad.eventBits[0xA] |= 0x8; //Beat KB1
+					gameInfo.scratchPad.eventBits[0x14] |= 0x10; //Put Bo Outside
+					gameInfo.scratchPad.eventBits[0x7] = 0xCE; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
+				}
+				else
+				{
+					gameInfo.scratchPad.eventBits[0x7] = 0x46; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
+				}
+				
 				return item;
 			}
 		}

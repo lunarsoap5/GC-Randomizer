@@ -98,7 +98,7 @@ namespace mod::item
 /* 88 */{0x21, 3, stage::allStages[33], 0, 0x5, 0xFF, 0b110000001000000000000, 6582.5747070, -5144.5200200, -10032.9658200, nullptr, nullptr}, //Lake Lanturn Cave Heart Piece Chest
 /* 89 */{0x06, 7, stage::allStages[39], 4, 0x8, 0xFF, 0b000000000000000000010, -312.1882930, -27.1700000, -1501.0155030, nullptr, nullptr}, //Grotto - Water Toadpoli Chest
 /* 90 */{0x05, 7, stage::allStages[52], 0, 0x6, 0xFF, 0b001000000010000000000, -91673.9453120, -16547.1699220, 49208.8203120, nullptr, nullptr}, //Outside Lanayru Spring - Left Statue Small Chest
-/* 91 */{0x06, 7, stage::allStages[52], 0, 0x6, 0xFF, 0b001000000010000000000, -88887.4531250, -16927.6093750, 43906.9062500, nullptr, nullptr}, //Outside Lanayru Spring - Right Statue Chest
+/* 91 */{0x06, 7, stage::allStages[52], 0, 0x6, 0xFF, 0b001000000010000000000, -88884.070312, -16939.031250, 49405.648438, nullptr, nullptr}, //Outside Lanayru Spring - Right Statue Chest
 /* 92 */{0x02, 7, stage::allStages[52], 1, 0x5, 0xFF, 0b001000000000000000000, 593.5773930, -1276.7792970, 128.1360020, nullptr, nullptr}, //Lanayru Spring Underwater Left Chest
 /* 93 */{0x03, 7, stage::allStages[52], 1, 0x5, 0xFF, 0b001000000000000000000, -1262.2436520, -1380.8292240, 68.6994780, nullptr, nullptr}, //Lanayru Spring Underwater Right Chest
 /* 94 */{0x02, 7, stage::allStages[52], 1, 0x6, 0xFF, 0b000000000010000000000, -33.7100300, 1406.5571290, 4875.7338870, nullptr, nullptr}, //Lanayru Spring Southern Room Left Chest
