@@ -123,21 +123,24 @@ namespace mod::game_patch
 
 	void skipSewers()
 	{
-		strcpy(sysConsolePtr->consoleLine[20].line, "-> Skipping Sewers");
+		if (Singleton::getInstance()->isSewerSkipEnabled == 1)
+		{
+			strcpy(sysConsolePtr->consoleLine[20].line, "-> Skipping Sewers");
 
-		// Set sewers flags
-		giveMidna();
-		giveSense();
+			// Set sewers flags
+			giveMidna();
+			giveSense();
 
-		// We should be wolf
-		setFirstTimeWolf();
+			// We should be wolf
+			setFirstTimeWolf();
 
-		// Set sewers flags (zelda cutscenes, unchained wolf link, bla)
-		gameInfo.scratchPad.eventBits[0x05] |= 0x7A;
-		gameInfo.scratchPad.equipedItems.sword = 0x3F;
+			// Set sewers flags (zelda cutscenes, unchained wolf link, bla)
+			gameInfo.scratchPad.eventBits[0x05] |= 0x7A;
+			gameInfo.scratchPad.equipedItems.sword = 0x3F;
 
-		// Load back to Ordon Spring
-		tools::triggerSaveLoad(stage::allStages[Stage_Ordon_Spring], 0x1, 0x3, 0x4);
+			// Load back to Ordon Spring
+			tools::triggerSaveLoad(stage::allStages[Stage_Ordon_Spring], 0x1, 0x3, 0x4);
+		}
 	}
 	
 	void skipMDH()

@@ -24,6 +24,7 @@ namespace mod
 		u8 isCannonRepaired;
 		u8 isEarlyDesertEnabled;
 		u8 isBossKeyseyEnabled;
+		u8 isSewerSkipEnabled;
 
 		private:
 

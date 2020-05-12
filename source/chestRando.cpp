@@ -432,7 +432,7 @@ namespace mod
 		}
 		else if (item == items::Item::Vessel_Of_Light_Faron)
 		{//set tear counter to 16
-			if (isTwilightSkipEnabled)
+			if (isTwilightSkipEnabled == 1)
 			{
 				gameInfo.scratchPad.tearCounters.Faron = 16;
 				gameInfo.localAreaNodes.unk_0[0xB] |= 0x4;//give N faron warp
@@ -442,6 +442,10 @@ namespace mod
 				u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
 				*tempAddress |= 0x400;//give ending blow	
 				gameInfo.localAreaNodes.unk_0[0x12] |= 0x4;//mark read the midna text when you warp to N Faron for bridge
+				gameInfo.scratchPad.eventBits[0x6] |= 0x24; //warp the kak bridge, give map warp
+				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xF] |= 0x2; //cutscene for Gorge Bridge Watched
+				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0x8] |= 0x1; //Midna text for warping the bridge
+				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0x9] |= 0x20; //give Gorge Warp
 				gameInfo.nextStageVars.triggerLoad |= 1;
 				return item;
 			}
@@ -452,22 +456,34 @@ namespace mod
 				gameInfo.localAreaNodes.unk_0[0x12] |= 0x4;//mark read the midna text when you warp to N Faron for bridge
 				gameInfo.localAreaNodes.unk_0[0xC] |= 0x80;//set flag for midna to think you followed the monkey in the mist
 				gameInfo.scratchPad.eventBits[0x1B] = 0x78; //skip the monkey escort
+				gameInfo.scratchPad.eventBits[0x6] |= 0x24; //warp the kak bridge, give map warp
+				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xF] |= 0x2; //cutscene for Gorge Bridge Watched
+				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0x8] |= 0x1; //Midna text for warping the bridge
+				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0x9] |= 0x20; //give Gorge Warp
 				return item;
 			}
 		}
 		else if (item == items::Item::Vessel_Of_Light_Eldin)
 		{//set tear counter to 16
-			if (isTwilightSkipEnabled)
+			if (isTwilightSkipEnabled == 1)
 			{
 				gameInfo.scratchPad.tearCounters.Eldin = 16;
 				gameInfo.localAreaNodes.unk_0[0x9] |= 0x20;//give death mountain warp
 				gameInfo.localAreaNodes.unk_0[0x14] |= 1;//give midna jumps for top of sanctuary		
 				tools::setItemFlag(ItemFlags::Vessel_Of_Light_Eldin);//set flag for vessel since we'll skip it by reloading
+				gameInfo.scratchPad.eventBits[0x7] = 0xCE; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
+				gameInfo.scratchPad.eventBits[0x6] |= 0x1; //tame Epona
+				gameInfo.scratchPad.eventBits[0xA] |= 0x8; //Beat KB1
+				gameInfo.scratchPad.eventBits[0x14] |= 0x10; //Put Bo Outside
 				gameInfo.nextStageVars.triggerLoad |= 1;
 				return item;
 			}
 			else
 			{
+				gameInfo.scratchPad.eventBits[0x7] = 0xCE; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
+				gameInfo.scratchPad.eventBits[0xA] |= 0x8; //Beat KB1
+				gameInfo.scratchPad.eventBits[0x14] |= 0x10; //Put Bo Outside
+				gameInfo.scratchPad.eventBits[0x6] |= 0x1; //tame Epona
 				return item;
 			}
 		}

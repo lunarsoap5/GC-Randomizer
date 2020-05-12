@@ -28,6 +28,7 @@ namespace mod
 		isCannonRepaired = 0;
 		isEarlyDesertEnabled = 1;
 		isBossKeyseyEnabled = 1;
+		isSewerSkipEnabled = 1;
 	}
 
 } 

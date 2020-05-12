@@ -173,6 +173,7 @@ namespace mod
 		hudConsole->addOption(page, "Skip Goats?", &Singleton::getInstance()->isGoatSkipEnabled, 0x1);
 		hudConsole->addOption(page, "Skip MS Puzzle?", &Singleton::getInstance()->isMSPuzzleSkipEnabled, 0x1);
 		hudConsole->addOption(page, "Skip Escort?", &Singleton::getInstance()->isCartEscortSkipEnabled, 0x1);
+		hudConsole->addOption(page, "Skip Sewers?", &Singleton::getInstance()->isSewerSkipEnabled, 0x1);
 
 
 		
