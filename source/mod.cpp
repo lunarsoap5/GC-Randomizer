@@ -184,13 +184,12 @@ namespace mod
 		
 		hudConsole->addWatch(page, "CurrentStage:", &gameInfo.currentStage, 's', WatchInterpretation::_str);
 		hudConsole->addWatch(page, "CurrentRoom:", &tp::d_kankyo::env_light.currentRoom, 'd', WatchInterpretation::_u8);
-		
+		hudConsole->addWatch(page, "CurrentState:", &tp::d_com_inf_game::current_state, 'x', WatchInterpretation::_u8);
+
 		hudConsole->addWatch(page, "CurrentPosX:", &currentPosX, 's', WatchInterpretation::_str);
 		hudConsole->addWatch(page, "CurrentPosY:", &currentPosY, 's', WatchInterpretation::_str);
-		hudConsole->addWatch(page, "CurrentPosZ:", &currentPosZ, 's', WatchInterpretation::_str);	
-		hudConsole->addWatch(page, "Sky Angle:", &skyAngle, 'd', WatchInterpretation::_u32);
-		hudConsole->addWatch(page, "colorPointer:", &gameInfo.ColorPtr, 'x', WatchInterpretation::_u32);
-		hudConsole->addWatch(page, "colorResult:", &colorResult, 'x', WatchInterpretation::_u16);
+		hudConsole->addWatch(page, "CurrentPosZ:", &currentPosZ, 's', WatchInterpretation::_str);
+		hudConsole->addWatch(page, "Sky Angle:", &skyAngle, 's', WatchInterpretation::_str);
 
 		//Game info 2
 		page = hudConsole->addPage("Skips 2");
