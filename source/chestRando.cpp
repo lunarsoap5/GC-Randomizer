@@ -512,7 +512,7 @@ namespace mod
 				gameInfo.scratchPad.eventBits[0x40] |= 0x8; //have been to desert (prevents cannon warp crash)
 				gameInfo.scratchPad.allAreaNodes.Gerudo_Desert.unk_0[0x13] |= 0x40;//watched the CS when entering the desert
 				u16* secondTempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0xF7]);
-				*secondTempAddress |= 0x500;//make it so you only have to donate 500 Rupees to Charlo
+				*secondTempAddress |= 0x1F4;//make it so you only have to donate 500 Rupees to Charlo
 				tools::setItemFlag(ItemFlags::Vessel_Of_Light_Lanayru);//set flag for vessel since we'll skip it by reloading
 				gameInfo.nextStageVars.triggerLoad |= 1;
 				return item;
@@ -522,12 +522,12 @@ namespace mod
 				gameInfo.scratchPad.eventBits[0x40] |= 0x8; //have been to desert (prevents cannon warp crash)
 				gameInfo.scratchPad.allAreaNodes.Gerudo_Desert.unk_0[0x13] |= 0x40;//watched the CS when entering the desert
 				u16* secondTempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0xF7]);
-				*secondTempAddress |= 0x500;//make it so you only have to donate 500 Rupees to Charlo
+				*secondTempAddress |= 0x1F4;//make it so you only have to donate 500 Rupees to Charlo
 				return item;
 			}
 		}
 
-		else if (item == items::Item::Bomb_Bag_Regular_Bombs || item == items::Item::Bomb_Bag_Water_Bombs || item == items::Item::Bomb_Bag_Bombslings)
+		else if (item == items::Item::Empty_Bomb_Bag)
 		{//set flag for Barne's bomb bag check
 			tools::setItemFlag(ItemFlags::Null_DA);
 		}
@@ -549,9 +549,7 @@ namespace mod
 					(item == items::Item::Ooccoo_FT && sourceCheck->itemID == items::Item::Ooccoo_Dungeon) ||
 					(item == items::Item::Lantern_Refill_Shop && sourceCheck->itemID == items::Item::Lantern_Oil_Shop) ||
 					(item == items::Item::Lantern_Refill_Scooped && sourceCheck->itemID == items::Item::Lantern_Oil_Scooped) ||
-					(sourceCheck->itemID == items::Item::Superb_Soup && (item == items::Item::Simple_Soup || item == items::Item::Good_Soup)) ||
-					(item == items::Item::Bomb_Bag_Water_Bombs && sourceCheck->itemID == items::Item::Bomb_Bag_Regular_Bombs) ||
-					(item == items::Item::Bomb_Bag_Bombslings && sourceCheck->itemID == items::Item::Bomb_Bag_Regular_Bombs))
+					(sourceCheck->itemID == items::Item::Superb_Soup && (item == items::Item::Simple_Soup || item == items::Item::Good_Soup)))
 				{
 					bool isOk = false;
 
@@ -773,7 +771,7 @@ namespace mod
 										}
 									}
 								}
-								else if (item == items::Item::Bomb_Bag_Regular_Bombs)
+								else if (item == items::Item::Empty_Bomb_Bag)
 								{
 									if (itemWheel->Bomb_Bag_1 == 0xFF)
 									{
