@@ -528,7 +528,7 @@ namespace mod::keyPlacement
 		296,//lantern
 		2,//North Cave Key
 		3,//PoH key cave
-		4//transition cave
+		1//transition cave
 	};
 	u16 F_2[2]
 	{
