@@ -8,6 +8,7 @@
 #include "stage.h"
 #include "keyPlacement.h"
 #include "singleton.h"
+#include "grottoChecks.h"
 
 #include <tp/d_com_inf_game.h>
 #include <tp/d_a_alink.h>
@@ -53,6 +54,7 @@ namespace mod
 				placeCheck(&item::checks[i], &item::checks[i]);
 			}
 		}
+
 		handleKeysanity();
 
 		//do needed items in order
@@ -498,7 +500,7 @@ namespace mod
 				{
 					gameInfo.scratchPad.eventBits[0x7] = 0x46; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
 				}
-				
+
 				return item;
 			}
 		}
@@ -526,7 +528,6 @@ namespace mod
 				return item;
 			}
 		}
-
 		else if (item == items::Item::Empty_Bomb_Bag)
 		{//set flag for Barne's bomb bag check
 			tools::setItemFlag(ItemFlags::Null_DA);
@@ -539,417 +540,420 @@ namespace mod
 			if (tp::d_a_alink::checkStageName(sourceCheck->stage) || (tp::d_a_alink::checkStageName("F_SP128") && 0 == strcmp(sourceCheck->stage, "R_SP128")))
 			{
 
-				if (isProgressiveEnabled == 1 && item == items::Item::Ancient_Sky_Book_completed)
+				if (isGrottoCheckOk(i))
 				{
-					item = items::Item::Ancient_Sky_Book_partly_filled;
-				}
-				// Correct stage
-				if (sourceCheck->itemID == item || (isItemBombs(item) && isItemBombs(sourceCheck->itemID)) ||
-					(item == items::Item::Red_Rupee && sourceCheck->itemID == items::Item::Giant_Bomb_Bag) ||
-					(item == items::Item::Ooccoo_FT && sourceCheck->itemID == items::Item::Ooccoo_Dungeon) ||
-					(item == items::Item::Lantern_Refill_Shop && sourceCheck->itemID == items::Item::Lantern_Oil_Shop) ||
-					(item == items::Item::Lantern_Refill_Scooped && sourceCheck->itemID == items::Item::Lantern_Oil_Scooped) ||
-					(sourceCheck->itemID == items::Item::Superb_Soup && (item == items::Item::Simple_Soup || item == items::Item::Good_Soup)))
-				{
-					bool isOk = false;
 
-					if (sourceCheck->type == item::ItemType::Bug || sourceCheck->type == item::ItemType::Dungeon || sourceCheck->itemID == items::Item::Heart_Container ||
-						sourceCheck->itemID == items::Item::Ball_and_Chain || sourceCheck->itemID == items::Item::Ancient_Sky_Book_empty)
-					{//bugs have unique itemids so position doesn't matter
-					//dungeon items are unique in their dungeon
-					//there can only be one heart container per stage in vanilla, so position doesn't matter (also each one can be at 2 locations: if gotten after boss or if coming back)
-					//BaC can be anywhere in the room so don't check the position
-					//empty sky book can be outside the house or inside the house so don't check coords
-						isOk = true;
-					}
-					else if (sourceCheck->itemID == items::Item::Piece_of_Heart && (0 == strcmp("F_SP127", sourceCheck->stage)))
-					{//fishing hole freestanding PoH
-					 //it's alone in the fishing hole so it can only be that one
-						isOk = true;
-					}
-					else
+					if (isProgressiveEnabled == 1 && item == items::Item::Ancient_Sky_Book_completed)
 					{
-						if (sourceCheck->type == item::ItemType::PoeSoul)
-						{//poes can move a lot so give them more range
-							//poe range= ~1400
-							rangeX = 2800.0f;
-							rangeY = 1400.0f;
-							rangeZ = 2800.0f;
-						}
-						else if (sourceCheck->itemID == items::Item::Piece_of_Heart && ((0 == strcmp("F_SP121", sourceCheck->stage) && sourceCheck->room == 6) ||
-							(0 == strcmp("F_SP109", sourceCheck->stage) && sourceCheck->room == 0) || (0 == strcmp("F_SP121", sourceCheck->stage) && sourceCheck->room == 3) ||
-							(0 == strcmp("F_SP121", sourceCheck->stage) && sourceCheck->room == 0) || (0 == strcmp("F_SP128", sourceCheck->stage) && sourceCheck->room == 0)))
-						{//freestanding PoH
-						// they can be moved by boomerang and clawshot, so give them more range
-						// clawshot and boomrang targetting range ~2000
-							rangeX = 3000.0f;
-							rangeY = 3000.0f;
-							rangeZ = 3000.0f;
-						}
-						else if (sourceCheck->itemID == items::Item::Small_Key && ((0 == strcmp("D_MN05", sourceCheck->stage) && sourceCheck->room == 5)))
-						{
+						item = items::Item::Ancient_Sky_Book_partly_filled;
+					}
+					// Correct stage
+					if (sourceCheck->itemID == item || (isItemBombs(item) && isItemBombs(sourceCheck->itemID)) ||
+						(item == items::Item::Red_Rupee && sourceCheck->itemID == items::Item::Giant_Bomb_Bag) ||
+						(item == items::Item::Ooccoo_FT && sourceCheck->itemID == items::Item::Ooccoo_Dungeon) ||
+						(item == items::Item::Lantern_Refill_Shop && sourceCheck->itemID == items::Item::Lantern_Oil_Shop) ||
+						(item == items::Item::Lantern_Refill_Scooped && sourceCheck->itemID == items::Item::Lantern_Oil_Scooped) ||
+						(sourceCheck->itemID == items::Item::Superb_Soup && (item == items::Item::Simple_Soup || item == items::Item::Good_Soup)))
+					{
+						bool isOk = false;
 
-							rangeX = 550.0f;
-								rangeY = 550.0f;
-								rangeZ = 850.0f;
+						if (sourceCheck->type == item::ItemType::Bug || sourceCheck->type == item::ItemType::Dungeon || sourceCheck->itemID == items::Item::Heart_Container ||
+							sourceCheck->itemID == items::Item::Ball_and_Chain || sourceCheck->itemID == items::Item::Ancient_Sky_Book_empty)
+						{//bugs have unique itemids so position doesn't matter
+						//dungeon items are unique in their dungeon
+						//there can only be one heart container per stage in vanilla, so position doesn't matter (also each one can be at 2 locations: if gotten after boss or if coming back)
+						//BaC can be anywhere in the room so don't check the position
+						//empty sky book can be outside the house or inside the house so don't check coords
+							isOk = true;
 						}
-						if (tools::fCompare(sourceCheck->position[0], pos[0]) < rangeX)
+						else if (sourceCheck->itemID == items::Item::Piece_of_Heart && (0 == strcmp("F_SP127", sourceCheck->stage)))
+						{//fishing hole freestanding PoH
+						 //it's alone in the fishing hole so it can only be that one
+							isOk = true;
+						}
+						else
 						{
-							if (tools::fCompare(sourceCheck->position[1], pos[1]) < rangeY)
+							if (sourceCheck->type == item::ItemType::PoeSoul)
+							{//poes can move a lot so give them more range
+								//poe range= ~1400
+								rangeX = 2800.0f;
+								rangeY = 1400.0f;
+								rangeZ = 2800.0f;
+							}
+							else if (sourceCheck->itemID == items::Item::Piece_of_Heart && ((0 == strcmp("F_SP121", sourceCheck->stage) && sourceCheck->room == 6) ||
+								(0 == strcmp("F_SP109", sourceCheck->stage) && sourceCheck->room == 0) || (0 == strcmp("F_SP121", sourceCheck->stage) && sourceCheck->room == 3) ||
+								(0 == strcmp("F_SP121", sourceCheck->stage) && sourceCheck->room == 0) || (0 == strcmp("F_SP128", sourceCheck->stage) && sourceCheck->room == 0)))
+							{//freestanding PoH
+							// they can be moved by boomerang and clawshot, so give them more range
+							// clawshot and boomrang targetting range ~2000
+								rangeX = 3000.0f;
+								rangeY = 3000.0f;
+								rangeZ = 3000.0f;
+							}
+							else if (sourceCheck->itemID == items::Item::Small_Key && 0 == strcmp("D_MN05", sourceCheck->stage) && sourceCheck->room == 5)
+							{//totem chest in FT (it can be knocked down both ways so more range is required)
+								rangeX = 500.0f;
+								rangeY = 500.0f;
+								rangeZ = 800.0f;
+							}
+							if (tools::fCompare(sourceCheck->position[0], pos[0]) < rangeX)
 							{
-								if (tools::fCompare(sourceCheck->position[2], pos[2]) < rangeZ)
+								if (tools::fCompare(sourceCheck->position[1], pos[1]) < rangeY)
 								{
-									isOk = true;
+									if (tools::fCompare(sourceCheck->position[2], pos[2]) < rangeZ)
+									{
+										isOk = true;
+									}
 								}
 							}
 						}
-					}
-					if (isOk)
-					{
-						snprintf(lastSourceInfo, 50, "%s->%d->%x", sourceCheck->stage, sourceCheck->room, sourceCheck->itemID);
-						if (sourceCheck->destination)
+						if (isOk)
 						{
-							snprintf(lastDestInfo, 50, "%s->%d->%x", sourceCheck->destination->stage, sourceCheck->destination->room, sourceCheck->destination->itemID);
-							item = sourceCheck->destination->itemID;
-							if (sourceCheck->type == item::ItemType::Bug || sourceCheck->type == item::ItemType::Shop || sourceCheck->itemID == items::Item::Heart_Container)
+							snprintf(lastSourceInfo, 50, "%s->%d->%x", sourceCheck->stage, sourceCheck->room, sourceCheck->itemID);
+							if (sourceCheck->destination)
 							{
-								sourceCheck->destination = &item::checks[263];//green rupee
-							}
-							else if (sourceCheck->itemID != items::Item::Big_Quiver && sourceCheck->itemID != items::Item::Giant_Quiver && // quiver checks called twice somehow
-								sourceCheck->type != item::ItemType::Dungeon && sourceCheck->type != item::ItemType::Gear && sourceCheck->type != item::ItemType::Equip) // some checks are called twice i don't wanna list them all, but dungeon items, gear, and equipable items only have one check each intheir stage
-							{
-								// Unset this check
-								sourceCheck->destination = nullptr;
-							}
-							//progressive checks (doesn't work if you already have items when generating seed)
-							if (isProgressiveEnabled == 1)
-							{
-								if (item == items::Item::Wooden_Sword && tools::checkItemFlag(ItemFlags::Wooden_Sword))
+								snprintf(lastDestInfo, 50, "%s->%d->%x", sourceCheck->destination->stage, sourceCheck->destination->room, sourceCheck->destination->itemID);
+								item = sourceCheck->destination->itemID;
+								if (sourceCheck->type == item::ItemType::Bug || sourceCheck->type == item::ItemType::Shop || sourceCheck->itemID == items::Item::Heart_Container)
 								{
-									item = items::Item::Ordon_Sword;
+									sourceCheck->destination = &item::checks[263];//green rupee
 								}
-								else if (item == items::Item::Ordon_Sword && !tools::checkItemFlag(ItemFlags::Wooden_Sword))
+								else if (sourceCheck->itemID != items::Item::Big_Quiver && sourceCheck->itemID != items::Item::Giant_Quiver && // quiver checks called twice somehow
+									sourceCheck->type != item::ItemType::Dungeon && sourceCheck->type != item::ItemType::Gear && sourceCheck->type != item::ItemType::Equip) // some checks are called twice i don't wanna list them all, but dungeon items, gear, and equipable items only have one check each intheir stage
 								{
-									item = items::Item::Wooden_Sword;
+									// Unset this check
+									sourceCheck->destination = nullptr;
 								}
-								else if (item == items::Item::Clawshot && tools::checkItemFlag(ItemFlags::Clawshot))
+								//progressive checks (doesn't work if you already have items when generating seed)
+								if (isProgressiveEnabled == 1)
 								{
-									item = items::Item::Clawshots;
-								}
-								else if (item == items::Item::Clawshots && !tools::checkItemFlag(ItemFlags::Clawshot))
-								{
-									item = items::Item::Clawshot;
-								}
-								else if (item == items::Item::Heros_Bow)
-								{
-									if (tools::checkItemFlag(ItemFlags::Heros_Bow) &&
-										!tools::checkItemFlag(ItemFlags::Big_Quiver))
+									if (item == items::Item::Wooden_Sword && tools::checkItemFlag(ItemFlags::Wooden_Sword))
 									{
-										item = items::Item::Big_Quiver;
+										item = items::Item::Ordon_Sword;
 									}
-									else if (tools::checkItemFlag(ItemFlags::Heros_Bow) &&
-										tools::checkItemFlag(ItemFlags::Big_Quiver))
+									else if (item == items::Item::Ordon_Sword && !tools::checkItemFlag(ItemFlags::Wooden_Sword))
 									{
-										item = items::Item::Giant_Quiver;
+										item = items::Item::Wooden_Sword;
 									}
-								}
-								else if (item == items::Item::Big_Quiver)
-								{
-									if (!tools::checkItemFlag(ItemFlags::Heros_Bow))
+									else if (item == items::Item::Clawshot && tools::checkItemFlag(ItemFlags::Clawshot))
 									{
-										item = items::Item::Heros_Bow;
+										item = items::Item::Clawshots;
 									}
-									else if (tools::checkItemFlag(ItemFlags::Big_Quiver))
+									else if (item == items::Item::Clawshots && !tools::checkItemFlag(ItemFlags::Clawshot))
 									{
-										item = items::Item::Giant_Quiver;
+										item = items::Item::Clawshot;
 									}
-								}
-								else if (item == items::Item::Giant_Quiver)
-								{
-									if (!tools::checkItemFlag(ItemFlags::Heros_Bow))
+									else if (item == items::Item::Heros_Bow)
 									{
-										item = items::Item::Heros_Bow;
-									}
-									else if (!tools::checkItemFlag(ItemFlags::Big_Quiver))
-									{
-										item = items::Item::Big_Quiver;
-									}
-								}
-								else if (item == items::Item::Big_Wallet &&
-									tools::checkItemFlag(ItemFlags::Big_Wallet))
-								{
-									item = items::Item::Giant_Wallet;
-								}
-								else if (item == items::Item::Giant_Wallet &&
-									!tools::checkItemFlag(ItemFlags::Big_Wallet))
-								{
-									item = items::Item::Big_Wallet;
-								}
-								else if (item == items::Item::Ancient_Sky_Book_empty)
-								{
-									if (!tools::checkItemFlag(ItemFlags::Ancient_Sky_Book_empty))
-									{
-										item = items::Item::Ancient_Sky_Book_empty;
-									}
-									else if (!tools::checkItemFlag(ItemFlags::Null_DF))
-									{//letter 1
-										item = items::Item::Ancient_Sky_Book_partly_filled;
-										tools::setItemFlag(ItemFlags::Null_DF);
-									}
-									else if (!tools::checkItemFlag(ItemFlags::Null_DE))
-									{//letter 2
-										item = items::Item::Ancient_Sky_Book_partly_filled;
-										tools::setItemFlag(ItemFlags::Null_DE);
-									}
-									else if (!tools::checkItemFlag(ItemFlags::Null_DD))
-									{//letter 3
-										item = items::Item::Ancient_Sky_Book_partly_filled;
-										tools::setItemFlag(ItemFlags::Null_DD);
-									}
-									else if (!tools::checkItemFlag(ItemFlags::Null_DC))
-									{//letter 4
-										item = items::Item::Ancient_Sky_Book_partly_filled;
-										tools::setItemFlag(ItemFlags::Null_DC);
-									}
-									else if (!tools::checkItemFlag(ItemFlags::Null_DB))
-									{//letter 5
-										item = items::Item::Ancient_Sky_Book_partly_filled;
-										tools::setItemFlag(ItemFlags::Null_DB);
-									}
-									else if (tools::checkItemFlag(ItemFlags::Null_DB))
-									{
-										item = items::Item::Ancient_Sky_Book_completed;
-										gameInfo.scratchPad.eventBits[0x25] |= 0x40; //Set the Owl Statue in Kak to be able to be moved
-										gameInfo.scratchPad.eventBits[0x5F] |= 0x20; //Shad leaves so you can warp
-										if (Singleton::getInstance()->isCannonRepaired == 0)
+										if (tools::checkItemFlag(ItemFlags::Heros_Bow) &&
+											!tools::checkItemFlag(ItemFlags::Big_Quiver))
 										{
-											gameInfo.scratchPad.eventBits[0x3B] |= 0x8; //repairs Cannon at lake
-											Singleton::getInstance()->isCannonRepaired = 1;
+											item = items::Item::Big_Quiver;
+										}
+										else if (tools::checkItemFlag(ItemFlags::Heros_Bow) &&
+											tools::checkItemFlag(ItemFlags::Big_Quiver))
+										{
+											item = items::Item::Giant_Quiver;
 										}
 									}
-								}
-								else if (item == items::Item::Ancient_Sky_Book_partly_filled)
-								{
-									if (!tools::checkItemFlag(ItemFlags::Ancient_Sky_Book_empty))
+									else if (item == items::Item::Big_Quiver)
 									{
-										item = items::Item::Ancient_Sky_Book_empty;
-									}
-									else if (!tools::checkItemFlag(ItemFlags::Null_DF))
-									{//letter 1
-										item = items::Item::Ancient_Sky_Book_partly_filled;
-										tools::setItemFlag(ItemFlags::Null_DF);
-									}
-									else if (!tools::checkItemFlag(ItemFlags::Null_DE))
-									{//letter 2
-										item = items::Item::Ancient_Sky_Book_partly_filled;
-										tools::setItemFlag(ItemFlags::Null_DE);
-									}
-									else if (!tools::checkItemFlag(ItemFlags::Null_DD))
-									{//letter 3
-										item = items::Item::Ancient_Sky_Book_partly_filled;
-										tools::setItemFlag(ItemFlags::Null_DD);
-									}
-									else if (!tools::checkItemFlag(ItemFlags::Null_DC))
-									{//letter 4
-										item = items::Item::Ancient_Sky_Book_partly_filled;
-										tools::setItemFlag(ItemFlags::Null_DC);
-									}
-									else if (!tools::checkItemFlag(ItemFlags::Null_DB))
-									{//letter 5
-										item = items::Item::Ancient_Sky_Book_partly_filled;
-										tools::setItemFlag(ItemFlags::Null_DB);
-									}
-									else if (tools::checkItemFlag(ItemFlags::Null_DB))
-									{
-										item = items::Item::Ancient_Sky_Book_completed;
-										gameInfo.scratchPad.eventBits[0x25] |= 0x40; //Set the Owl Statue in Kak to be able to be moved
-										gameInfo.scratchPad.eventBits[0x5F] |= 0x20; //Shad leaves so you can warp
-										if (Singleton::getInstance()->isCannonRepaired == 0)
+										if (!tools::checkItemFlag(ItemFlags::Heros_Bow))
 										{
-											gameInfo.scratchPad.eventBits[0x3B] |= 0x8; //repairs Cannon at lake
-											Singleton::getInstance()->isCannonRepaired = 1;
+											item = items::Item::Heros_Bow;
+										}
+										else if (tools::checkItemFlag(ItemFlags::Big_Quiver))
+										{
+											item = items::Item::Giant_Quiver;
 										}
 									}
+									else if (item == items::Item::Giant_Quiver)
+									{
+										if (!tools::checkItemFlag(ItemFlags::Heros_Bow))
+										{
+											item = items::Item::Heros_Bow;
+										}
+										else if (!tools::checkItemFlag(ItemFlags::Big_Quiver))
+										{
+											item = items::Item::Big_Quiver;
+										}
+									}
+									else if (item == items::Item::Big_Wallet &&
+										tools::checkItemFlag(ItemFlags::Big_Wallet))
+									{
+										item = items::Item::Giant_Wallet;
+									}
+									else if (item == items::Item::Giant_Wallet &&
+										!tools::checkItemFlag(ItemFlags::Big_Wallet))
+									{
+										item = items::Item::Big_Wallet;
+									}
+									else if (item == items::Item::Ancient_Sky_Book_empty)
+									{
+										if (!tools::checkItemFlag(ItemFlags::Ancient_Sky_Book_empty))
+										{
+											item = items::Item::Ancient_Sky_Book_empty;
+										}
+										else if (!tools::checkItemFlag(ItemFlags::Null_DF))
+										{//letter 1
+											item = items::Item::Ancient_Sky_Book_partly_filled;
+											tools::setItemFlag(ItemFlags::Null_DF);
+										}
+										else if (!tools::checkItemFlag(ItemFlags::Null_DE))
+										{//letter 2
+											item = items::Item::Ancient_Sky_Book_partly_filled;
+											tools::setItemFlag(ItemFlags::Null_DE);
+										}
+										else if (!tools::checkItemFlag(ItemFlags::Null_DD))
+										{//letter 3
+											item = items::Item::Ancient_Sky_Book_partly_filled;
+											tools::setItemFlag(ItemFlags::Null_DD);
+										}
+										else if (!tools::checkItemFlag(ItemFlags::Null_DC))
+										{//letter 4
+											item = items::Item::Ancient_Sky_Book_partly_filled;
+											tools::setItemFlag(ItemFlags::Null_DC);
+										}
+										else if (!tools::checkItemFlag(ItemFlags::Null_DB))
+										{//letter 5
+											item = items::Item::Ancient_Sky_Book_partly_filled;
+											tools::setItemFlag(ItemFlags::Null_DB);
+										}
+										else if (tools::checkItemFlag(ItemFlags::Null_DB))
+										{
+											gameInfo.scratchPad.eventBits[0x25] |= 0x40; //Set the Owl Statue in Kak to be able to be moved
+											gameInfo.scratchPad.eventBits[0x5F] |= 0x20; //Shad leaves so you can warp
+											if (Singleton::getInstance()->isCannonRepaired == 0)
+											{
+												gameInfo.scratchPad.eventBits[0x3B] |= 0x8; //repairs Cannon at lake
+												Singleton::getInstance()->isCannonRepaired = 1;
+											}
+											item = items::Item::Ancient_Sky_Book_completed;
+										}
+									}
+									else if (item == items::Item::Ancient_Sky_Book_partly_filled)
+									{
+										if (!tools::checkItemFlag(ItemFlags::Ancient_Sky_Book_empty))
+										{
+											item = items::Item::Ancient_Sky_Book_empty;
+										}
+										else if (!tools::checkItemFlag(ItemFlags::Null_DF))
+										{//letter 1
+											item = items::Item::Ancient_Sky_Book_partly_filled;
+											tools::setItemFlag(ItemFlags::Null_DF);
+										}
+										else if (!tools::checkItemFlag(ItemFlags::Null_DE))
+										{//letter 2
+											item = items::Item::Ancient_Sky_Book_partly_filled;
+											tools::setItemFlag(ItemFlags::Null_DE);
+										}
+										else if (!tools::checkItemFlag(ItemFlags::Null_DD))
+										{//letter 3
+											item = items::Item::Ancient_Sky_Book_partly_filled;
+											tools::setItemFlag(ItemFlags::Null_DD);
+										}
+										else if (!tools::checkItemFlag(ItemFlags::Null_DC))
+										{//letter 4
+											item = items::Item::Ancient_Sky_Book_partly_filled;
+											tools::setItemFlag(ItemFlags::Null_DC);
+										}
+										else if (!tools::checkItemFlag(ItemFlags::Null_DB))
+										{//letter 5
+											item = items::Item::Ancient_Sky_Book_partly_filled;
+											tools::setItemFlag(ItemFlags::Null_DB);
+										}
+										else if (tools::checkItemFlag(ItemFlags::Null_DB))
+										{
+											gameInfo.scratchPad.eventBits[0x25] |= 0x40; //Set the Owl Statue in Kak to be able to be moved
+											gameInfo.scratchPad.eventBits[0x5F] |= 0x20; //Shad leaves so you can warp
+											if (Singleton::getInstance()->isCannonRepaired == 0)
+											{
+												gameInfo.scratchPad.eventBits[0x3B] |= 0x8; //repairs Cannon at lake
+												Singleton::getInstance()->isCannonRepaired = 1;
+											}
+											item = items::Item::Ancient_Sky_Book_completed;
+										}
+									}
+									else if (item == items::Item::Empty_Bomb_Bag)
+									{
+										if (itemWheel->Bomb_Bag_1 == 0xFF)
+										{
+											item = items::Item::Bomb_Bag_Regular_Bombs;
+										}
+										else if (itemWheel->Bomb_Bag_2 == 0xFF)
+										{
+											item = items::Item::Goron_Bomb_Bag;
+										}
+										else if (itemWheel->Bomb_Bag_3 == 0xFF)
+										{
+											item = items::Item::Goron_Bomb_Bag;
+										}
+										else if (!tools::checkItemFlag(ItemFlags::Giant_Bomb_Bag))
+										{
+											item = items::Item::Giant_Bomb_Bag;
+										}
+										else
+										{
+											item = items::Item::Bombs_30;
+										}
+									}
+									else if (item == items::Item::Goron_Bomb_Bag)
+									{
+										if (itemWheel->Bomb_Bag_1 == 0xFF)
+										{
+											item = items::Item::Bomb_Bag_Regular_Bombs;
+										}
+										else if (itemWheel->Bomb_Bag_2 == 0xFF)
+										{
+											item = items::Item::Goron_Bomb_Bag;
+										}
+										else if (itemWheel->Bomb_Bag_3 == 0xFF)
+										{
+											item = items::Item::Goron_Bomb_Bag;
+										}
+										else if (!tools::checkItemFlag(ItemFlags::Giant_Bomb_Bag))
+										{
+											item = items::Item::Giant_Bomb_Bag;
+										}
+										else
+										{
+											item = items::Item::Bombs_30;
+										}
+									}
+									else if (item == items::Item::Giant_Bomb_Bag)
+									{
+										if (itemWheel->Bomb_Bag_1 == 0xFF)
+										{
+											item = items::Item::Bomb_Bag_Regular_Bombs;
+										}
+										else if (itemWheel->Bomb_Bag_2 == 0xFF)
+										{
+											item = items::Item::Goron_Bomb_Bag;
+										}
+										else if (itemWheel->Bomb_Bag_3 == 0xFF)
+										{
+											item = items::Item::Goron_Bomb_Bag;
+										}
+										else if (!tools::checkItemFlag(ItemFlags::Giant_Bomb_Bag))
+										{
+											item = items::Item::Giant_Bomb_Bag;
+										}
+										else
+										{
+											item = items::Item::Bombs_30;
+										}
+									}
+									else if (item == items::Item::Key_Shard_1)
+									{
+										if (tools::checkItemFlag(ItemFlags::Key_Shard_1) &&
+											!tools::checkItemFlag(ItemFlags::Key_Shard_2))
+										{
+											item = items::Item::Key_Shard_2;
+										}
+										else if (tools::checkItemFlag(ItemFlags::Key_Shard_1) &&
+											tools::checkItemFlag(ItemFlags::Key_Shard_2))
+										{
+											item = items::Item::Big_Key_Goron_Mines;
+											tools::setItemFlag(ItemFlags::Key_Shard_3);//set this flag to show full key on the map
+										}
+									}
+									else if (item == items::Item::Key_Shard_2)
+									{
+										if (!tools::checkItemFlag(ItemFlags::Key_Shard_1))
+										{
+											item = items::Item::Key_Shard_1;
+										}
+										else if (tools::checkItemFlag(ItemFlags::Key_Shard_1) &&
+											tools::checkItemFlag(ItemFlags::Key_Shard_2))
+										{
+											item = items::Item::Big_Key_Goron_Mines;
+											tools::setItemFlag(ItemFlags::Key_Shard_3);//set this flag to show full key on the map
+										}
+									}
+									else if (item == items::Item::Big_Key_Goron_Mines)
+									{
+										if (!tools::checkItemFlag(ItemFlags::Key_Shard_1))
+										{
+											item = items::Item::Key_Shard_1;
+										}
+										else if (tools::checkItemFlag(ItemFlags::Key_Shard_1) &&
+											!tools::checkItemFlag(ItemFlags::Key_Shard_2))
+										{
+											item = items::Item::Key_Shard_2;
+										}
+										else
+										{
+											tools::setItemFlag(ItemFlags::Key_Shard_3);//set this flag to show full key on the map
+										}
+									}
+									else if (item == items::Item::Master_Sword && tools::checkItemFlag(ItemFlags::Master_Sword))
+									{//for when MS and light Ms are implemented
+										item = items::Item::Master_Sword_Light;
+									}
+									else if (item == items::Item::Master_Sword_Light && !tools::checkItemFlag(ItemFlags::Master_Sword))
+									{//for when MS and light Ms are implemented
+										item = items::Item::Master_Sword;
+									}
 								}
-								else if (item == items::Item::Empty_Bomb_Bag)
+								if (item == items::Item::Dominion_Rod)
 								{
-									if (itemWheel->Bomb_Bag_1 == 0xFF)
-									{
-										item = items::Item::Bomb_Bag_Regular_Bombs;
-									}
-									else if (itemWheel->Bomb_Bag_2 == 0xFF)
-									{
-										item = items::Item::Goron_Bomb_Bag;
-									}
-									else if (itemWheel->Bomb_Bag_3 == 0xFF)
-									{
-										item = items::Item::Goron_Bomb_Bag;
-									}
-									else if (!tools::checkItemFlag(ItemFlags::Giant_Bomb_Bag))
-									{
-										item = items::Item::Giant_Bomb_Bag;
-									}
-									else
-									{
-										item = items::Item::Bombs_30;
-									}
+									item = items::Item::Dominion_Rod;
+									gameInfo.scratchPad.eventBits[0x25] |= 0x80;//set flag to charge dominion rod
 								}
-								else if (item == items::Item::Goron_Bomb_Bag)
+								else if (item == items::Item::Poe_Soul && gameInfo.scratchPad.poeCount < 60)
+								{//increase poe counter
+									gameInfo.scratchPad.poeCount++;
+								}
+								else if (!tools::checkItemFlag(ItemFlags::Slingshot) &&
+									(item == items::Item::Seeds_50))
 								{
-									if (itemWheel->Bomb_Bag_1 == 0xFF)
-									{
-										item = items::Item::Bomb_Bag_Regular_Bombs;
-									}
-									else if (itemWheel->Bomb_Bag_2 == 0xFF)
-									{
-										item = items::Item::Goron_Bomb_Bag;
-									}
-									else if (itemWheel->Bomb_Bag_3 == 0xFF)
-									{
-										item = items::Item::Goron_Bomb_Bag;
-									}
-									else if (!tools::checkItemFlag(ItemFlags::Giant_Bomb_Bag))
-									{
-										item = items::Item::Giant_Bomb_Bag;
-									}
-									else
-									{
-										item = items::Item::Bombs_30;
-									}
+									item = items::Item::Blue_Rupee;
 								}
-								else if (item == items::Item::Giant_Bomb_Bag)
+								else if (!tools::checkItemFlag(ItemFlags::Heros_Bow) &&
+									(item == items::Item::Arrows_10 ||
+										item == items::Item::Arrows_20 ||
+										item == items::Item::Arrows_30 ||
+										item == items::Item::Arrows_1))
 								{
-									if (itemWheel->Bomb_Bag_1 == 0xFF)
-									{
-										item = items::Item::Bomb_Bag_Regular_Bombs;
-									}
-									else if (itemWheel->Bomb_Bag_2 == 0xFF)
-									{
-										item = items::Item::Goron_Bomb_Bag;
-									}
-									else if (itemWheel->Bomb_Bag_3 == 0xFF)
-									{
-										item = items::Item::Goron_Bomb_Bag;
-									}
-									else if (!tools::checkItemFlag(ItemFlags::Giant_Bomb_Bag))
-									{
-										item = items::Item::Giant_Bomb_Bag;
-									}
-									else
-									{
-										item = items::Item::Bombs_30;
-									}
+									item = items::Item::Blue_Rupee;
 								}
-								else if (item == items::Item::Key_Shard_1)
+								else if (gameInfo.scratchPad.itemWheel.Bomb_Bag_1 == 0xFF && isItemBombs(item))
 								{
-									if (tools::checkItemFlag(ItemFlags::Key_Shard_1) &&
-										!tools::checkItemFlag(ItemFlags::Key_Shard_2))
-									{
-										item = items::Item::Key_Shard_2;
-									}
-									else if (tools::checkItemFlag(ItemFlags::Key_Shard_1) &&
-										tools::checkItemFlag(ItemFlags::Key_Shard_2))
-									{
-										item = items::Item::Big_Key_Goron_Mines;
-										tools::setItemFlag(ItemFlags::Key_Shard_3);//set this flag to show full key on the map
-									}
+									item = items::Item::Blue_Rupee;
 								}
-								else if (item == items::Item::Key_Shard_2)
+								else if (gameInfo.scratchPad.itemWheel.Bottle_1 == 0xFF && isItemBottleFill(item))
 								{
-									if (!tools::checkItemFlag(ItemFlags::Key_Shard_1))
+									if (tools::checkItemFlag(ItemFlags::Lantern))
 									{
-										item = items::Item::Key_Shard_1;
-									}
-									else if (tools::checkItemFlag(ItemFlags::Key_Shard_1) &&
-										tools::checkItemFlag(ItemFlags::Key_Shard_2))
-									{
-										item = items::Item::Big_Key_Goron_Mines;
-										tools::setItemFlag(ItemFlags::Key_Shard_3);//set this flag to show full key on the map
-									}
-								}
-								else if (item == items::Item::Big_Key_Goron_Mines)
-								{
-									if (!tools::checkItemFlag(ItemFlags::Key_Shard_1))
-									{
-										item = items::Item::Key_Shard_1;
-									}
-									else if (tools::checkItemFlag(ItemFlags::Key_Shard_1) &&
-										!tools::checkItemFlag(ItemFlags::Key_Shard_2))
-									{
-										item = items::Item::Key_Shard_2;
-									}
-									else
-									{
-										tools::setItemFlag(ItemFlags::Key_Shard_3);//set this flag to show full key on the map
-									}
-								}
-								else if (item == items::Item::Master_Sword && tools::checkItemFlag(ItemFlags::Master_Sword))
-								{//for when MS and light Ms are implemented
-									item = items::Item::Master_Sword_Light;
-								}
-								else if (item == items::Item::Master_Sword_Light && !tools::checkItemFlag(ItemFlags::Master_Sword))
-								{//for when MS and light Ms are implemented
-									item = items::Item::Master_Sword;
-								}
-							}
-							if (item == items::Item::Dominion_Rod)
-							{
-								item = items::Item::Dominion_Rod;
-								gameInfo.scratchPad.eventBits[0x25] |= 0x80;//set flag to charge dominion rod
-							}
-							else if (item == items::Item::Poe_Soul && gameInfo.scratchPad.poeCount < 60)
-							{//increase poe counter
-								gameInfo.scratchPad.poeCount++;
-							}
-							else if (!tools::checkItemFlag(ItemFlags::Slingshot) &&
-								(item == items::Item::Seeds_50))
-							{
-								item = items::Item::Blue_Rupee;
-							}
-							else if (!tools::checkItemFlag(ItemFlags::Heros_Bow) &&
-								(item == items::Item::Arrows_10 ||
-									item == items::Item::Arrows_20 ||
-									item == items::Item::Arrows_30 ||
-									item == items::Item::Arrows_1))
-							{
-								item = items::Item::Blue_Rupee;
-							}
-							else if (gameInfo.scratchPad.itemWheel.Bomb_Bag_1 == 0xFF && isItemBombs(item))
-							{
-								item = items::Item::Blue_Rupee;
-							}
-							else if (gameInfo.scratchPad.itemWheel.Bottle_1 == 0xFF && isItemBottleFill(item))
-							{
-								if (tools::checkItemFlag(ItemFlags::Lantern))
-								{
-									if (item == items::Item::Lantern_Oil_Shop)
-									{
-										item = items::Item::Lantern_Refill_Shop;
-									}
-									else if (item == items::Item::Lantern_Oil_Scooped)
-									{
-										item = items::Item::Lantern_Refill_Scooped;
-									}
-									else if (item == items::Item::Yellow_Chu_Jelly)
-									{
-										item = items::Item::Lantern_Yellow_Chu_Chu;
+										if (item == items::Item::Lantern_Oil_Shop)
+										{
+											item = items::Item::Lantern_Refill_Shop;
+										}
+										else if (item == items::Item::Lantern_Oil_Scooped)
+										{
+											item = items::Item::Lantern_Refill_Scooped;
+										}
+										else if (item == items::Item::Yellow_Chu_Jelly)
+										{
+											item = items::Item::Lantern_Yellow_Chu_Chu;
+										}
+										else
+										{
+											item = items::Item::Blue_Rupee;
+										}
 									}
 									else
 									{
 										item = items::Item::Blue_Rupee;
 									}
 								}
-								else
-								{
-									item = items::Item::Blue_Rupee;
-								}
+								return item;
 							}
-							return item;
-						}
-						else
-						{
-							snprintf(lastDestInfo, 50, "No replacement here.");
-							//no return in the case where 2 items are close enough to be considered the same (bug rewards for example)
+							else
+							{
+								snprintf(lastDestInfo, 50, "No replacement here.");
+								//no return in the case where 2 items are close enough to be considered the same (bug rewards for example)
+							}
 						}
 					}
 				}
@@ -1017,512 +1021,385 @@ namespace mod
 		return false;
 	}
 
+	bool ChestRandomizer::isStageGrotto()
+	{
+		u32 totalGrottoStages = sizeof(stage::grottoStages) / sizeof(stage::grottoStages[0]);
+		for (u32 i = 0; i < totalGrottoStages; i++)
+		{
+			if (tp::d_a_alink::checkStageName(stage::grottoStages[i]))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	void ChestRandomizer::handleKeysanity()
 	{
 		if (isKeysanityEnabled == 1)
 		{
 			item::ItemCheck* sourceCheck;
 			item::ItemCheck* destCheck;
-			u8 length;
+			u16 length;
 			u16 index;
 			//do FT_1
 			length = sizeof(keyPlacement::FT_1) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::FT_keys[0]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::FT_1[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::FT_1[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do FT_2
 			length = sizeof(keyPlacement::FT_2) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::FT_keys[1]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::FT_2[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::FT_2[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do FT_3
 			length = sizeof(keyPlacement::FT_3) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::FT_keys[2]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::FT_3[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::FT_3[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do FT_4
 			length = sizeof(keyPlacement::FT_4) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::FT_keys[3]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::FT_4[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::FT_4[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 
 			//do GM_1
 			length = sizeof(keyPlacement::GM_1) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::GM_keys[0]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::GM_1[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::GM_1[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do GM_2
 			length = sizeof(keyPlacement::GM_2) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::GM_keys[1]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::GM_2[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::GM_2[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do GM_3
 			length = sizeof(keyPlacement::GM_3) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::GM_keys[2]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::GM_3[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::GM_3[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 
 			//do LBT_1
 			length = sizeof(keyPlacement::LBT_1) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::LBT_keys[0]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::LBT_1[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::LBT_1[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do LBT_2
 			length = sizeof(keyPlacement::LBT_2) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::LBT_keys[1]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::LBT_2[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::LBT_2[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do LBT_3
 			length = sizeof(keyPlacement::LBT_3) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::LBT_keys[2]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::LBT_3[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::LBT_3[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 
 			//do AG_1
 			length = sizeof(keyPlacement::AG_1) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::AG_keys[0]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::AG_1[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::AG_1[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do AG_2
 			length = sizeof(keyPlacement::AG_2) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::AG_keys[1]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::AG_2[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::AG_2[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do AG_3
 			length = sizeof(keyPlacement::AG_3) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::AG_keys[2]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::AG_3[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::AG_3[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do AG_4
 			length = sizeof(keyPlacement::AG_4) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::AG_keys[3]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::AG_4[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::AG_4[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do AG_5
 			length = sizeof(keyPlacement::AG_5) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::AG_keys[4]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::AG_5[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::AG_5[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 
 			//do SPR_1
 			length = sizeof(keyPlacement::SPR_1) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::SPR_keys[0]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::SPR_1[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::SPR_1[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do SPR_2
 			length = sizeof(keyPlacement::SPR_2) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::SPR_keys[1]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::SPR_2[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::SPR_2[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do SPR_3
 			length = sizeof(keyPlacement::SPR_3) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::SPR_keys[2]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::SPR_3[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::SPR_3[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do SPR_4
 			length = sizeof(keyPlacement::SPR_4) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::SPR_keys[3]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::SPR_4[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::SPR_4[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do SPR_5
 			length = sizeof(keyPlacement::SPR_5) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::SPR_keys[4]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::SPR_5[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::SPR_5[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do SPR_6
 			length = sizeof(keyPlacement::SPR_6) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::SPR_keys[5]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::SPR_6[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::SPR_6[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 
 			//do ToT_1
 			length = sizeof(keyPlacement::ToT_1) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::ToT_keys[0]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::ToT_1[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::ToT_1[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do ToT_2
 			length = sizeof(keyPlacement::ToT_2) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::ToT_keys[1]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::ToT_2[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::ToT_2[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do ToT_3
 			length = sizeof(keyPlacement::ToT_3) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::ToT_keys[2]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::ToT_3[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
-				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));;
-				placeCheck(sourceCheck, destCheck);
-			}
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::ToT_3[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
+			placeCheck(sourceCheck, destCheck);
 
 			//do CitS_1
 			length = sizeof(keyPlacement::CitS_1) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::CitS_keys[0]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::CitS_1[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::CitS_1[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 
 			//do PoT_1
 			length = sizeof(keyPlacement::PoT_1) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::PoT_keys[0]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::PoT_1[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::PoT_1[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do PoT_2
 			length = sizeof(keyPlacement::PoT_2) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::PoT_keys[1]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::PoT_2[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::PoT_2[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do PoT_3
 			length = sizeof(keyPlacement::PoT_3) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::PoT_keys[2]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::PoT_3[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::PoT_3[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do PoT_4
 			length = sizeof(keyPlacement::PoT_4) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::PoT_keys[3]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::PoT_4[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::PoT_4[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do PoT_5
 			length = sizeof(keyPlacement::PoT_5) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::PoT_keys[4]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::PoT_5[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::PoT_5[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do PoT_6
 			length = sizeof(keyPlacement::PoT_6) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::PoT_keys[5]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::PoT_6[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::PoT_6[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do PoT_7
 			length = sizeof(keyPlacement::PoT_7) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::PoT_keys[6]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::PoT_7[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::PoT_7[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 
 			//do HC_1
 			length = sizeof(keyPlacement::HC_1) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::HC_keys[0]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::HC_1[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::HC_1[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do HC_2
 			length = sizeof(keyPlacement::HC_2) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::HC_keys[1]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::HC_2[index]];
-				}
-			 while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::HC_2[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+			placeCheck(sourceCheck, destCheck);
 			//do HC_3
 			length = sizeof(keyPlacement::HC_3) / sizeof(u16);
 			destCheck = &item::checks[keyPlacement::HC_keys[2]];
-			if (!destCheck->source)
+			do
 			{
-				do
-				{
-					index = tools::getRandom(length);
-					sourceCheck = &item::checks[keyPlacement::HC_3[index]];
-				} 
-				while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
-					(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			}
+				index = tools::getRandom(length);
+				sourceCheck = &item::checks[keyPlacement::HC_3[index]];
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
+			placeCheck(sourceCheck, destCheck);
 
 			//do F_1
 			length = sizeof(keyPlacement::F_1) / sizeof(u16);
@@ -1534,7 +1411,6 @@ namespace mod
 			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
 			placeCheck(sourceCheck, destCheck);
-			//do F_2
 			if (Singleton::getInstance()->isForestEscapeEnabled == 0)
 			{
 				//do F_2
@@ -1556,11 +1432,313 @@ namespace mod
 			{
 				index = tools::getRandom(length);
 				sourceCheck = &item::checks[keyPlacement::GD_1[index]];
-			} 
-			while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
+			} while (sourceCheck->destination || (sourceCheck->type == item::ItemType::PoeSoul && isPoesanityEnabled == 0) ||
 				(sourceCheck->type == item::ItemType::Bug && isBugsanityEnabled == 0) || (sourceCheck->type == item::ItemType::Shop && isShopsanityEnabled == 0));
-				placeCheck(sourceCheck, destCheck);
-			
+			placeCheck(sourceCheck, destCheck);
+		}
+	}
+
+	bool ChestRandomizer::isGrottoCheckOk(u16 checkID)
+	{
+		if (isStageGrotto())
+		{
+			u8 state = tp::d_com_inf_game::current_state;
+			if (tp::d_a_alink::checkStageName(stage::grottoStages[0]))
+			{
+				if (state == 0)
+				{
+					u16 length = sizeof(grottoChecks::g1_0) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g1_0[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+				else if (state == 1)
+				{
+					u16 length = sizeof(grottoChecks::g1_1) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g1_1[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+				else if (state == 2)
+				{
+					u16 length = sizeof(grottoChecks::g1_2) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g1_2[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+				else if (state == 3)
+				{
+					u16 length = sizeof(grottoChecks::g1_3) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g1_3[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+				else
+				{
+					return true;
+				}
+			}
+			else if (tp::d_a_alink::checkStageName(stage::grottoStages[1]))
+			{
+				if (state == 0)
+				{
+					u16 length = sizeof(grottoChecks::g2_0) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g2_0[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+				else if (state == 1)
+				{
+					u16 length = sizeof(grottoChecks::g2_1) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g2_1[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+				else if (state == 2)
+				{
+					u16 length = sizeof(grottoChecks::g2_2) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g2_2[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+				/*else if (state == 3)
+				{
+					u16 length = sizeof(grottoChecks::g2_3) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g2_3[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}*/
+				else
+				{
+					return true;
+				}
+			}
+			else if (tp::d_a_alink::checkStageName(stage::grottoStages[2]))
+			{
+				if (state == 0)
+				{
+					u16 length = sizeof(grottoChecks::g3_0) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g3_0[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+				/*else if (state == 1)
+				{
+					u16 length = sizeof(grottoChecks::g3_1) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g3_1[i])
+						{
+							return true;
+						}
+					}
+					return false;
+
+				}*/
+				/*else if (state == 2)
+				{
+					u16 length = sizeof(grottoChecks::g3_2) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g3_2[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}*/
+				/*else if (state == 3)
+				{
+					u16 length = sizeof(grottoChecks::g3_3) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g3_3[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}*/
+				else
+				{
+					return true;
+				}
+			}
+			else if (tp::d_a_alink::checkStageName(stage::grottoStages[3]))
+			{
+				if (state == 0)
+				{
+					u16 length = sizeof(grottoChecks::g4_0) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g4_0[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+				else if (state == 1)
+				{
+					u16 length = sizeof(grottoChecks::g4_1) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g4_1[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+				else if (state == 2)
+				{
+					u16 length = sizeof(grottoChecks::g4_2) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g4_2[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+				else if (state == 3)
+				{
+					u16 length = sizeof(grottoChecks::g4_3) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g4_3[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+				else
+				{
+					return true;
+				}
+			}
+			else if (tp::d_a_alink::checkStageName(stage::grottoStages[4]))
+			{
+				if (state == 0)
+				{
+					u16 length = sizeof(grottoChecks::g5_0) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g5_0[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+				/*else if (state == 1)
+				{
+					u16 length = sizeof(grottoChecks::g5_1) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g5_1[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}*/
+				else if (state == 2)
+				{
+					u16 length = sizeof(grottoChecks::g5_2) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g5_2[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+				else if (state == 3)
+				{
+					u16 length = sizeof(grottoChecks::g5_3) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g5_3[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+				else if (state == 4)
+				{
+					u16 length = sizeof(grottoChecks::g5_4) / sizeof(u16);
+					for (u16 i = 0; i < length; i++)
+					{
+						if (checkID == grottoChecks::g5_4[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+				else
+				{
+					return true;
+				}
+			}
+			else
+			{
+				return true;
+			}
+		}
+		else
+		{
+			return true;
 		}
 	}
 }
