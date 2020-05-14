@@ -448,6 +448,10 @@ namespace mod
 				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xF] |= 0x2; //cutscene for Gorge Bridge Watched
 				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0x8] |= 0x1; //Midna text for warping the bridge
 				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0x9] |= 0x20; //give Gorge Warp
+				if (gameInfo.scratchPad.eventBits[0x5] != 0xFF)
+				{
+					gameInfo.scratchPad.eventBits[0x5] = 0xFF; //Ensure Epona is Stolen
+				}
 				gameInfo.nextStageVars.triggerLoad |= 1;
 				return item;
 			}
@@ -462,6 +466,10 @@ namespace mod
 				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xF] |= 0x2; //cutscene for Gorge Bridge Watched
 				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0x8] |= 0x1; //Midna text for warping the bridge
 				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0x9] |= 0x20; //give Gorge Warp
+				if (gameInfo.scratchPad.eventBits[0x5] != 0xFF)
+				{
+					gameInfo.scratchPad.eventBits[0x5] = 0xFF; //Ensure Epona is Stolen
+				}
 				return item;
 			}
 		}
