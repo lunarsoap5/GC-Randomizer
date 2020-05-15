@@ -30,6 +30,7 @@ namespace mod
 		isBossKeyseyEnabled = 1;
 		isSewerSkipEnabled = 1;
 		isKB1Skipped = 1;
+		shuffledSkybook = 1;
 	}
 
 } 

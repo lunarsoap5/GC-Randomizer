@@ -121,6 +121,7 @@ namespace mod
 		hudConsole->addOption(page, "Shopsanity?", &chestRandomizer->isShopsanityEnabled, 0x1);	
 		hudConsole->addOption(page, "Dungeon Items?", &chestRandomizer->areDungeonItemsRandomized, 0x1);
 		hudConsole->addOption(page, "Keysanity?", &chestRandomizer->isKeysanityEnabled, 0x1);
+		hudConsole->addOption(page, "Shuffle Book?", &Singleton::getInstance()->shuffledSkybook, 0x1);
 		
 		
 		
