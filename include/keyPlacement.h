@@ -28,12 +28,12 @@ namespace mod::keyPlacement
 	extern u16 AG_5[16];
 
 	extern u16 SPR_keys[6];
-	extern u16 SPR_1[5];
-	extern u16 SPR_2[6];
-	extern u16 SPR_3[10];
-	extern u16 SPR_4[13];
-	extern u16 SPR_5[19];
-	extern u16 SPR_6[22];
+	extern u16 SPR_1[4];
+	extern u16 SPR_2[5];
+	extern u16 SPR_3[9];
+	extern u16 SPR_4[12];
+	extern u16 SPR_5[18];
+	extern u16 SPR_6[21];
 
 	extern u16 ToT_keys[3];
 	extern u16 ToT_1[2];

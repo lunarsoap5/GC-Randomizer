@@ -912,6 +912,14 @@ namespace mod
 								{//increase poe counter
 									gameInfo.scratchPad.poeCount++;
 								}
+								else if (item == items::Item::Bed_Key)
+								{
+									gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bigKeyGotten = 0b1; //unlock Blizzetta Door
+									if ((gameInfo.localAreaNodes.unk_0[0x10] & 0x20) == 0)
+									{
+										gameInfo.localAreaNodes.unk_0[0x10] |= 0x20;//skip yeta door lock
+									}
+								}
 								else if (!tools::checkItemFlag(ItemFlags::Slingshot) &&
 									(item == items::Item::Seeds_50))
 								{
