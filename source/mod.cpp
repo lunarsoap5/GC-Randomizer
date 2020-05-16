@@ -121,7 +121,7 @@ namespace mod
 		hudConsole->addOption(page, "Shopsanity?", &chestRandomizer->isShopsanityEnabled, 0x1);	
 		hudConsole->addOption(page, "Dungeon Items?", &chestRandomizer->areDungeonItemsRandomized, 0x1);
 		hudConsole->addOption(page, "Keysanity?", &chestRandomizer->isKeysanityEnabled, 0x1);
-		hudConsole->addOption(page, "Shuffle Book?", &Singleton::getInstance()->shuffledSkybook, 0x1);
+		hudConsole->addOption(page, "Skybooksanity?", &Singleton::getInstance()->shuffledSkybook, 0x1);
 		
 		
 		
@@ -960,8 +960,7 @@ namespace mod
 		snprintf(lastItemDataZ, 30, "%f", pos[2]);
 		// Runs once when Link picks up an item with text and is holding it towards the camera
 		if (randoEnabled && strcmp(funcIdentifier, "createItemForDirectGet") != 0 && strcmp(funcIdentifier, "createItemForBoss") != 0 &&
-			strcmp(funcIdentifier, "createItemForMidBoss") != 0 && strcmp(funcIdentifier, "createItemForSimpleDemo") != 0 && strcmp(funcIdentifier, "createItem") != 0 &&
-			strcmp(funcIdentifier, "createDemoItem") != 0)
+			strcmp(funcIdentifier, "createItemForMidBoss") != 0 && strcmp(funcIdentifier, "createItemForSimpleDemo") != 0)
 		{
 			item = chestRandomizer->getItemReplacement(pos, item);
 		}
@@ -1310,12 +1309,12 @@ namespace mod
 				}
 				if (gameInfo.aButtonText == 0x6 || gameInfo.aButtonText == 0x79)
 				{//leaving
-					if (bottleTrickOn == 1)
+					if (bottleTrickOn >= 1)
 					{
 						gameInfo.scratchPad.itemWheel.Bottle_4 = bottle4Contents;
 						bottleTrickOn = 0;
 					}
-					if (shieldTrickOn == 1)
+					if (shieldTrickOn >= 1)
 					{
 						if (hadHShield == 1)
 						{
@@ -1417,6 +1416,40 @@ namespace mod
 					bombBagTrickOn = 0;
 				}
 			}
+		}
+		else
+		{
+		if (bottleTrickOn >= 1)
+		{
+			gameInfo.scratchPad.itemWheel.Bottle_4 = bottle4Contents;
+			bottleTrickOn = 0;
+		}
+		if (shieldTrickOn >= 1)
+		{
+			if (hadHShield == 1)
+			{
+				tools::setItemFlag(ItemFlags::Hylian_Shield);
+			}
+			if (hadWShield == 1)
+			{
+				tools::setItemFlag(ItemFlags::Wooden_Shield);
+			}
+			if (hadOShield == 1)
+			{
+				tools::setItemFlag(ItemFlags::Ordon_Shield);
+			}
+			shieldTrickOn = 0;
+		}
+		if (bombBagTrickOn >= 1)
+		{
+			gameInfo.scratchPad.itemWheel.Bomb_Bag_1 = bombBag1Contents;
+			gameInfo.scratchPad.itemWheel.Bomb_Bag_2 = bombBag2Contents;
+			gameInfo.scratchPad.itemWheel.Bomb_Bag_3 = bombBag3Contents;
+			gameInfo.scratchPad.ammo.bombs1 = bombBag1Ammo;
+			gameInfo.scratchPad.ammo.bombs2 = bombBag2Ammo;
+			gameInfo.scratchPad.ammo.bombs3 = bombBag3Ammo;
+			bombBagTrickOn = 0;
+		}
 		}
 	}
 
