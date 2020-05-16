@@ -217,11 +217,6 @@ namespace mod::game_patch
 		}
 	}
 
-	void openSnowpeakDoors()
-	{
-		gameInfo.localAreaNodes.unk_0[0x9] |= 0x0C;//unlock the living room doors in Snowpeak
-	}
-
 	void setBublinState()
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "state was not 1");
@@ -447,5 +442,42 @@ namespace mod::game_patch
 		gameInfo.nextStageVars.nextRoom = 0x0;
 		gameInfo.nextStageVars.nextSpawnPoint = 0x1;
 		gameInfo.nextStageVars.nextState = 0x4;
+	}
+
+	void handleMaloShop()
+	{
+		//hylian shield check
+		if ((gameInfo.scratchPad.eventBits[0xA] & 0x8) != 0)//KB1 done
+		{
+			if (!tools::checkItemFlag(ItemFlags::Null_D9))
+			{
+				strcpy(sysConsolePtr->consoleLine[20].line, "-> selling hylian shield");
+				gameInfo.localAreaNodes.unk_0[0xC] &= ~0x2;//unset flag for hylian shield bought
+				gameInfo.localAreaNodes.unk_0[0x13] |= 0x40;//set flag for hylian shield on counter
+			}
+			else
+			{
+				gameInfo.localAreaNodes.unk_0[0xC] |= 0x2;//set flag for hylian shield bought
+				gameInfo.localAreaNodes.unk_0[0x13] &= ~0x40;//unset flag for hylian shield on counter
+			}
+		}
+
+		//hawkeye check		
+		//hawkeye check	
+		if ((gameInfo.scratchPad.eventBits[0xEF] & 0x8) != 0)//Bow mini-game PoH gotten
+		{
+			if (!tools::checkItemFlag(ItemFlags::Null_D8))
+			{
+				gameInfo.localAreaNodes.unk_0[0xC] |= 0x40;//set flag for hawkeye on counter
+				gameInfo.localAreaNodes.unk_0[0xC] &= ~0x20;//unset flag for arrows on counter (else causes crash)
+				gameInfo.localAreaNodes.unk_0[0xD] &= ~0x8;//unset flag for hawkeye bought
+			}
+			else
+			{
+				gameInfo.localAreaNodes.unk_0[0xC] &= ~0x40;//unset flag for hawkeye on counter
+				gameInfo.localAreaNodes.unk_0[0xC] |= 0x20;//set flag for arrows on counter
+				gameInfo.localAreaNodes.unk_0[0xD] |= 0x8;//set flag for hawkeye bought
+			}
+		}
 	}
 }

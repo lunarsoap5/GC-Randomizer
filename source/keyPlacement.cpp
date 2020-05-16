@@ -212,24 +212,27 @@ namespace mod::keyPlacement
 		180,//Wooden Beam C. Chest
 		184//Chilfos Small Chest
 	};
-	u16 SPR_1[4]
+	u16 SPR_1[5]
 	{
 		456,//poe 1
+		339,//map
 		348,//ooccoo
 		172,//Courtyard Open Chest
 		171//CY Partially Buried Chest
 	};
-	u16 SPR_2[5]
+	u16 SPR_2[6]
 	{
 		456,//poe 1
+		339,//map
 		348,//ooccoo
 		172,//Courtyard Open Chest
 		171,//CY Partially Buried Chest
 		173//pumpkin
 	};
-	u16 SPR_3[9]
+	u16 SPR_3[10]
 	{
 		456,//poe 1
+		339,//map
 		348,//ooccoo
 		172,//Courtyard Open Chest
 		171,//CY Partially Buried Chest
@@ -239,9 +242,10 @@ namespace mod::keyPlacement
 		176,//compass
 		174//Buried Chest
 	};
-	u16 SPR_4[12]
+	u16 SPR_4[13]
 	{
 		456,//poe 1
+		339,//map
 		348,//ooccoo
 		172,//Courtyard Open Chest
 		171,//CY Partially Buried Chest
@@ -254,9 +258,10 @@ namespace mod::keyPlacement
 		290,//BaC
 		178//cheese
 	};
-	u16 SPR_5[18]
+	u16 SPR_5[19]
 	{
 		456,//poe 1
+		339,//map
 		348,//ooccoo
 		172,//Courtyard Open Chest
 		171,//CY Partially Buried Chest
@@ -275,9 +280,10 @@ namespace mod::keyPlacement
 		183,//Entry Chest Right
 		186//Storage Chest Left
 	};
-	u16 SPR_6[21]
+	u16 SPR_6[22]
 	{
 		456,//poe 1
+		339,//map
 		348,//ooccoo
 		172,//Courtyard Open Chest
 		171,//CY Partially Buried Chest

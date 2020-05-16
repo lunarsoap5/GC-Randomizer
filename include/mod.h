@@ -131,6 +131,8 @@ namespace mod
 			u8 bombBag2Ammo;
 			u8 bombBag3Ammo;
 
+			u8 yetaTrickOn = 0;
+
 			
 		// Functions
 		private:
@@ -162,6 +164,12 @@ namespace mod
 			 * order the item wheel correctly
 			 */
 			void reorderItemWheel();
+
+			/**
+			 * Allows Yeta to always be in the living room even with the BK
+			 * Allows Yeto to always be in the kitchen even with the BK
+			 */
+			void fixYetaAndYeto();
 
 			/**
 			 * gives the unlocked scent that can be seen in the current area (defaults to most advanced one obtained)

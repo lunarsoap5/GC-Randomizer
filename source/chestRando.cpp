@@ -540,6 +540,18 @@ namespace mod
 		{//set flag for Barne's bomb bag check
 			tools::setItemFlag(ItemFlags::Null_DA);
 		}
+		else if (item == items::Item::Hylian_Shield && tp::d_a_alink::checkStageName("R_SP109"))
+		{//set flag for Malo's Hylian Shield check
+		tools::setItemFlag(ItemFlags::Null_D9);
+		}
+		else if (item == items::Item::Hawkeye)
+		{//set flag for Hawkeye check
+		tools::setItemFlag(ItemFlags::Null_D8);
+		}
+		else if (item == items::Item::Dungeon_Map && tp::d_a_alink::checkStageName("D_MN11"))
+		{//set flag to be able to enter kitchen
+		gameInfo.localAreaNodes.unk_0[0x10] |= 0x20;
+		}
 
 		for (u16 i = 0; i < totalChecks; i++)
 		{
@@ -915,10 +927,6 @@ namespace mod
 								else if (item == items::Item::Bed_Key)
 								{
 									gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bigKeyGotten = 0b1; //unlock Blizzetta Door
-									if ((gameInfo.localAreaNodes.unk_0[0x10] & 0x20) == 0)
-									{
-										gameInfo.localAreaNodes.unk_0[0x10] |= 0x20;//skip yeta door lock
-									}
 								}
 								else if (!tools::checkItemFlag(ItemFlags::Slingshot) &&
 									(item == items::Item::Seeds_50))

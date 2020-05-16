@@ -45,11 +45,11 @@ namespace mod::item
 /* 35 */{0x05, 7, stage::allStages[3], 16, 0x4, 0xFF, 0b101001000000000000000, 13975.0000000, 2476.4899900, -1675.0000000, nullptr, nullptr}, //GM Gor Liggs Small Chest
 /* 36 */{0x05, 7, stage::allStages[3], 3, 0x4, 0xFF, 0b101001000000000000000, 3625.0000000, 2637.8999020, 4050.0000000, nullptr, nullptr}, //GM Main Magnet Room Top Chest
 /* 37 */{0x05, 7, stage::allStages[3], 7, 0x4, 0xFF, 0b001000000000000000000, 2325.0000000, 1100.0000000, -17400.0000000, nullptr, nullptr}, //GM Outside Underwater Chest
-/* 38 */{0x21, 3, stage::allStages[46], 0, 0x4, 0xFF, 0b101000100000000000000, 1300.0000000, -1600.0000000, 16700.0000000, nullptr, nullptr}, //Eldin Spring Heart Piece Chest
+/* 38 */{0x21, 3, stage::allStages[46], 0, 0x5, 0xFF, 0b101000100000000000000, 1300.0000000, -1600.0000000, 16700.0000000, nullptr, nullptr}, //Eldin Spring Heart Piece Chest
 /* 39 */{0x05, 7, stage::allStages[48], 0, 0x2, 0xFF, 0b010000000000000000000, 16050.0000000, 200.0000000, 725.0000000, nullptr, nullptr}, //Kakariko Graveyard Lanturn Chest
 /* 40 */{0x05, 7, stage::allStages[68], 4, 0x3, 0xFF, 0b000000000000000000000, -887.4350590, 1000.0000000, -173.2907710, nullptr, nullptr}, //Kakariko Watchtower Chest
-/* 41 */{0x06, 7, stage::allStages[46], 0, 0x4, 0xFF, 0b000000101100000000000, -4027.7336430, 3200.0000000, -8970.9990230, nullptr, nullptr}, //Kakariko Watchtower Alcove Chest
-/* 42 */{0x21, 3, stage::allStages[56], 0, 0x4, 0xFF, 0b000000001000000000000, 11550.0000000, 2700.0000000, 24090.0000000, nullptr, nullptr}, //Eldin Bomb Rock Ledge Heart Piece Chest
+/* 41 */{0x06, 7, stage::allStages[46], 0, 0x5, 0xFF, 0b000000101100000000000, -4027.7336430, 3200.0000000, -8970.9990230, nullptr, nullptr}, //Kakariko Watchtower Alcove Chest
+/* 42 */{0x21, 3, stage::allStages[56], 0, 0x5, 0xFF, 0b000000001000000000000, 11550.0000000, 2700.0000000, 24090.0000000, nullptr, nullptr}, //Eldin Bomb Rock Ledge Heart Piece Chest
 /* 43 */{0x03, 7, stage::allStages[50], 1, 0x5, 0xFF, 0b000000000000000000000, 2784.3178710, -4587.8901370, 10773.4140620, nullptr, nullptr}, //ZD Small Chest By Mother and Child Isles
 /* 44 */{0x04, 7, stage::allStages[50], 1, 0x5, 0xFF, 0b000000000000000000000, 3810.8435060, -3535.5300290, 11344.8876950, nullptr, nullptr}, //ZD Small Chest Under Waterfall
 /* 45 */{0x06, 7, stage::allStages[52], 0, 0x5, 0xFF, 0b001000000000000000000, -97123.5468750, -19490.0000000, 58585.6992190, nullptr, nullptr}, //Lake Hylia Underwater Chest
@@ -304,11 +304,11 @@ namespace mod::item
 /* 294 */{0x65, 9, stage::allStages[65], 1, 0x0, 0xFF, 0b000000000000000000000, -55.0000000, 0.0000000, -156.0000000, nullptr, nullptr}, //Sera Bottle
 /* 295 */{0x4B, 12, stage::allStages[65], 1, 0x0, 0x0, 0b000000000000000000000, -55.0000000, 0.0000000, -156.0000000, nullptr, nullptr}, //Slingshot
 /* 296 */{0x48, 0, stage::allStages[45], 3, 0x0, 0x0, 0b100010000000000001000, -13659.0000000, 0.0000000, -14367.0000000, nullptr, nullptr}, //Lantern
-/* 297 */{0x2C, 12, stage::allStages[68], 3, 0xFF, 0x2, 0b001000000000000000000, -500.0000000, 320.0000000, -695.0000000, nullptr, nullptr}, //Hylian Shield (Malo)
+/* 297 */{0x2C, 12, stage::allStages[68], 3, 0x2, 0x2, 0b001000000000000000000, -500.0000000, 320.0000000, -695.0000000, nullptr, nullptr}, //Hylian Shield (Malo)
 /* 298 */{0x2B, 12, stage::allStages[68], 3, 0x2, 0xFF, 0b001000000000000000000, -500.0000000, 320.0000000, -695.0000000, nullptr, nullptr}, //Wooden Shield (Malo)
 /* 299 */{0x55, 1, stage::allStages[74], 7, 0x7, 0x7, 0b111111100010000000000, -4400.0000000, 0.0000000, 2500.0000000, nullptr, nullptr}, //Big Quiver
 /* 300 */{ 0x56, 1, stage::allStages[74], 7, 0x15, 0x15, 0b111111100001000000000, -4400.0000000, 0.0000000, 2500.0000000, nullptr, nullptr }, //Giant Quiver
-/* 301 */{0x2C, 12, stage::allStages[73], 4,  0x4, 0xFF, 0b111111100000000000000, -494.7930300, 100.0000000, 3701.0000000, nullptr, nullptr}, //Hylian Shield (Goron)
+/* 301 */{0x2C, 12, stage::allStages[73], 4,  0x5, 0xFF, 0b111111100000000000000, -494.7930300, 100.0000000, 3701.0000000, nullptr, nullptr}, //Hylian Shield (Goron)
 /* 302 */{0x21, 3, stage::allStages[46], 0, 0x2, 0xFF, 0b111111100000000000000, -2010.0000000, 151.0000000, 7897.0000000, nullptr, nullptr}, //Kakariko Bomb Rock Spire Heart Piece
 /* 303 */{0x21, 3, stage::allStages[56], 6, 0x2, 0xFF, 0b110110000000000000000, -46688.0000000, -7953.0000000, 86307.0000000, nullptr, nullptr}, //Faron Tree Heart Piece
 /* 304 */{0x21, 3, stage::allStages[56], 3, 0x2, 0xFF, 0b110110000000000000000, -21270.0000000, -5620.0000000, 55553.0000000, nullptr, nullptr}, //Kakariko Gorge Spire Heart Piece

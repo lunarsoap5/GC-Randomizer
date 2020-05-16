@@ -432,9 +432,6 @@ namespace mod
 
 		//Set Bublin Camp State
 		eventListener->addLoadEvent(stage::allStages[Stage_Bublin_Camp], 0xFF, 0xFF, 0x1, 0xFF, game_patch::setBublinState, event::LoadEventAccuracy::Stage_Room_Spawn);
-
-		// Unlock Snowpeak Lving Room Doors
-		eventListener->addLoadEvent(stage::allStages[Stage_Snowpeak_Ruins], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::openSnowpeakDoors, event::LoadEventAccuracy::Stage_Room_Spawn);
 		
 		//unlock HF gates
 		eventListener->addLoadEvent(stage::allStages[Stage_Hyrule_Field], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::unlockHFGates, event::LoadEventAccuracy::Stage);
@@ -465,6 +462,7 @@ namespace mod
 
 		//early Desert
 		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::earlyDesert, event::LoadEventAccuracy::Stage_Room_Spawn);
+
 
 
 
@@ -947,6 +945,8 @@ namespace mod
 
 		giveAllScents();
 
+		fixYetaAndYeto();
+
 		// Call original function
 		fapGm_Execute_trampoline();
 	}
@@ -1254,6 +1254,11 @@ namespace mod
 			gameInfo.scratchPad.itemWheel.Bottle_3 != items::Item::Empty_Bottle && gameInfo.scratchPad.itemWheel.Bottle_4 != items::Item::Empty_Bottle)
 		{
 			hasEmptyBottleAlready = 0;
+		}
+
+		if (tp::d_a_alink::checkStageName("R_SP109") && tp::d_kankyo::env_light.currentRoom == 3)
+		{
+			game_patch::handleMaloShop();
 		}
 
 		if (isStageShop())
@@ -1593,6 +1598,28 @@ namespace mod
 		for (u16 i = currentSlot; i < sizeof(gameInfo.scratchPad.itemSlotsOrder) / sizeof(u8); i++)
 		{
 			gameInfo.scratchPad.itemSlotsOrder[currentSlot] = 0xFF;
+		}
+	}
+
+	void Mod::fixYetaAndYeto()
+	{
+		if (tools::checkItemFlag(ItemFlags::Bed_Key) && tp::d_a_alink::checkStageName("D_MN11"))
+		{
+			float linkPos[3];
+			getPlayerPos(linkPos);
+
+			if (gameInfo.aButtonText == 0x6 && (tp::d_kankyo::env_light.currentRoom == 0 || tp::d_kankyo::env_light.currentRoom == 1 ||
+				tp::d_kankyo::env_light.currentRoom == 2 || tp::d_kankyo::env_light.currentRoom == 3 || tp::d_kankyo::env_light.currentRoom == 4 ||
+				tp::d_kankyo::env_light.currentRoom == 7) && linkPos[1] == 0)
+			{
+				gameInfo.localAreaNodes.dungeon.bigKeyGotten = 0b0;
+				yetaTrickOn = 1;
+			}
+			if (gameInfo.aButtonText == 0x79 && yetaTrickOn == 1)
+			{
+				gameInfo.localAreaNodes.dungeon.bigKeyGotten = 0b1;
+				yetaTrickOn = 0;
+			}
 		}
 	}
 
