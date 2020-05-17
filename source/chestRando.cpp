@@ -933,7 +933,6 @@ namespace mod
 									(item == items::Item::Seeds_50))
 								{
 									item = items::Item::Blue_Rupee;
-									tp::d_item::execItemGet(0x2);
 								}
 								else if (!tools::checkItemFlag(ItemFlags::Heros_Bow) &&
 									(item == items::Item::Arrows_10 ||
@@ -942,12 +941,10 @@ namespace mod
 										item == items::Item::Arrows_1))
 								{
 									item = items::Item::Blue_Rupee;
-									tp::d_item::execItemGet(0x2);
 								}
 								else if (gameInfo.scratchPad.itemWheel.Bomb_Bag_1 == 0xFF && isItemBombs(item))
 								{
 									item = items::Item::Blue_Rupee;
-									tp::d_item::execItemGet(0x2);
 								}
 								else if (gameInfo.scratchPad.itemWheel.Bottle_1 == 0xFF && isItemBottleFill(item))
 								{
@@ -956,26 +953,31 @@ namespace mod
 										if (item == items::Item::Lantern_Oil_Shop)
 										{
 											item = items::Item::Lantern_Refill_Shop;
+											gameInfo.scratchPad.counters.lantern_oil = gameInfo.scratchPad.counters.max_lantern_oil;
 										}
 										else if (item == items::Item::Lantern_Oil_Scooped)
 										{
 											item = items::Item::Lantern_Refill_Scooped;
+											gameInfo.scratchPad.counters.lantern_oil = gameInfo.scratchPad.counters.max_lantern_oil;
 										}
 										else if (item == items::Item::Yellow_Chu_Jelly)
 										{
 											item = items::Item::Lantern_Yellow_Chu_Chu;
+											gameInfo.scratchPad.counters.lantern_oil = gameInfo.scratchPad.counters.max_lantern_oil;
 										}
 										else
 										{
 											item = items::Item::Blue_Rupee;
-											tp::d_item::execItemGet(0x2);
 										}
 									}
 									else
 									{
 										item = items::Item::Blue_Rupee;
-										tp::d_item::execItemGet(0x2);
 									}
+								}
+								if (item == items::Item::Blue_Rupee)
+								{//somehow the blue rupee item get don't work normally
+									tp::d_item::execItemGet(items::Item::Blue_Rupee);
 								}
 								return item;
 							}
