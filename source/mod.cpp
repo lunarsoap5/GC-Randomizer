@@ -120,7 +120,7 @@ namespace mod
 		hudConsole->addOption(page, "Poesanity?", &chestRandomizer->isPoesanityEnabled, 0x1);
 		hudConsole->addOption(page, "Shopsanity?", &chestRandomizer->isShopsanityEnabled, 0x1);	
 		hudConsole->addOption(page, "Dungeon Items?", &chestRandomizer->areDungeonItemsRandomized, 0x1);
-		hudConsole->addOption(page, "Keysanity?", &chestRandomizer->isKeysanityEnabled, 0x1);
+		hudConsole->addOption(page, "Key Shuffle?", &chestRandomizer->isKeysanityEnabled, 0x1);
 		hudConsole->addOption(page, "Skybooksanity?", &Singleton::getInstance()->shuffledSkybook, 0x1);
 		
 		
@@ -462,6 +462,9 @@ namespace mod
 
 		//early Desert
 		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::earlyDesert, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		//early Desert
+		eventListener->addLoadEvent(stage::allStages[Stage_Gerudo_Desert], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::accessDesert, event::LoadEventAccuracy::Stage_Room_Spawn);
 
 
 

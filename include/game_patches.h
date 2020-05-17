@@ -178,4 +178,9 @@ namespace mod::game_patch
 	 * check wether to show hawkeye and hylian shield in malo mart
 	 */
 	void handleMaloShop();
+
+	/**
+	 * check whether you have MS before being allowed to enter the desert
+	 */
+	void accessDesert();
 }

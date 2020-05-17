@@ -11,6 +11,7 @@
 #include "grottoChecks.h"
 
 #include <tp/d_com_inf_game.h>
+#include <tp/d_item.h>
 #include <tp/d_a_alink.h>
 #include <tp/JFWSystem.h>
 #include <cstdio>
@@ -932,6 +933,7 @@ namespace mod
 									(item == items::Item::Seeds_50))
 								{
 									item = items::Item::Blue_Rupee;
+									tp::d_item::execItemGet(0x2);
 								}
 								else if (!tools::checkItemFlag(ItemFlags::Heros_Bow) &&
 									(item == items::Item::Arrows_10 ||
@@ -940,10 +942,12 @@ namespace mod
 										item == items::Item::Arrows_1))
 								{
 									item = items::Item::Blue_Rupee;
+									tp::d_item::execItemGet(0x2);
 								}
 								else if (gameInfo.scratchPad.itemWheel.Bomb_Bag_1 == 0xFF && isItemBombs(item))
 								{
 									item = items::Item::Blue_Rupee;
+									tp::d_item::execItemGet(0x2);
 								}
 								else if (gameInfo.scratchPad.itemWheel.Bottle_1 == 0xFF && isItemBottleFill(item))
 								{
@@ -964,11 +968,13 @@ namespace mod
 										else
 										{
 											item = items::Item::Blue_Rupee;
+											tp::d_item::execItemGet(0x2);
 										}
 									}
 									else
 									{
 										item = items::Item::Blue_Rupee;
+										tp::d_item::execItemGet(0x2);
 									}
 								}
 								return item;

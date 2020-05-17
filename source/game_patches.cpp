@@ -7,6 +7,7 @@
 #include <tp/d_menu_collect.h>
 #include <tp/d_a_alink.h>
 #include <tp/d_save.h>
+#include <tp/d_item.h>
 #include <tp/JFWSystem.h>
 #include <tp/d_com_inf_game.h>
 #include <tp/evt_control.h>
@@ -149,7 +150,7 @@ namespace mod::game_patch
 		{
 			strcpy(sysConsolePtr->consoleLine[20].line, "-> Skipping MDH");
 
-			// Load back to Ordon Spring
+			
 			strncpy(gameInfo.nextStageVars.nextStage, stage::allStages[Stage_Hyrule_Castle_Sewers], sizeof(gameInfo.nextStageVars.nextStage) - 1);
 			gameInfo.nextStageVars.nextRoom = 0x3;
 			gameInfo.nextStageVars.nextSpawnPoint = 0x0;
@@ -309,6 +310,21 @@ namespace mod::game_patch
 		if (Singleton::getInstance()->isEarlyDesertEnabled == 1 && gameInfo.scratchPad.eventBits[0x26] < 0x80 && tools::checkItemFlag(ItemFlags::Master_Sword))
 		{
 			gameInfo.scratchPad.eventBits[0x26] |= 0x80; //Allow you to use the cannon in the desert
+		}
+	}
+
+	void accessDesert()
+	{
+		if (tools::checkItemFlag(ItemFlags::Master_Sword))
+		{
+			return;
+		}
+		else
+		{
+			strncpy(gameInfo.nextStageVars.nextStage, stage::allStages[Stage_Lake_Hylia], sizeof(gameInfo.nextStageVars.nextStage) - 1);
+			gameInfo.nextStageVars.nextRoom = 0x0;
+			gameInfo.nextStageVars.nextSpawnPoint = 0x4D;
+			tp::d_item::execItemGet(0x2);
 		}
 	}
 
