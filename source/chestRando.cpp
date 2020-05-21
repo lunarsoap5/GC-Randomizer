@@ -9,6 +9,7 @@
 #include "keyPlacement.h"
 #include "singleton.h"
 #include "grottoChecks.h"
+#include "game_patches.h"
 
 #include <tp/d_com_inf_game.h>
 #include <tp/d_item.h>
@@ -251,8 +252,8 @@ namespace mod
 			sourceCheck = &item::checks[index];
 		} while (!checkCondition(sourceCheck, destCheck) || sourceCheck->destination || sourceCheck->sourceLayer > maxLayer || sourceCheck->sourceLayer < minLayer ||
 			(destCheck->type == item::ItemType::Bug && 0 == strcmp("R_SP160", sourceCheck->stage) && sourceCheck->room == 3) || //agitha can't give bugs
-			(destCheck->type == item::ItemType::Dungeon && 0 != strcmp(destCheck->stage, sourceCheck->stage)) || //dungeon items only in their own dungeon
-			(destCheck->type == item::ItemType::Dungeon && index == 115)); //dont place dungeon items at clawshot goron mines check
+			(areDungeonItemsRandomized == 1 && destCheck->type == item::ItemType::Dungeon && 0 != strcmp(destCheck->stage, sourceCheck->stage)) || //dungeon items only in their own dungeon
+			(areDungeonItemsRandomized == 1 && destCheck->type == item::ItemType::Dungeon && index == 115)); //dont place dungeon items at clawshot goron mines check
 
 		return sourceCheck;
 	}
@@ -292,8 +293,7 @@ namespace mod
 		{
 		case item::ItemType::Key:
 			// Small Keys + ordon pumpkin and cheese
-			if (isKeysanityEnabled == 0 || check->itemID == items::Item::Gate_Keys ||
-				(Singleton::getInstance()->isForestEscapeEnabled == 1 && check->itemID == items::Item::Coro_Key))
+			if (isKeysanityEnabled == 0 || (Singleton::getInstance()->isForestEscapeEnabled == 1 && isKeysanityEnabled == 1 && check->itemID == items::Item::Coro_Key))
 			{
 				result = true;
 			}
@@ -445,7 +445,6 @@ namespace mod
 				u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
 				*tempAddress |= 0x400;//give ending blow	
 				gameInfo.localAreaNodes.unk_0[0x12] |= 0x4;//mark read the midna text when you warp to N Faron for bridge
-				gameInfo.scratchPad.eventBits[0x6] |= 0x24; //warp the kak bridge, give map warp
 				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xF] |= 0x2; //cutscene for Gorge Bridge Watched
 				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0x8] |= 0x1; //Midna text for warping the bridge
 				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0x9] |= 0x20; //give Gorge Warp
@@ -463,7 +462,6 @@ namespace mod
 				gameInfo.localAreaNodes.unk_0[0x12] |= 0x4;//mark read the midna text when you warp to N Faron for bridge
 				gameInfo.localAreaNodes.unk_0[0xC] |= 0x80;//set flag for midna to think you followed the monkey in the mist
 				gameInfo.scratchPad.eventBits[0x1B] = 0x78; //skip the monkey escort
-				gameInfo.scratchPad.eventBits[0x6] |= 0x24; //warp the kak bridge, give map warp
 				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xF] |= 0x2; //cutscene for Gorge Bridge Watched
 				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0x8] |= 0x1; //Midna text for warping the bridge
 				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0x9] |= 0x20; //give Gorge Warp
@@ -925,6 +923,10 @@ namespace mod
 								{//increase poe counter
 									gameInfo.scratchPad.poeCount++;
 								}
+								else if (item == items::Item::Shadow_Crystal)
+								{//shadow crystal doesn't actually do anything so we have to do its functionnality ourselves
+									game_patch::giveMidnaTransform();
+								}
 								else if (item == items::Item::Bed_Key)
 								{
 									gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bigKeyGotten = 0b1; //unlock Blizzetta Door
@@ -975,10 +977,10 @@ namespace mod
 										item = items::Item::Blue_Rupee;
 									}
 								}
-								if (item == items::Item::Blue_Rupee)
+								/*if (item == items::Item::Blue_Rupee)
 								{//somehow the blue rupee item get don't work normally
 									tp::d_item::execItemGet(items::Item::Blue_Rupee);
-								}
+								}*/
 								return item;
 							}
 							else
