@@ -37,9 +37,6 @@ namespace mod::cutscene_skip
 
 namespace mod::game_patch
 {
-	tp::d_a_alink::LadderVars* LadderVars = &tp::d_a_alink::ladderVars;
-	tp::d_com_inf_game::AllAreaNodes* allAreaNodesPtr = &gameInfo.scratchPad.allAreaNodes;
-	tp::d_com_inf_game::ScratchPad* scratchPadPtr = &gameInfo.scratchPad;
 
 	void assemblyOverwrites()
 	{
@@ -73,6 +70,7 @@ namespace mod::game_patch
 	void increaseClimbSpeed()
 	{
 		// Adjust Link's climbing speeds
+		tp::d_a_alink::LadderVars* LadderVars = &tp::d_a_alink::ladderVars;
 		LadderVars->ladderClimbInitSpeed 			= 1.8;
 		LadderVars->ladderReachTopClimbUpSpeed 		= 1.765;
 		LadderVars->ladderTopStartClimbDownSpeed 	= 1.8;
@@ -139,8 +137,8 @@ namespace mod::game_patch
 			setFirstTimeWolf();
 
 			// Set sewers flags (zelda cutscenes, unchained wolf link, bla)
-			scratchPadPtr->eventBits[0x05] |= 0x7A;
-			scratchPadPtr->equipedItems.sword = 0x3F;
+			gameInfo.scratchPad.eventBits[0x05] |= 0x7A;
+			gameInfo.scratchPad.equipedItems.sword = 0x3F;
 
 			// Load back to Ordon Spring
 			tools::triggerSaveLoad(stage::allStages[Stage_Ordon_Spring], 0x1, 0x3, 0x4);
@@ -202,7 +200,7 @@ namespace mod::game_patch
 		strcpy(sysConsolePtr->consoleLine[20].line, "state was not 1");
 		if (gameInfo.nextStageVars.nextRoom != 3)
 		{
-			if (scratchPadPtr->allAreaNodes.Arbiters_Grounds.dungeon.bossBeaten == 0b1)
+			if (gameInfo.scratchPad.allAreaNodes.Arbiters_Grounds.dungeon.bossBeaten == 0b1)
 			{
 				strcpy(sysConsolePtr->consoleLine[20].line, "-> Setting Bublin State");
 				// reload bublin camp as state 3
@@ -229,7 +227,7 @@ namespace mod::game_patch
 	{
 		if (Singleton::getInstance()->isBossKeyseyEnabled == 1)
 		{
-			tp::d_com_inf_game::AllAreaNodes* allAreaNodesPtr = &scratchPadPtr->allAreaNodes;
+			tp::d_com_inf_game::AllAreaNodes* allAreaNodesPtr = &gameInfo.scratchPad.allAreaNodes;
 			allAreaNodesPtr->Forest_Temple.dungeon.bigKeyGotten = 0b1; //unlock Diababa Door
 			allAreaNodesPtr->Goron_Mines.dungeon.bigKeyGotten = 0b1; //unlock Fryus Door
 			allAreaNodesPtr->Lakebed_Temple.dungeon.bigKeyGotten = 0b1; //unlock Morpheel Door
@@ -276,9 +274,9 @@ namespace mod::game_patch
 		{
 			if (Singleton::getInstance()->isCannonRepaired == 0)
 			{
-				if (scratchPadPtr->tearCounters.Lanayru == 16)
+				if (gameInfo.scratchPad.tearCounters.Lanayru == 16)
 				{
-					scratchPadPtr->eventBits[0x3B] |= 0x8; //repairs Cannon at lake
+					gameInfo.scratchPad.eventBits[0x3B] |= 0x8; //repairs Cannon at lake
 					Singleton::getInstance()->isCannonRepaired = 1;
 				}
 			}
@@ -287,9 +285,9 @@ namespace mod::game_patch
 
 	void earlyDesert()
 	{
-		if (Singleton::getInstance()->isEarlyDesertEnabled == 1 && scratchPadPtr->eventBits[0x26] < 0x80 && tools::checkItemFlag(ItemFlags::Master_Sword))
+		if (Singleton::getInstance()->isEarlyDesertEnabled == 1 && gameInfo.scratchPad.eventBits[0x26] < 0x80 && tools::checkItemFlag(ItemFlags::Master_Sword))
 		{
-			scratchPadPtr->eventBits[0x26] |= 0x80; //Allow you to use the cannon in the desert
+			gameInfo.scratchPad.eventBits[0x26] |= 0x80; //Allow you to use the cannon in the desert
 		}
 	}
 
@@ -310,9 +308,9 @@ namespace mod::game_patch
 
 	void sellWaterBombs()
 	{
-		if (scratchPadPtr->allAreaNodes.Lakebed_Temple.dungeon.bossBeaten == 0b1 && ((scratchPadPtr->allAreaNodes.Eldin.unk_0[0x17] & 0x40) == 0))//Escort Not Completed before Beating Lakebed
+		if (gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten == 0b1 && ((gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x17] & 0x40) == 0))//Escort Not Completed before Beating Lakebed
 		{
-			scratchPadPtr->allAreaNodes.Eldin.unk_0[0x17] |= 0x40;
+			gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x17] |= 0x40;
 		}
 	}
 
@@ -321,7 +319,7 @@ namespace mod::game_patch
 	{
 		if (Singleton::getInstance()->isCartEscortSkipEnabled == 1)
 		{
-			scratchPadPtr->eventBits[0x8] |= 0x40; //set flag for escort started
+			gameInfo.scratchPad.eventBits[0x8] |= 0x40; //set flag for escort started
 			tools::triggerSaveLoad(stage::allStages[Stage_Kakariko_Interiors], 0x2, 0x3, 0xD);
 		}
 	}
@@ -330,14 +328,14 @@ namespace mod::game_patch
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set first time wolf");
 
-		scratchPadPtr->unk_1F[0x11] |= 1;
+		gameInfo.scratchPad.unk_1F[0x11] |= 1;
 	}
 
 	void setLanayruWolf()
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set wolf");
 
-		if (scratchPadPtr->form == 0 && !tools::checkItemFlag(ItemFlags::Master_Sword) && !tools::checkItemFlag(ItemFlags::Vessel_Of_Light_Lanayru))
+		if (gameInfo.scratchPad.form == 0 && !tools::checkItemFlag(ItemFlags::Master_Sword) && !tools::checkItemFlag(ItemFlags::Vessel_Of_Light_Lanayru))
 		{
 
 			strncpy(gameInfo.nextStageVars.nextStage, stage::allStages[Stage_Hyrule_Field], sizeof(gameInfo.nextStageVars.nextStage) - 1);
@@ -357,11 +355,11 @@ namespace mod::game_patch
 			strcpy(sysConsolePtr->consoleLine[20].line, "state was not 0");
 			if (gameInfo.nextStageVars.nextRoom != 5)
 			{
-				if (scratchPadPtr->allAreaNodes.Snowpeak_Ruins.dungeon.bossBeaten == 0b1 || scratchPadPtr->allAreaNodes.Lakebed_Temple.dungeon.bossBeaten == 0b1 || scratchPadPtr->tearCounters.Faron != 16 || (tp::d_com_inf_game::current_state == 0x65 && !tools::checkItemFlag(ItemFlags::Vessel_Of_Light_Faron)))
+				if (gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.tearCounters.Faron != 16 || (tp::d_com_inf_game::current_state == 0x65 && !tools::checkItemFlag(ItemFlags::Vessel_Of_Light_Faron)))
 				{
 					return;
 				}
-				else if (scratchPadPtr->allAreaNodes.Forest_Temple.dungeon.bossBeaten == 0b1)
+				else if (gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.bossBeaten == 0b1)
 				{
 					strcpy(sysConsolePtr->consoleLine[20].line, "-> Allowing Faron Escape");
 					// reload faron woods as state 2
@@ -375,14 +373,14 @@ namespace mod::game_patch
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set human");
 
-		scratchPadPtr->form = 0;
+		gameInfo.scratchPad.form = 0;
 	}
 
 	void setWolf()
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set wolf");
 
-		scratchPadPtr->form = 1;
+		gameInfo.scratchPad.form = 1;
 	}
 
 	void giveSense()
@@ -390,7 +388,7 @@ namespace mod::game_patch
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Give Senses");
 
 		// Set the Sense (sewers) flag
-		scratchPadPtr->eventBits[0x43] |= 0x8;
+		gameInfo.scratchPad.eventBits[0x43] |= 0x8;
 	}
 
 	void giveEpona()
@@ -398,7 +396,7 @@ namespace mod::game_patch
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Give Epona");
 
 		// Set Epona tamed
-		scratchPadPtr->eventBits[0x6] |= 0x1;
+		gameInfo.scratchPad.eventBits[0x6] |= 0x1;
 	}
 
 	void giveMasterSword()
@@ -409,7 +407,7 @@ namespace mod::game_patch
 		tools::setItemFlag(ItemFlags::Master_Sword);
 
 		// Equip Master sword (0x49 / 73)
-		scratchPadPtr->equipedItems.sword = 0x49;
+		gameInfo.scratchPad.equipedItems.sword = 0x49;
 	}
 
 	void giveMidna()
@@ -417,7 +415,7 @@ namespace mod::game_patch
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Give Midna (sewers)");
 
 		// Set Midna sewers flag
-		scratchPadPtr->eventBits[0xC] |= 0x10;
+		gameInfo.scratchPad.eventBits[0xC] |= 0x10;
 	}
 
 	void giveMidnaTransform()
@@ -425,13 +423,13 @@ namespace mod::game_patch
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Give Midna Transform");
 
 		// Set Midna Transform flag (gets set at Master Sword)
-		scratchPadPtr->eventBits[0xD] |= 0x4;
+		gameInfo.scratchPad.eventBits[0xD] |= 0x4;
 	}
 
 	void handleMaloShop()
 	{
 		//hylian shield check
-		if ((scratchPadPtr->eventBits[0xA] & 0x8) != 0)//KB1 done
+		if ((gameInfo.scratchPad.eventBits[0xA] & 0x8) != 0)//KB1 done
 		{
 			if (!tools::checkItemFlag(ItemFlags::Null_D9))
 			{
@@ -449,7 +447,7 @@ namespace mod::game_patch
 
 		//hawkeye check		
 		//hawkeye check	
-		if ((scratchPadPtr->eventBits[0xEF] & 0x8) != 0)//Bow mini-game PoH gotten
+		if ((gameInfo.scratchPad.eventBits[0xEF] & 0x8) != 0)//Bow mini-game PoH gotten
 		{
 			if (!tools::checkItemFlag(ItemFlags::Null_D8))
 			{
@@ -482,6 +480,9 @@ namespace mod::game_patch
 
 	void skipTextAndCS()
 	{
+		tp::d_com_inf_game::AllAreaNodes* allAreaNodesPtr = &gameInfo.scratchPad.allAreaNodes;
+		tp::d_com_inf_game::ScratchPad* scratchPadPtr = &gameInfo.scratchPad;
+
 		allAreaNodesPtr->Ordon.unk_0[0x9] |= 0xAA; //exit shield house CS watched, day 3 intro CS, bee nest CS, Ranch first time CS
 		allAreaNodesPtr->Ordon.unk_0[0xA] |= 0xF; //Ilia spring CS, Ordon Village CS 
 		allAreaNodesPtr->Ordon.unk_0[0xD] |= 0x82; //Approach Faron Twilight CS, Shield house intro cs
@@ -586,8 +587,8 @@ namespace mod::game_patch
 		allAreaNodesPtr->Hyrule_Castle.unk_0[0x16] |= 0x1; //lone darknut room se torch cs
 		allAreaNodesPtr->Hyrule_Castle.unk_0[0x17] |= 0x80; //lone darknut room me torch watched
 
-		scratchPadPtr->eventBits[0x3] |= 0x10; //Jaggle Calls out to link
-		scratchPadPtr->eventBits[0x6] |= 0xC0; //CS after beating Ordon Shadow
+		scratchPadPtr->eventBits[0x3] |= 0x90; //Jaggle Calls out to link, talked to squirrel as wolf in Ordon
+		scratchPadPtr->eventBits[0x6] |= 0xC0; //CS after beating Ordon Shadow, cs after entering Faron twilight
 		scratchPadPtr->eventBits[0x10] |= 0x2; //Talked to Jaggle after climbing vines
 		scratchPadPtr->eventBits[0x5E] |= 0x10; //Midna Text After Beating Forest Temple
 		scratchPadPtr->eventBits[0x40] |= 0x8; //have been to desert (prevents cannon warp crash)
