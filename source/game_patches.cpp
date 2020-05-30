@@ -227,16 +227,16 @@ namespace mod::game_patch
 	{
 		if (Singleton::getInstance()->isBossKeyseyEnabled == 1)
 		{
-			tp::d_com_inf_game::AllAreaNodes* allAreaNodesPtr = &gameInfo.scratchPad.allAreaNodes;
-			allAreaNodesPtr->Forest_Temple.dungeon.bigKeyGotten = 0b1; //unlock Diababa Door
-			allAreaNodesPtr->Goron_Mines.dungeon.bigKeyGotten = 0b1; //unlock Fryus Door
-			allAreaNodesPtr->Lakebed_Temple.dungeon.bigKeyGotten = 0b1; //unlock Morpheel Door
-			allAreaNodesPtr->Arbiters_Grounds.dungeon.bigKeyGotten = 0b1; //unlock Stallord Door
-			allAreaNodesPtr->Snowpeak_Ruins.dungeon.bigKeyGotten = 0b1; //unlock Blizzetta Door
-			allAreaNodesPtr->Temple_of_Time.dungeon.bigKeyGotten = 0b1; //unlock Armaghoma Door
-			allAreaNodesPtr->City_in_the_Sky.dungeon.bigKeyGotten = 0b1; //unlock Argorok Door
-			allAreaNodesPtr->Palace_of_Twilight.dungeon.bigKeyGotten = 0b1; //unlock Zant Door
-			allAreaNodesPtr->Hyrule_Castle.dungeon.bigKeyGotten = 0b1; //unlock Ganon Door
+			tp::d_com_inf_game::AllAreaNodes* dungeonAreaNodesPtr = &gameInfo.scratchPad.allAreaNodes;
+			dungeonAreaNodesPtr->Forest_Temple.dungeon.bigKeyGotten = 0b1; //unlock Diababa Door
+			dungeonAreaNodesPtr->Goron_Mines.dungeon.bigKeyGotten = 0b1; //unlock Fryus Door
+			dungeonAreaNodesPtr->Lakebed_Temple.dungeon.bigKeyGotten = 0b1; //unlock Morpheel Door
+			dungeonAreaNodesPtr->Arbiters_Grounds.dungeon.bigKeyGotten = 0b1; //unlock Stallord Door
+			dungeonAreaNodesPtr->Snowpeak_Ruins.dungeon.bigKeyGotten = 0b1; //unlock Blizzetta Door
+			dungeonAreaNodesPtr->Temple_of_Time.dungeon.bigKeyGotten = 0b1; //unlock Armaghoma Door
+			dungeonAreaNodesPtr->City_in_the_Sky.dungeon.bigKeyGotten = 0b1; //unlock Argorok Door
+			dungeonAreaNodesPtr->Palace_of_Twilight.dungeon.bigKeyGotten = 0b1; //unlock Zant Door
+			dungeonAreaNodesPtr->Hyrule_Castle.dungeon.bigKeyGotten = 0b1; //unlock Ganon Door
 		}
 	}
 	
@@ -428,20 +428,21 @@ namespace mod::game_patch
 
 	void handleMaloShop()
 	{
+		tp::d_com_inf_game::AreaNodes* maloLocalAreaNodesPtr = &gameInfo.localAreaNodes;
 		//hylian shield check
 		if ((gameInfo.scratchPad.eventBits[0xA] & 0x8) != 0)//KB1 done
 		{
 			if (!tools::checkItemFlag(ItemFlags::Null_D9))
 			{
 				strcpy(sysConsolePtr->consoleLine[20].line, "-> selling hylian shield");
-				gameInfo.localAreaNodes.unk_0[0xC] &= ~0x2;//unset flag for hylian shield bought
-				gameInfo.localAreaNodes.unk_0[0x13] |= 0x40;//set flag for hylian shield on counter
-				gameInfo.localAreaNodes.unk_0[0x15] &= ~0x40;//unset flag for red potion on right
+				maloLocalAreaNodesPtr->unk_0[0xC] &= ~0x2;//unset flag for hylian shield bought
+				maloLocalAreaNodesPtr->unk_0[0x13] |= 0x40;//set flag for hylian shield on counter
+				maloLocalAreaNodesPtr->unk_0[0x15] &= ~0x40;//unset flag for red potion on right
 			}
 			else
 			{
-				gameInfo.localAreaNodes.unk_0[0xC] |= 0x2;//set flag for hylian shield bought
-				gameInfo.localAreaNodes.unk_0[0x13] &= ~0x40;//unset flag for hylian shield on counter
+				maloLocalAreaNodesPtr->unk_0[0xC] |= 0x2;//set flag for hylian shield bought
+				maloLocalAreaNodesPtr->unk_0[0x13] &= ~0x40;//unset flag for hylian shield on counter
 			}
 		}
 
@@ -451,27 +452,27 @@ namespace mod::game_patch
 		{
 			if (!tools::checkItemFlag(ItemFlags::Null_D8))
 			{
-				gameInfo.localAreaNodes.unk_0[0xC] |= 0x40;//set flag for hawkeye on counter
-				gameInfo.localAreaNodes.unk_0[0xC] &= ~0x20;//unset flag for arrows on counter (else causes crash)
-				gameInfo.localAreaNodes.unk_0[0xD] &= ~0x8;//unset flag for hawkeye sold out
-				gameInfo.localAreaNodes.unk_0[0x15] &= ~0x10;//unset flag for red potion on left
+				maloLocalAreaNodesPtr->unk_0[0xC] |= 0x40;//set flag for hawkeye on counter
+				maloLocalAreaNodesPtr->unk_0[0xC] &= ~0x20;//unset flag for arrows on counter (else causes crash)
+				maloLocalAreaNodesPtr->unk_0[0xD] &= ~0x8;//unset flag for hawkeye sold out
+				maloLocalAreaNodesPtr->unk_0[0x15] &= ~0x10;//unset flag for red potion on left
 			}
 			else
 			{
-				gameInfo.localAreaNodes.unk_0[0xC] &= ~0x40;//unset flag for hawkeye on counter
+				maloLocalAreaNodesPtr->unk_0[0xC] &= ~0x40;//unset flag for hawkeye on counter
 				if (tools::checkItemFlag(ItemFlags::Null_D9))
 				{
-					gameInfo.localAreaNodes.unk_0[0xC] |= 0x20;//set flag for arrows on counter
-					gameInfo.localAreaNodes.unk_0[0x15] |= 0x40;//set flag for red potion on right
-					gameInfo.localAreaNodes.unk_0[0x15] &= ~0x10;//unset flag for red potion on left
-					gameInfo.localAreaNodes.unk_0[0xD] |= 0x8;//set flag for hawkeye sold out
+					maloLocalAreaNodesPtr->unk_0[0xC] |= 0x20;//set flag for arrows on counter
+					maloLocalAreaNodesPtr->unk_0[0x15] |= 0x40;//set flag for red potion on right
+					maloLocalAreaNodesPtr->unk_0[0x15] &= ~0x10;//unset flag for red potion on left
+					maloLocalAreaNodesPtr->unk_0[0xD] |= 0x8;//set flag for hawkeye sold out
 				}
 				else
 				{
-					gameInfo.localAreaNodes.unk_0[0xC] &= ~0x20;//unset flag for arrows on counter
-					gameInfo.localAreaNodes.unk_0[0x15] &= ~0x40;//unset flag for red potion on right
-					gameInfo.localAreaNodes.unk_0[0x15] |= 0x10;//set flag for red potion on left
-					gameInfo.localAreaNodes.unk_0[0xD] &= ~0x8;//unset flag for hawkeye sold out
+					maloLocalAreaNodesPtr->unk_0[0xC] &= ~0x20;//unset flag for arrows on counter
+					maloLocalAreaNodesPtr->unk_0[0x15] &= ~0x40;//unset flag for red potion on right
+					maloLocalAreaNodesPtr->unk_0[0x15] |= 0x10;//set flag for red potion on left
+					maloLocalAreaNodesPtr->unk_0[0xD] &= ~0x8;//unset flag for hawkeye sold out
 
 				}
 			}
@@ -480,8 +481,21 @@ namespace mod::game_patch
 
 	void skipTextAndCS()
 	{
-		tp::d_com_inf_game::AllAreaNodes* allAreaNodesPtr = &gameInfo.scratchPad.allAreaNodes;
+		//Set Event Bits
 		tp::d_com_inf_game::ScratchPad* scratchPadPtr = &gameInfo.scratchPad;
+		scratchPadPtr->eventBits[0x3] |= 0x90; //Jaggle Calls out to link, talked to squirrel as wolf in Ordon
+		scratchPadPtr->eventBits[0x6] |= 0xC0; //CS after beating Ordon Shadow, cs after entering Faron twilight
+		scratchPadPtr->eventBits[0x10] |= 0x2; //Talked to Jaggle after climbing vines
+		scratchPadPtr->eventBits[0x5E] |= 0x10; //Midna Text After Beating Forest Temple
+		scratchPadPtr->eventBits[0x40] |= 0x8; //have been to desert (prevents cannon warp crash)
+		scratchPadPtr->eventBits[0x1B] = 0x78; //skip the monkey escort
+		scratchPadPtr->eventBits[0x22] = 0x1; //Plumm initial CS watched
+		scratchPadPtr->eventBits[0x38] = 0x6; //Enter Hena Cabin CS
+		scratchPadPtr->eventBits[0x42] |= 0x1; //Watched post ToT Ooccoo CS
+		scratchPadPtr->eventBits[0x3E] |= 0x2; //city OoCCoo CS watched
+		
+		//Set Area Node Flags
+		tp::d_com_inf_game::AllAreaNodes* allAreaNodesPtr = &scratchPadPtr->allAreaNodes;
 
 		allAreaNodesPtr->Ordon.unk_0[0x9] |= 0xAA; //exit shield house CS watched, day 3 intro CS, bee nest CS, Ranch first time CS
 		allAreaNodesPtr->Ordon.unk_0[0xA] |= 0xF; //Ilia spring CS, Ordon Village CS 
@@ -495,13 +509,6 @@ namespace mod::game_patch
 		allAreaNodesPtr->Sewers.unk_0[0xA] |= 0x41; //zelda tower intro cs, outside top door intro cs 
 		allAreaNodesPtr->Sewers.unk_0[0xB] |= 0x38; //other side of fence cs, top of stairway cs watched, stairway intro cs
 		allAreaNodesPtr->Sewers.unk_0[0xF] |= 0x11; //midna cs after digging out watched, midna text when approaching first rooftop guard
-
-		gameInfo.localAreaNodes.unk_0[0xB] |= 0x4;//give N faron warp
-		gameInfo.localAreaNodes.unk_0[0x8] = 0xFF;//give midna jumps in mist area
-		gameInfo.localAreaNodes.unk_0[0xC] |= 0x80;//set flag for midna to think you followed the monkey in the mist
-		gameInfo.localAreaNodes.unk_0[0x12] |= 0x4;//mark read the midna text when you warp to N Faron for bridge
-		gameInfo.localAreaNodes.unk_0[0xF] |= 0x8;//set flag for midna text after twilight
-		gameInfo.localAreaNodes.unk_0[0xE] |= 0x8;//cs after entering Faron
 
 		allAreaNodesPtr->Eldin.unk_0[0x9] |= 0x20;//give death mountain warp
 		allAreaNodesPtr->Eldin.unk_0[0x14] |= 1;//give midna jumps for top of sanctuary
@@ -586,16 +593,15 @@ namespace mod::game_patch
 		allAreaNodesPtr->Hyrule_Castle.unk_0[0x14] |= 0xB; //Midna text post KB4, lizalfos Room CS, midna text after graveyard SK
 		allAreaNodesPtr->Hyrule_Castle.unk_0[0x16] |= 0x1; //lone darknut room se torch cs
 		allAreaNodesPtr->Hyrule_Castle.unk_0[0x17] |= 0x80; //lone darknut room me torch watched
+		
+		//Set Local Area Node flags
+		tp::d_com_inf_game::AreaNodes* csLocalAreaNodesPtr = &gameInfo.localAreaNodes;
+		csLocalAreaNodesPtr->unk_0[0xB] |= 0x4;//give N faron warp
+		csLocalAreaNodesPtr->unk_0[0x8] = 0xFF;//give midna jumps in mist area
+		csLocalAreaNodesPtr->unk_0[0xC] |= 0x80;//set flag for midna to think you followed the monkey in the mist
+		csLocalAreaNodesPtr->unk_0[0x12] |= 0x4;//mark read the midna text when you warp to N Faron for bridge
+		csLocalAreaNodesPtr->unk_0[0xF] |= 0x8;//set flag for midna text after twilight
+		csLocalAreaNodesPtr->unk_0[0xE] |= 0x9;//cs after entering Faron,spring cs with spirit
 
-		scratchPadPtr->eventBits[0x3] |= 0x90; //Jaggle Calls out to link, talked to squirrel as wolf in Ordon
-		scratchPadPtr->eventBits[0x6] |= 0xC0; //CS after beating Ordon Shadow, cs after entering Faron twilight
-		scratchPadPtr->eventBits[0x10] |= 0x2; //Talked to Jaggle after climbing vines
-		scratchPadPtr->eventBits[0x5E] |= 0x10; //Midna Text After Beating Forest Temple
-		scratchPadPtr->eventBits[0x40] |= 0x8; //have been to desert (prevents cannon warp crash)
-		scratchPadPtr->eventBits[0x1B] = 0x78; //skip the monkey escort
-		scratchPadPtr->eventBits[0x22] = 0x1; //Plumm initial CS watched
-		scratchPadPtr->eventBits[0x38] = 0x6; //Enter Hena Cabin CS
-		scratchPadPtr->eventBits[0x42] |= 0x1; //Watched post ToT Ooccoo CS
-		scratchPadPtr->eventBits[0x3E] |= 0x2; //city OoCCoo CS watched
 	}
 }
