@@ -76,7 +76,7 @@ namespace mod
 
 			u32 skyAngle;
 
-			u8 enableQuickTransform = 0;
+			u8 enableQuickTransform = 1;
 			
 			u8 stage = 0;
 			u8 room = 0;
@@ -175,6 +175,11 @@ namespace mod
 			void fixYetaAndYeto();
 
 			/**
+			 * fix problem where opening LBT boss door removes a key
+			 */
+			void fixLBTBossDoor();
+
+			/**
 			 * gives the unlocked scent that can be seen in the current area (defaults to most advanced one obtained)
 			 */
 			void giveAllScents();
@@ -189,11 +194,6 @@ namespace mod
 			 * checks if the current stage contains a shop
 			 */
 			bool isStageShop();
-
-			/**
-			 * fix problem where opening LBT boss door removes a key
-			 */
-			void fixLBTBossDoor();
 
 		// Private members
 		//private:

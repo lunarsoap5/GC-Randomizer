@@ -223,7 +223,7 @@ namespace mod::game_patch
 		}
 	}
 
-	void unlockBossDoors()
+	void checkBossKeysey()
 	{
 		if (Singleton::getInstance()->isBossKeyseyEnabled == 1)
 		{
@@ -348,27 +348,6 @@ namespace mod::game_patch
 		}
 	}
 
-	void fixLanayruFaron()
-	{
-		if (Singleton::getInstance()->isGateUnlockEnabled == 1)
-		{
-			strcpy(sysConsolePtr->consoleLine[20].line, "state was not 0");
-			if (gameInfo.nextStageVars.nextRoom != 5)
-			{
-				if (gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten == 0b1 || gameInfo.scratchPad.tearCounters.Faron != 16 || (tp::d_com_inf_game::current_state == 0x65 && !tools::checkItemFlag(ItemFlags::Vessel_Of_Light_Faron)))
-				{
-					return;
-				}
-				else if (gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.bossBeaten == 0b1)
-				{
-					strcpy(sysConsolePtr->consoleLine[20].line, "-> Allowing Faron Escape");
-					// reload faron woods as state 2
-					gameInfo.nextStageVars.nextState = 0x2;
-				}
-			}
-		}
-	}
-
 	void setHuman()
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set human");
@@ -483,16 +462,23 @@ namespace mod::game_patch
 	{
 		//Set Event Bits
 		tp::d_com_inf_game::ScratchPad* scratchPadPtr = &gameInfo.scratchPad;
-		scratchPadPtr->eventBits[0x3] |= 0x90; //Jaggle Calls out to link, talked to squirrel as wolf in Ordon
-		scratchPadPtr->eventBits[0x6] |= 0xC0; //CS after beating Ordon Shadow, cs after entering Faron twilight
-		scratchPadPtr->eventBits[0x10] |= 0x2; //Talked to Jaggle after climbing vines
-		scratchPadPtr->eventBits[0x5E] |= 0x10; //Midna Text After Beating Forest Temple
-		scratchPadPtr->eventBits[0x40] |= 0x8; //have been to desert (prevents cannon warp crash)
-		scratchPadPtr->eventBits[0x1B] = 0x78; //skip the monkey escort
-		scratchPadPtr->eventBits[0x22] = 0x1; //Plumm initial CS watched
-		scratchPadPtr->eventBits[0x38] = 0x6; //Enter Hena Cabin CS
-		scratchPadPtr->eventBits[0x42] |= 0x1; //Watched post ToT Ooccoo CS
-		scratchPadPtr->eventBits[0x3E] |= 0x2; //city OoCCoo CS watched
+
+		//Set Event Bits
+		u8* eventBitsPtr = &scratchPadPtr->eventBits[0];
+		eventBitsPtr[0x3] |= 0x90; //Jaggle Calls out to link, talked to squirrel as wolf in Ordon
+		eventBitsPtr[0x5] |= 0x10; //unchain wolf link
+		eventBitsPtr[0x6] |= 0xC0; //CS after beating Ordon Shadow, cs after entering Faron twilight
+		eventBitsPtr[0xC] |= 0x10; //Midna accompanies link
+		eventBitsPtr[0x10] |= 0x2; //Talked to Jaggle after climbing vines
+		eventBitsPtr[0x5E] |= 0x10; //Midna Text After Beating Forest Temple
+		eventBitsPtr[0x40] |= 0x8; //have been to desert (prevents cannon warp crash)
+		eventBitsPtr[0x1B] = 0x78; //skip the monkey escort
+		eventBitsPtr[0x22] = 0x1; //Plumm initial CS watched
+		eventBitsPtr[0x26] = 0x2; //Talked to Yeto on Snowpeak
+		eventBitsPtr[0x38] = 0x6; //Enter Hena Cabin CS
+		eventBitsPtr[0x42] |= 0x1; //Watched post ToT Ooccoo CS
+		eventBitsPtr[0x4A] |= 0x10; //Talo Cage CS
+		eventBitsPtr[0x3E] |= 0x2; //city OoCCoo CS watched
 		
 		//Set Area Node Flags
 		tp::d_com_inf_game::AllAreaNodes* allAreaNodesPtr = &scratchPadPtr->allAreaNodes;
@@ -501,7 +487,7 @@ namespace mod::game_patch
 		allAreaNodesPtr->Ordon.unk_0[0xA] |= 0xF; //Ilia spring CS, Ordon Village CS 
 		allAreaNodesPtr->Ordon.unk_0[0xD] |= 0x82; //Approach Faron Twilight CS, Shield house intro cs
 		allAreaNodesPtr->Ordon.unk_0[0xE] |= 0x84; //Midna CS after watching Bo and Jaggle Talk about shield, midna text leaving spring
-		allAreaNodesPtr->Ordon.unk_0[0xF] |= 0xC; //rusl talking to wife CS midna text before jumps to shop
+		allAreaNodesPtr->Ordon.unk_0[0xF] |= 0xC; //rusl talking to wife CS
 		allAreaNodesPtr->Ordon.unk_0[0x17] |= 0x80; //enter village as wolf CS 
 
 		allAreaNodesPtr->Sewers.unk_0[0x8] |= 0x38; //wake up in Jail CS, text after first gate, text after rooftops
@@ -513,19 +499,27 @@ namespace mod::game_patch
 		allAreaNodesPtr->Eldin.unk_0[0x9] |= 0x20;//give death mountain warp
 		allAreaNodesPtr->Eldin.unk_0[0x14] |= 1;//give midna jumps for top of sanctuary
 		allAreaNodesPtr->Eldin.unk_0[0x10] |= 0x10;//skip Graveyard CS
+		allAreaNodesPtr->Eldin.unk_0[0x11] |= 0x8;//midna text after meteor
 		allAreaNodesPtr->Eldin.unk_0[0x13] |= 0x20;//skip Kak CS
 
+		allAreaNodesPtr->Lanayru.unk_0[0xB] |= 0x81;//Zora domain frozen CS, talked to reluta
+		allAreaNodesPtr->Lanayru.unk_0[0xC] |= 0x1;//midna text after jumping to lake from bridge
+		allAreaNodesPtr->Lanayru.unk_0[0x12] |= 0x40;//midna text after frozen zd
 		allAreaNodesPtr->Lanayru.unk_0[0x16] |= 0x80;//watched Ooccoo CiTS CS
 
-		allAreaNodesPtr->Hyrule_Field.unk_0[0xF] |= 0x2; //cutscene for Gorge Bridge Watched
+		allAreaNodesPtr->Hyrule_Field.unk_0[0xB] |= 0x60; //cutscene before eldin twilight and Lanayru twilight
+		allAreaNodesPtr->Hyrule_Field.unk_0[0xD] |= 0x80; //midna text after warping gorge bridge
+		allAreaNodesPtr->Hyrule_Field.unk_0[0xF] |= 0xB; //cutscene for Gorge Bridge Watched, Ilia Scent CS, midna text after lanayru field cs
 		allAreaNodesPtr->Hyrule_Field.unk_0[0xE] |= 0x20; //cutscene for entering Field Watched
-		allAreaNodesPtr->Hyrule_Field.unk_0[0x8] |= 0x1; //Midna text for warping the bridge
-		allAreaNodesPtr->Hyrule_Field.unk_0[0x9] |= 0x20; //give Gorge Warp
+		allAreaNodesPtr->Hyrule_Field.unk_0[0x8] |= 0x81; //Midna text for warping the bridge, lanayru field CS
+		allAreaNodesPtr->Hyrule_Field.unk_0[0x9] |= 0x21; //give Gorge Warp, cs before kak
+		allAreaNodesPtr->Hyrule_Field.unk_0[0x16] |= 0x13; //midna text after entering eldin twilight, midna text after entering Lanayru twilight, midna text before eldin twilight, midna text after eldin twilight
+		allAreaNodesPtr->Hyrule_Field.unk_0[0x17] |= 0x10; //youth scent CS
 
 		allAreaNodesPtr->Sacred_Grove.unk_0[0x8] |= 0x38; //lost woods intro cs, human block cs, midna text after human block
 
 		allAreaNodesPtr->Snowpeak.unk_0[0x8] |= 0x4; //Mountiain top CS
-		allAreaNodesPtr->Snowpeak.unk_0[0xB] |= 0x1; //Snowpeak Entrance CS
+		allAreaNodesPtr->Snowpeak.unk_0[0xB] |= 0x3; //Snowpeak Entrance CS, midna text in front of SPR
 
 		allAreaNodesPtr->Castle_Town.unk_0[0xA] |= 0x4; //STAR Tent CS
 		allAreaNodesPtr->Castle_Town.unk_0[0xF] |= 0x4; //Jovani House CS
@@ -537,7 +531,7 @@ namespace mod::game_patch
 		allAreaNodesPtr->Forest_Temple.unk_0[0x9] |= 0x40; //Ook Bridge Broken
 		allAreaNodesPtr->Forest_Temple.unk_0[0xA] |= 0x3; //Boko bridge CS, one bridge CS
 		allAreaNodesPtr->Forest_Temple.unk_0[0xE] |= 0xA2; //Diababa CS, Worm Bridge CS, second monkey CS
-		allAreaNodesPtr->Forest_Temple.unk_0[0xF] |= 0x6; //Midna text for pre-diababa room and open room monkey
+		allAreaNodesPtr->Forest_Temple.unk_0[0xF] |= 0xE; //Midna text for pre-diababa room and open room monkey, Big Baba CS
 		allAreaNodesPtr->Forest_Temple.unk_0[0x10] |= 0x14; //Midna text for compass, eat open area bridge CS
 		allAreaNodesPtr->Forest_Temple.unk_0[0x14] |= 0x1; //Ook Miniboss CS
 		allAreaNodesPtr->Forest_Temple.unk_0[0x16] |= 0x2; //Entrance CS watched
@@ -546,9 +540,10 @@ namespace mod::game_patch
 		allAreaNodesPtr->Goron_Mines.unk_0[0x9] |= 0x20; // bottom magnet cs
 		allAreaNodesPtr->Goron_Mines.unk_0[0xD] |= 0x80; //outside magnet cs
 		allAreaNodesPtr->Goron_Mines.unk_0[0xE] |= 0x30; //enter tall room cs
+		allAreaNodesPtr->Goron_Mines.unk_0[0xF] |= 0x20; //open room CS
 		allAreaNodesPtr->Goron_Mines.unk_0[0x10] |= 0xCC; //lava slug room cs, outside area beamos wall cs, second magnet in crystal switch cs, crystal switch room gate
-		allAreaNodesPtr->Goron_Mines.unk_0[0x11] |= 0x38; //opening cs, first room gate cs, first room switch 1 cs
-		allAreaNodesPtr->Goron_Mines.unk_0[0x17] |= 0x3; //lava slug room cs watched, lava slug room flag
+		allAreaNodesPtr->Goron_Mines.unk_0[0x11] |= 0xB8; //opening cs, first room gate cs, first room switch 1 cs, water room magnet cs
+		allAreaNodesPtr->Goron_Mines.unk_0[0x17] |= 0xF; //lava slug room cs watched, lava slug room flag, tall room CS flags
 
 		allAreaNodesPtr->Lakebed_Temple.unk_0[0x8] |= 0x2; //water into one gear room cs, stalactite midna text 
 		allAreaNodesPtr->Lakebed_Temple.unk_0[0xF] |= 0x3; //one gear room spinning cs, two gear room spinning cs
@@ -563,17 +558,17 @@ namespace mod::game_patch
 
 		allAreaNodesPtr->Snowpeak_Ruins.unk_0[0x10] |= 0x10; //enter cannonball room cs
 		allAreaNodesPtr->Snowpeak_Ruins.unk_0[0x14] |= 0x41; //entrance cs, midna text after bedroom key
-		allAreaNodesPtr->Snowpeak_Ruins.unk_0[0x15] |= 0x22; //freezard tower cs, enter NE room cs watched
+		allAreaNodesPtr->Snowpeak_Ruins.unk_0[0x15] |= 0x2A; //freezard tower cs, enter NE room cs watched, East Courtyard Dig CS
 		allAreaNodesPtr->Snowpeak_Ruins.unk_0[0x16] |= 0x28; //midna text after cheese and pumpkin
 
 		allAreaNodesPtr->Temple_of_Time.unk_0[0x8] |= 0x80; //Midna text about missing statue 
-		allAreaNodesPtr->Temple_of_Time.unk_0[0x9] |= 0x60; //scales cs, entrance cs
+		allAreaNodesPtr->Temple_of_Time.unk_0[0x9] |= 0x3C; //scales cs, entrance cs, scales move cs
 		allAreaNodesPtr->Temple_of_Time.unk_0[0xA] |= 0x8; //statue move cs watched
 		allAreaNodesPtr->Temple_of_Time.unk_0[0xF] |= 0x8; //gate outside darknut cs
 		allAreaNodesPtr->Temple_of_Time.unk_0[0x12] |= 0xEE; //first room switch cs, 8f hall switch cs, before darknut gate open cs, elevator room switches cs, 3F hall switch cs, 2F hall switch cs
 		allAreaNodesPtr->Temple_of_Time.unk_0[0x14] |= 0x4; //darknut room gate open cs
 
-		allAreaNodesPtr->City_in_the_Sky.unk_0[0xC] |= 0xD; //fan tower cs, room before aerolfos, first room exit cs
+		allAreaNodesPtr->City_in_the_Sky.unk_0[0xC] |= 0xF; //fan tower cs, room before aerolfos, first room exit cs, entrance cs
 		allAreaNodesPtr->City_in_the_Sky.unk_0[0xD] |= 0x6; // west bridge extended cs, east bridge extended cs
 
 		allAreaNodesPtr->Palace_of_Twilight.unk_0[0x9] |= 0x4; //Phantom zant 1 cs watched
@@ -587,6 +582,7 @@ namespace mod::game_patch
 		allAreaNodesPtr->Palace_of_Twilight.unk_0[0x16] |= 0x10; //watched EW 2nd room stairs CS
 
 		allAreaNodesPtr->Hyrule_Castle.unk_0[0x9] |= 0x1; //graveyard entrance cs
+		allAreaNodesPtr->Hyrule_Castle.unk_0[0x11] |= 0xC; //east wing cs
 		allAreaNodesPtr->Hyrule_Castle.unk_0[0xe] |= 0x1; //midna text after outside gale
 		allAreaNodesPtr->Hyrule_Castle.unk_0[0x10] |= 0x24; //entrance cs, chandelier room east cs watched
 		allAreaNodesPtr->Hyrule_Castle.unk_0[0x13] |= 0x40; // Darknuts room CS
@@ -602,6 +598,10 @@ namespace mod::game_patch
 		csLocalAreaNodesPtr->unk_0[0x12] |= 0x4;//mark read the midna text when you warp to N Faron for bridge
 		csLocalAreaNodesPtr->unk_0[0xF] |= 0x8;//set flag for midna text after twilight
 		csLocalAreaNodesPtr->unk_0[0xE] |= 0x9;//cs after entering Faron,spring cs with spirit
+
+
+		//Apply Randomizer Options
+		checkBossKeysey();
 
 	}
 }

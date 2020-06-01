@@ -194,11 +194,11 @@ namespace mod
 
 		//Game info 2
 		page = hudConsole->addPage("Skips 2");
-		hudConsole->addOption(page, "Skip KB1", &Singleton::getInstance()->isKB1Skipped, 0x1);
 		hudConsole->addOption(page, "Early CiTS?", &Singleton::getInstance()->isEarlyCiTSEnabled, 0x1);
 		hudConsole->addOption(page, "Early Desert?", &Singleton::getInstance()->isEarlyDesertEnabled, 0x1);
 		hudConsole->addOption(page, "Boss Keysey?", &Singleton::getInstance()->isBossKeyseyEnabled, 0x1);
 		hudConsole->addOption(page, "No Shop Bottl?", &allowBottleItemsShopAnytime, 0x1);
+		hudConsole->addOption(page, "Fast transform?", &enableQuickTransform, 0x1);
 		//color
 		/*page = hudConsole->addPage("Tunic Color1");
 
@@ -427,8 +427,6 @@ namespace mod
 		// Skip MDH when the load happens
 		eventListener->addLoadEvent(stage::allStages[Stage_Castle_Town_Interiors], 0x6, 0xC, 0xFF, 0xFF, game_patch::skipMDH, event::LoadEventAccuracy::Stage_Room_Spawn);
 
-		// Allow Faron Escape
-		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0xFF, 0xFF, 0x0, 0xFF, game_patch::allowFaronEscape, event::LoadEventAccuracy::Stage_Room_Spawn);
 
 		//Set Bublin Camp State
 		eventListener->addLoadEvent(stage::allStages[Stage_Bublin_Camp], 0xFF, 0xFF, 0x1, 0xFF, game_patch::setBublinState, event::LoadEventAccuracy::Stage_Room_Spawn);
@@ -448,15 +446,6 @@ namespace mod
 		//Fix Lanayru Softlock
 		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0x0, 0x5, 0xE, 0xFF, game_patch::setLanayruWolf, event::LoadEventAccuracy::Stage_Room_Spawn);
 
-		//Skip KB1
-		eventListener->addLoadEvent(stage::allStages[Stage_Kakariko_Village], 0x0, 0x22, 0xA, 0xFF, game_patch::skipKB1, event::LoadEventAccuracy::Stage_Room_Spawn);
-
-		//Set the state of Faron if the player decides to do lanayru twilight before faron
-		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0xFF, 0xFF, 0x0, 0xFF, game_patch::fixLanayruFaron, event::LoadEventAccuracy::Stage_Room_Spawn);
-
-		//Sets the flags to open up the game
-		eventListener->addLoadEvent(stage::allStages[Stage_Ordon_Village], 0x1, 0x15, 0xFF, 0xFF, game_patch::unlockBossDoors, event::LoadEventAccuracy::Stage_Room);
-
 		//early CiTS
 		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::earlyCiTS, event::LoadEventAccuracy::Stage_Room_Spawn);
 
@@ -468,7 +457,9 @@ namespace mod
 
 		//sell water bombs if you skip the escort
 		eventListener->addLoadEvent(stage::allStages[Stage_Kakariko_Village], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::sellWaterBombs, event::LoadEventAccuracy::Stage_Room_Spawn);
-
+		
+		//Skip Midna Text and CS's
+		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0x1, 0x15, 0xFF, 0xFF, game_patch::skipTextAndCS, event::LoadEventAccuracy::Stage_Room_Spawn_State);
 
 
 
@@ -765,18 +756,7 @@ namespace mod
 		{
 			if (controller::checkForButtonInputSingleFrame((controller::PadInputs::Button_R | controller::PadInputs::Button_Start)))
 			{
-				if (customSeed == 0)
-				{
-					u16 lastCheckSum = chestRandomizer->checkSum;
-					do
-					{
-						chestRandomizer->generate();
-					} while (chestRandomizer->checkSum == lastCheckSum);
-				}
-				else
-				{
-					chestRandomizer->generate();
-				}
+				chestRandomizer->generate();
 			}
 
 			// Parse inputs of this frame
@@ -876,7 +856,7 @@ namespace mod
 				if (frame_counter == num_frames)
 				{
 					tools::setItemFlag(ItemFlags::Vessel_Of_Light_Faron);//set flag for vessel since we'll skip it by reloading
-					gameInfo.scratchPad.eventBits[0x6] |= 0x24; //warp the kak bridge, give map warp
+					gameInfo.scratchPad.movingActors.exploredRegions.Eldin = 0b1; // Set Eldin Map Unlocked so we can warp there
 					tools::setCutscene(true, false);
 				}
 				else
@@ -1269,7 +1249,7 @@ namespace mod
 	{
 		float linkPos[3];
 		getPlayerPos(linkPos);
-
+		
 		u8 hasEmptyBottleAlready = 1;
 		if (gameInfo.scratchPad.itemWheel.Bottle_1 != items::Item::Empty_Bottle && gameInfo.scratchPad.itemWheel.Bottle_2 != items::Item::Empty_Bottle &&
 			gameInfo.scratchPad.itemWheel.Bottle_3 != items::Item::Empty_Bottle && gameInfo.scratchPad.itemWheel.Bottle_4 != items::Item::Empty_Bottle)

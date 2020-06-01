@@ -429,7 +429,7 @@ namespace mod
 		{//set flag for having talked to Bo
 			gameInfo.scratchPad.eventBits[0x1C] |= 0x20;
 		}
-		else if (item == items::Item::Poe_Soul)
+		else if (item == items::Item::Poe_Soul && gameInfo.scratchPad.poeCount >= 1)
 		{//decrease poe counter
 			gameInfo.scratchPad.poeCount--;
 		}
@@ -438,16 +438,17 @@ namespace mod
 			if (isTwilightSkipEnabled == 1)
 			{
 				gameInfo.scratchPad.tearCounters.Faron = 16;
-				gameInfo.localAreaNodes.unk_0[0xB] |= 0x4;//give N faron warp
-				gameInfo.localAreaNodes.unk_0[0x8] = 0xFF;//give midna jumps in mist area
-				gameInfo.localAreaNodes.unk_0[0xC] |= 0x80;//set flag for midna to think you followed the monkey in the mist
-				gameInfo.scratchPad.eventBits[0x1B] = 0x78; //skip the monkey escort
-				u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
-				*tempAddress |= 0x400;//give ending blow	
-				gameInfo.localAreaNodes.unk_0[0x12] |= 0x4;//mark read the midna text when you warp to N Faron for bridge
-				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xF] |= 0x2; //cutscene for Gorge Bridge Watched
-				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0x8] |= 0x1; //Midna text for warping the bridge
-				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0x9] |= 0x20; //give Gorge Warp
+				gameInfo.scratchPad.eventBits[0x29] |= 0x4;//give ending blow	
+				
+				if (Singleton::getInstance()->isForestEscapeEnabled == 1)
+				{
+					gameInfo.scratchPad.eventBits[0x6] |= 0x26; //warp the kak bridge, give map warp, set Forest Temple Story Flag
+				}
+				else
+				{
+					gameInfo.scratchPad.eventBits[0x6] |= 0x24; //warp the kak bridge, give map warp
+				}
+
 				if (gameInfo.scratchPad.eventBits[0x5] != 0xFF)
 				{
 					gameInfo.scratchPad.eventBits[0x5] = 0xFF; //Ensure Epona is Stolen
@@ -457,14 +458,18 @@ namespace mod
 			}
 			else
 			{
-				u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
-				*tempAddress |= 0x400;//give ending blow
-				gameInfo.localAreaNodes.unk_0[0x12] |= 0x4;//mark read the midna text when you warp to N Faron for bridge
-				gameInfo.localAreaNodes.unk_0[0xC] |= 0x80;//set flag for midna to think you followed the monkey in the mist
-				gameInfo.scratchPad.eventBits[0x1B] = 0x78; //skip the monkey escort
-				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xF] |= 0x2; //cutscene for Gorge Bridge Watched
-				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0x8] |= 0x1; //Midna text for warping the bridge
-				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0x9] |= 0x20; //give Gorge Warp
+				gameInfo.scratchPad.eventBits[0x29] |= 0x4;//give ending blow
+
+				if (Singleton::getInstance()->isForestEscapeEnabled == 1)
+				{
+					gameInfo.scratchPad.eventBits[0x6] |= 0x26; //warp the kak bridge, give map warp, set Forest Temple Story Flag
+				}
+				else
+				{
+					gameInfo.scratchPad.eventBits[0x6] |= 0x24; //warp the kak bridge, give map warp
+					gameInfo.localAreaNodes.unk_0[0xF] |= 0x8;//set flag for midna text after twilight
+				}
+
 				if (gameInfo.scratchPad.eventBits[0x5] != 0xFF)
 				{
 					gameInfo.scratchPad.eventBits[0x5] = 0xFF; //Ensure Epona is Stolen
@@ -477,37 +482,22 @@ namespace mod
 			if (isTwilightSkipEnabled == 1)
 			{
 				gameInfo.scratchPad.tearCounters.Eldin = 16;
-				gameInfo.localAreaNodes.unk_0[0x9] |= 0x20;//give death mountain warp
-				gameInfo.localAreaNodes.unk_0[0x14] |= 1;//give midna jumps for top of sanctuary		
 				tools::setItemFlag(ItemFlags::Vessel_Of_Light_Eldin);//set flag for vessel since we'll skip it by reloading
+
 				gameInfo.scratchPad.eventBits[0x6] |= 0x1; //tame Epona
-				if (Singleton::getInstance()->isKB1Skipped == 1)
-				{
-					gameInfo.scratchPad.eventBits[0xA] |= 0x8; //Beat KB1
-					gameInfo.scratchPad.eventBits[0x14] |= 0x10; //Put Bo Outside
-					gameInfo.scratchPad.eventBits[0x7] = 0xCE; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
-				}
-				else
-				{
-					gameInfo.scratchPad.eventBits[0x7] = 0x46; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
-				}
+				gameInfo.scratchPad.eventBits[0xA] |= 0x8; //Beat KB1
+				gameInfo.scratchPad.eventBits[0x14] |= 0x10; //Put Bo Outside
+				gameInfo.scratchPad.eventBits[0x7] = 0xCE; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
+
 				gameInfo.nextStageVars.triggerLoad |= 1;
 				return item;
 			}
 			else
 			{
 				gameInfo.scratchPad.eventBits[0x6] |= 0x1; //tame Epona
-				if (Singleton::getInstance()->isKB1Skipped == 1)
-				{
-					gameInfo.scratchPad.eventBits[0xA] |= 0x8; //Beat KB1
-					gameInfo.scratchPad.eventBits[0x14] |= 0x10; //Put Bo Outside
-					gameInfo.scratchPad.eventBits[0x7] = 0xCE; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
-				}
-				else
-				{
-					gameInfo.scratchPad.eventBits[0x7] = 0x46; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
-				}
-
+				gameInfo.scratchPad.eventBits[0xA] |= 0x8; //Beat KB1
+				gameInfo.scratchPad.eventBits[0x14] |= 0x10; //Put Bo Outside
+				gameInfo.scratchPad.eventBits[0x7] = 0xCE; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
 				return item;
 			}
 		}
@@ -518,8 +508,7 @@ namespace mod
 				gameInfo.scratchPad.tearCounters.Lanayru = 16;
 				gameInfo.localAreaNodes.unk_0[0xA] |= 0x4;//give lake hylia warp
 				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xB] |= 0x8;//give castle town warp
-				gameInfo.scratchPad.eventBits[0x40] |= 0x8; //have been to desert (prevents cannon warp crash)
-				gameInfo.scratchPad.allAreaNodes.Gerudo_Desert.unk_0[0x13] |= 0x40;//watched the CS when entering the desert
+				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xF] |= 0x10;//open south CT Shortcut to Faron
 				u16* secondTempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0xF7]);
 				*secondTempAddress |= 0x1F4;//make it so you only have to donate 500 Rupees to Charlo
 				tools::setItemFlag(ItemFlags::Vessel_Of_Light_Lanayru);//set flag for vessel since we'll skip it by reloading
@@ -528,8 +517,8 @@ namespace mod
 			}
 			else
 			{
-				gameInfo.scratchPad.eventBits[0x40] |= 0x8; //have been to desert (prevents cannon warp crash)
-				gameInfo.scratchPad.allAreaNodes.Gerudo_Desert.unk_0[0x13] |= 0x40;//watched the CS when entering the desert
+				gameInfo.scratchPad.eventBits[0x30] |= 0x40; //gave springwater to south CT goron
+				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xF] |= 0x10;//open south CT Shortcut to Faron
 				u16* secondTempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0xF7]);
 				*secondTempAddress |= 0x1F4;//make it so you only have to donate 500 Rupees to Charlo
 				return item;
@@ -633,9 +622,13 @@ namespace mod
 							{
 								snprintf(lastDestInfo, 50, "%s->%d->%x", sourceCheck->destination->stage, sourceCheck->destination->room, sourceCheck->destination->itemID);
 								item = sourceCheck->destination->itemID;
-								if (sourceCheck->type == item::ItemType::Bug || sourceCheck->type == item::ItemType::Shop || sourceCheck->itemID == items::Item::Heart_Container)
+								if (sourceCheck->type == item::ItemType::Bug || sourceCheck->itemID == items::Item::Heart_Container)
 								{
 									sourceCheck->destination = &item::checks[263];//green rupee
+								}
+								else if (sourceCheck->type == item::ItemType::Shop)
+								{
+									sourceCheck->destination = &item::checks[i];
 								}
 								else if (sourceCheck->itemID != items::Item::Big_Quiver && sourceCheck->itemID != items::Item::Giant_Quiver && // quiver checks called twice somehow
 									sourceCheck->type != item::ItemType::Dungeon && sourceCheck->type != item::ItemType::Gear && sourceCheck->type != item::ItemType::Equip) // some checks are called twice i don't wanna list them all, but dungeon items, gear, and equipable items only have one check each intheir stage
@@ -913,12 +906,24 @@ namespace mod
 									{//for when MS and light Ms are implemented
 										item = items::Item::Master_Sword;
 									}
+									else if (item == items::Item::Dominion_Rod && tools::checkItemFlag(ItemFlags::Dominion_Rod))
+									{//for when powered dominion rod is implemented
+									item = items::Item::Dominion_Rod_Uncharged;
+									}
+									else if (item == items::Item::Dominion_Rod_Uncharged && !tools::checkItemFlag(ItemFlags::Dominion_Rod))
+									{//for when MS and light Ms are implemented
+									item = items::Item::Dominion_Rod;
+									}
 								}
 								if (item == items::Item::Dominion_Rod)
 								{
 									item = items::Item::Dominion_Rod;
 									gameInfo.scratchPad.eventBits[0x25] |= 0x80;//set flag to charge dominion rod
 								}
+								/*if (item == items::Item::Dominion_Rod_Uncharged)
+								{//giving Dominion_Rod_Uncharged is the same as giving Dominion_Rod but there's no text (yet)
+									gameInfo.scratchPad.eventBits[0x25] |= 0x80;//set flag to charge dominion rod
+								}*/   //will be changed once we implement custom chests
 								else if (item == items::Item::Poe_Soul && gameInfo.scratchPad.poeCount < 60)
 								{//increase poe counter
 									gameInfo.scratchPad.poeCount++;
@@ -926,6 +931,41 @@ namespace mod
 								else if (item == items::Item::Shadow_Crystal)
 								{//shadow crystal doesn't actually do anything so we have to do its functionnality ourselves
 									game_patch::giveMidnaTransform();
+								}
+								else if (item == 0xE1)
+								{
+									u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
+									*tempAddress |= 0x400;//give ending blow
+								}
+								else if (item == 0xE2)
+								{
+									u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
+									*tempAddress |= 0x800;//give shield attack
+								}
+								else if (item == 0xE3)
+								{
+									u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
+									*tempAddress |= 0x200;//give back slice
+								}
+								else if (item == 0xE4)
+								{
+									u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
+									*tempAddress |= 0x100;//give helm splitter
+								}
+								else if (item == 0xE5)
+								{
+									u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
+									*tempAddress |= 0x80;//give mortal draw
+								}
+								else if (item == 0xE6)
+								{
+									u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
+									*tempAddress |= 0x40;//give jump strike
+								}
+								else if (item == 0xE7)
+								{
+									u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
+									*tempAddress |= 0x20;//give great spin
 								}
 								else if (item == items::Item::Bed_Key)
 								{

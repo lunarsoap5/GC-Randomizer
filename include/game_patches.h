@@ -150,11 +150,6 @@ namespace mod::game_patch
 	void setLanayruWolf();
 
 	/**
-	 * sets the flag for KB1 to be complete
-	 */
-	void skipKB1();
-
-	/**
 	 * sets Faron state after warping from lanayru
 	 */
 	void fixLanayruFaron();
@@ -188,4 +183,9 @@ namespace mod::game_patch
 	 * check whether you have MS before being allowed to enter the desert
 	 */
 	void sellWaterBombs();
+
+	/**
+	 * skips midna text and story CS
+	 */
+	void skipTextAndCS();
 }
