@@ -434,95 +434,68 @@ namespace mod
 			gameInfo.scratchPad.poeCount--;
 		}
 		else if (item == items::Item::Vessel_Of_Light_Faron)
-		{//set tear counter to 16
-			if (isTwilightSkipEnabled == 1)
+		{
+			if (Singleton::getInstance()->isTwilightSkipped == 1)
 			{
-				gameInfo.scratchPad.tearCounters.Faron = 16;
-				gameInfo.scratchPad.eventBits[0x29] |= 0x4;//give ending blow	
-				
-				if (Singleton::getInstance()->isForestEscapeEnabled == 1)
-				{
-					gameInfo.scratchPad.eventBits[0x6] |= 0x26; //warp the kak bridge, give map warp, set Forest Temple Story Flag
-				}
-				else
-				{
-					gameInfo.scratchPad.eventBits[0x6] |= 0x24; //warp the kak bridge, give map warp
-				}
+				//Set Faron Twilight Flags
+				scratchPadPtr->clearedTwilights.Faron = 0b1; //Clear Faron Twilight
+				tools::setItemFlag(ItemFlags::Vessel_Of_Light_Faron);
+				scratchPadPtr->tearCounters.Faron = 16;
+				eventBitsPtr[0x29] |= 0x4;//give ending blow	
+				eventBitsPtr[0x5] = 0xFF; //Ensure Epona is Stolen, give Midna Charge
+				eventBitsPtr[0x6] |= 0x10; //Faron Twilight Progression flag
 
-				if (gameInfo.scratchPad.eventBits[0x5] != 0xFF)
-				{
-					gameInfo.scratchPad.eventBits[0x5] = 0xFF; //Ensure Epona is Stolen
-				}
+				//Set Eldin Twilight Flags
+				scratchPadPtr->clearedTwilights.Eldin = 0b1; // Clear Eldin Twilight
+				tools::setItemFlag(ItemFlags::Vessel_Of_Light_Eldin);
+				eventBitsPtr[0x6] |= 0x1; //tame Epona
+				eventBitsPtr[0xA] |= 0x8; //Beat KB1
+				eventBitsPtr[0x14] |= 0x10; //Put Bo Outside
+				eventBitsPtr[0x7] = 0xD6; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched, Eldin Twilight Story Progression Flag
+
+				//Set Lanayru Twilight Flags
+				scratchPadPtr->clearedTwilights.Lanayru = 0b1; // Clear Lanayru Twilight
+				tools::setItemFlag(ItemFlags::Vessel_Of_Light_Lanayru);
+				allAreaNodesPtr->Hyrule_Field.unk_0[0xF] |= 0x10;//open south CT Shortcut to Faron
+				eventBitsPtr[0x30] |= 0x40; //gave springwater to south CT goron
+				eventBitsPtr[0x8] |= 0x80; //ZD Thawed
+				eventBitsPtr[0xC] |= 0x2; //Lanayru Twilight Story Progression Flag
+
+				//Unlock Map Regions
+				scratchPadPtr->movingActors.exploredRegions.Snowpeak = 0b1;
+				scratchPadPtr->movingActors.exploredRegions.Desert = 0b1;
+				scratchPadPtr->movingActors.exploredRegions.Lanayru = 0b1;
+				scratchPadPtr->movingActors.exploredRegions.Eldin = 0b1;
+				scratchPadPtr->movingActors.exploredRegions.Faron = 0b1;
+				scratchPadPtr->movingActors.exploredRegions.Ordon = 0b1;
+
+				//Unlock Warps
+				allAreaNodesPtr->Ordon.unk_0[0xD] = 0x10; // give Ordon Spring Warp
+				gameInfo.localAreaNodes.unk_0[0x13] = 0x80;//give S faron warp
+				gameInfo.localAreaNodes.unk_0[0xB] = 0x4;//give N faron warp
+				allAreaNodesPtr->Eldin.unk_0[0x9] |= 0x20; // give Death Mountain Warp
+				allAreaNodesPtr->Eldin.unk_0[0x8] |= 0x80; // give Kakariko Warp
+				allAreaNodesPtr->Hyrule_Field.unk_0[0x17] = 0x8; //give Bridge of Eldin Warp
+				allAreaNodesPtr->Hyrule_Field.unk_0[0xB] |= 0x8;//give castle town warp
+				allAreaNodesPtr->Hyrule_Field.unk_0[0x9] |= 0x20; //give Gorge Warp
+				allAreaNodesPtr->Lanayru.unk_0[0xB] |= 0x4; // give Zora's Domain Warp
+				allAreaNodesPtr->Lanayru.unk_0[0xA] |= 0x4;//give lake hylia warp
+
 				gameInfo.nextStageVars.triggerLoad |= 1;
 				return item;
 			}
-			else
-			{
-				gameInfo.scratchPad.eventBits[0x29] |= 0x4;//give ending blow
-
-				if (Singleton::getInstance()->isForestEscapeEnabled == 1)
-				{
-					gameInfo.scratchPad.eventBits[0x6] |= 0x26; //warp the kak bridge, give map warp, set Forest Temple Story Flag
-				}
-				else
-				{
-					gameInfo.scratchPad.eventBits[0x6] |= 0x24; //warp the kak bridge, give map warp
-					gameInfo.localAreaNodes.unk_0[0xF] |= 0x8;//set flag for midna text after twilight
-				}
-
-				if (gameInfo.scratchPad.eventBits[0x5] != 0xFF)
-				{
-					gameInfo.scratchPad.eventBits[0x5] = 0xFF; //Ensure Epona is Stolen
-				}
-				return item;
-			}
+			tools::setItemFlag(ItemFlags::Vessel_Of_Light_Faron);
+			return item;
 		}
 		else if (item == items::Item::Vessel_Of_Light_Eldin)
-		{//set tear counter to 16
-			if (isTwilightSkipEnabled == 1)
-			{
-				gameInfo.scratchPad.tearCounters.Eldin = 16;
-				tools::setItemFlag(ItemFlags::Vessel_Of_Light_Eldin);//set flag for vessel since we'll skip it by reloading
-
-				gameInfo.scratchPad.eventBits[0x6] |= 0x1; //tame Epona
-				gameInfo.scratchPad.eventBits[0xA] |= 0x8; //Beat KB1
-				gameInfo.scratchPad.eventBits[0x14] |= 0x10; //Put Bo Outside
-				gameInfo.scratchPad.eventBits[0x7] = 0xCE; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
-
-				gameInfo.nextStageVars.triggerLoad |= 1;
-				return item;
-			}
-			else
-			{
-				gameInfo.scratchPad.eventBits[0x6] |= 0x1; //tame Epona
-				gameInfo.scratchPad.eventBits[0xA] |= 0x8; //Beat KB1
-				gameInfo.scratchPad.eventBits[0x14] |= 0x10; //Put Bo Outside
-				gameInfo.scratchPad.eventBits[0x7] = 0xCE; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
-				return item;
-			}
+		{
+			tools::setItemFlag(ItemFlags::Vessel_Of_Light_Eldin);
+			return item;
 		}
 		else if (item == items::Item::Vessel_Of_Light_Lanayru)
-		{//set tear counter to 16
-			if (isTwilightSkipEnabled == 1)
-			{
-				gameInfo.scratchPad.tearCounters.Lanayru = 16;
-				gameInfo.localAreaNodes.unk_0[0xA] |= 0x4;//give lake hylia warp
-				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xB] |= 0x8;//give castle town warp
-				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xF] |= 0x10;//open south CT Shortcut to Faron
-				u16* secondTempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0xF7]);
-				*secondTempAddress |= 0x1F4;//make it so you only have to donate 500 Rupees to Charlo
-				tools::setItemFlag(ItemFlags::Vessel_Of_Light_Lanayru);//set flag for vessel since we'll skip it by reloading
-				gameInfo.nextStageVars.triggerLoad |= 1;
-				return item;
-			}
-			else
-			{
-				gameInfo.scratchPad.eventBits[0x30] |= 0x40; //gave springwater to south CT goron
-				gameInfo.scratchPad.allAreaNodes.Hyrule_Field.unk_0[0xF] |= 0x10;//open south CT Shortcut to Faron
-				u16* secondTempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0xF7]);
-				*secondTempAddress |= 0x1F4;//make it so you only have to donate 500 Rupees to Charlo
-				return item;
-			}
+		{
+			tools::setItemFlag(ItemFlags::Vessel_Of_Light_Lanayru);
+			return item;
 		}
 		else if (item == items::Item::Empty_Bomb_Bag)
 		{//set flag for Barne's bomb bag check
@@ -733,10 +706,11 @@ namespace mod
 										}
 										else if (tools::checkItemFlag(ItemFlags::Null_DB))
 										{
-											gameInfo.scratchPad.eventBits[0x25] |= 0x40; //Set the Owl Statue in Kak to be able to be moved
-											gameInfo.scratchPad.eventBits[0x5F] |= 0x20; //Shad leaves so you can warp
+											gameInfo.scratchPad.eventBits[0x60] |= 0x4; //set shad to be back in the basement
 											if (Singleton::getInstance()->isCannonRepaired == 0)
 											{
+												gameInfo.scratchPad.eventBits[0x25] |= 0x40; //Set the Owl Statue in Kak to be able to be moved
+												gameInfo.scratchPad.eventBits[0x5F] |= 0x20; //Shad leaves so you can warp
 												gameInfo.scratchPad.eventBits[0x3B] |= 0x8; //repairs Cannon at lake
 												Singleton::getInstance()->isCannonRepaired = 1;
 											}
@@ -776,10 +750,11 @@ namespace mod
 										}
 										else if (tools::checkItemFlag(ItemFlags::Null_DB))
 										{
-											gameInfo.scratchPad.eventBits[0x25] |= 0x40; //Set the Owl Statue in Kak to be able to be moved
-											gameInfo.scratchPad.eventBits[0x5F] |= 0x20; //Shad leaves so you can warp
+											gameInfo.scratchPad.eventBits[0x60] |= 0x4; //set shad to be back in the basement
 											if (Singleton::getInstance()->isCannonRepaired == 0)
 											{
+												gameInfo.scratchPad.eventBits[0x25] |= 0x40; //Set the Owl Statue in Kak to be able to be moved
+												gameInfo.scratchPad.eventBits[0x5F] |= 0x20; //Shad leaves so you can warp
 												gameInfo.scratchPad.eventBits[0x3B] |= 0x8; //repairs Cannon at lake
 												Singleton::getInstance()->isCannonRepaired = 1;
 											}
@@ -915,15 +890,10 @@ namespace mod
 									item = items::Item::Dominion_Rod;
 									}
 								}
-								if (item == items::Item::Dominion_Rod)
-								{
-									item = items::Item::Dominion_Rod;
-									gameInfo.scratchPad.eventBits[0x25] |= 0x80;//set flag to charge dominion rod
-								}
-								/*if (item == items::Item::Dominion_Rod_Uncharged)
+								if (item == items::Item::Dominion_Rod_Uncharged)
 								{//giving Dominion_Rod_Uncharged is the same as giving Dominion_Rod but there's no text (yet)
 									gameInfo.scratchPad.eventBits[0x25] |= 0x80;//set flag to charge dominion rod
-								}*/   //will be changed once we implement custom chests
+								}  //will be changed once we implement custom chests
 								else if (item == items::Item::Poe_Soul && gameInfo.scratchPad.poeCount < 60)
 								{//increase poe counter
 									gameInfo.scratchPad.poeCount++;
@@ -934,38 +904,31 @@ namespace mod
 								}
 								else if (item == 0xE1)
 								{
-									u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
-									*tempAddress |= 0x400;//give ending blow
+									gameInfo.scratchPad.eventBits[0x29] |= 0x4;//give ending blow
 								}
 								else if (item == 0xE2)
 								{
-									u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
-									*tempAddress |= 0x800;//give shield attack
+									gameInfo.scratchPad.eventBits[0x29] |= 0x8;//give shield attack
 								}
 								else if (item == 0xE3)
 								{
-									u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
-									*tempAddress |= 0x200;//give back slice
+									gameInfo.scratchPad.eventBits[0x29] |= 0x2;//give back slice
 								}
 								else if (item == 0xE4)
 								{
-									u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
-									*tempAddress |= 0x100;//give helm splitter
+									gameInfo.scratchPad.eventBits[0x29] |= 0x1;//give helm splitter
 								}
 								else if (item == 0xE5)
 								{
-									u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
-									*tempAddress |= 0x80;//give mortal draw
+									gameInfo.scratchPad.eventBits[0x2A] |= 0x80;//give mortal draw
 								}
 								else if (item == 0xE6)
 								{
-									u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
-									*tempAddress |= 0x40;//give jump strike
+									gameInfo.scratchPad.eventBits[0x2A] |= 0x40;//give jump strike
 								}
 								else if (item == 0xE7)
 								{
-									u16* tempAddress = reinterpret_cast<u16*>(&gameInfo.scratchPad.eventBits[0x29]);
-									*tempAddress |= 0x20;//give great spin
+									gameInfo.scratchPad.eventBits[0x2A] |= 0x20;//give great spin
 								}
 								else if (item == items::Item::Bed_Key)
 								{

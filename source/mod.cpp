@@ -4,6 +4,7 @@
 #include "systemConsole.h"
 #include "patch.h"
 #include "controller.h"
+#include "customChecks.h"
 #include "tools.h"
 #include "array.h"
 #include "eventListener.h"
@@ -25,6 +26,8 @@
 #include <tp/f_op_actor_mng.h>
 #include <tp/d_a_alink.h>
 #include <tp/d_save.h>
+#include <tp/d_stage.h>
+#include <tp/dzx.h>
 #include <tp/JFWSystem.h>
 #include <tp/d_kankyo.h>
 #include <tp/d_msg_flow.h>
@@ -170,7 +173,7 @@ namespace mod
 		hudConsole->addOption(page, "MDH Skip?", &Singleton::getInstance()->isMDHSkipEnabled, 0x1);
 		hudConsole->addOption(page, "Faron Escape?", &Singleton::getInstance()->isForestEscapeEnabled, 0x1);
 		hudConsole->addOption(page, "Open HF gates?", &Singleton::getInstance()->isGateUnlockEnabled, 0x1);
-		hudConsole->addOption(page, "Skip Twilight?", &chestRandomizer->isTwilightSkipEnabled, 0x1);
+		hudConsole->addOption(page, "Skip Twilight?", &Singleton::getInstance()->isTwilightSkipped, 0x1);
 		hudConsole->addOption(page, "Skip Goats?", &Singleton::getInstance()->isGoatSkipEnabled, 0x1);
 		hudConsole->addOption(page, "Skip MS Puzzle?", &Singleton::getInstance()->isMSPuzzleSkipEnabled, 0x1);
 		hudConsole->addOption(page, "Skip Escort?", &Singleton::getInstance()->isCartEscortSkipEnabled, 0x1);
@@ -199,6 +202,7 @@ namespace mod
 		hudConsole->addOption(page, "Boss Keysey?", &Singleton::getInstance()->isBossKeyseyEnabled, 0x1);
 		hudConsole->addOption(page, "No Shop Bottl?", &allowBottleItemsShopAnytime, 0x1);
 		hudConsole->addOption(page, "Fast transform?", &enableQuickTransform, 0x1);
+		hudConsole->addOption(page, "Skip Intro?", &Singleton::getInstance()->isIntroSkipped, 0x1);
 		//color
 		/*page = hudConsole->addPage("Tunic Color1");
 
@@ -424,10 +428,6 @@ namespace mod
 		// Kill spider at Link's house
 		eventListener->addLoadEvent(stage::allStages[Stage_Ordon_Village], 0x1, 0xFF, 0xFF, 0xFF, game_patch::killLinkHouseSpider, event::LoadEventAccuracy::Stage_Room);
 
-		// Skip MDH when the load happens
-		eventListener->addLoadEvent(stage::allStages[Stage_Castle_Town_Interiors], 0x6, 0xC, 0xFF, 0xFF, game_patch::skipMDH, event::LoadEventAccuracy::Stage_Room_Spawn);
-
-
 		//Set Bublin Camp State
 		eventListener->addLoadEvent(stage::allStages[Stage_Bublin_Camp], 0xFF, 0xFF, 0x1, 0xFF, game_patch::setBublinState, event::LoadEventAccuracy::Stage_Room_Spawn);
 		
@@ -438,7 +438,7 @@ namespace mod
 		eventListener->addLoadEvent(stage::allStages[Stage_Ordon_Ranch], 0x0, 0x3, 0xFF, 0xFF, game_patch::skipGoats, event::LoadEventAccuracy::Stage_Room_Spawn);
 		
 		//skip MS Puzzle
-		eventListener->addLoadEvent(stage::allStages[Stage_Sacred_Grove], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::skipGrovePuzzle, event::LoadEventAccuracy::Stage);
+		eventListener->addLoadEvent(stage::allStages[Stage_Sacred_Grove], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setGroveFlags, event::LoadEventAccuracy::Stage);
 
 		//skip Cart Escort
 		eventListener->addLoadEvent(stage::allStages[Stage_Hyrule_Field], 0xC, 0x2, 0xFF, 0xFF, game_patch::skipCartEscort, event::LoadEventAccuracy::Stage_Room_Spawn);
@@ -446,21 +446,14 @@ namespace mod
 		//Fix Lanayru Softlock
 		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0x0, 0x5, 0xE, 0xFF, game_patch::setLanayruWolf, event::LoadEventAccuracy::Stage_Room_Spawn);
 
-		//early CiTS
-		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::earlyCiTS, event::LoadEventAccuracy::Stage_Room_Spawn);
-
-		//early Desert
-		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::earlyDesert, event::LoadEventAccuracy::Stage_Room_Spawn);
-
 		//desert Access
 		eventListener->addLoadEvent(stage::allStages[Stage_Gerudo_Desert], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::accessDesert, event::LoadEventAccuracy::Stage_Room_Spawn);
-
-		//sell water bombs if you skip the escort
-		eventListener->addLoadEvent(stage::allStages[Stage_Kakariko_Village], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::sellWaterBombs, event::LoadEventAccuracy::Stage_Room_Spawn);
 		
 		//Skip Midna Text and CS's
 		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0x1, 0x15, 0xFF, 0xFF, game_patch::skipTextAndCS, event::LoadEventAccuracy::Stage_Room_Spawn_State);
-
+		
+		//Allow Escort Any Time
+		eventListener->addLoadEvent(stage::allStages[Stage_Castle_Town_Interiors], 0x5, 0xFF, 0xFF, 0xFF, game_patch::setEscortState, event::LoadEventAccuracy::Stage_Room_Spawn);
 
 
 		//   =================
@@ -474,6 +467,25 @@ namespace mod
 			}
 		);
 
+		// Hook actor init function to use as a timing for placing custom chests as this function only creates actors at
+		// specific times
+		actorCommonLayerInit_trampoline = patch::hookFunction(tp::d_stage::actorCommonLayerInit,
+			[](void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, int unk3, void* unk4)
+		{
+			// if unk4 is nullptr and unk3 is 0 it's probably ourselves calling this function
+			// Thus don't call it again to avoid an infinite loop!
+			if (unk3 != 0 && unk4)
+			{
+				// doCustomTRESActor will call this function with unk3=0 and unk4=nullptr
+				// So we only need to pass the status_roomControl (which should be static through LST anyway)
+				// to maintain consistency
+				global::modPtr->doCustomTRESActor(mStatus_roomControl);
+			}
+
+			return global::modPtr->actorCommonLayerInit_trampoline(mStatus_roomControl, chunkTypeInfo, unk3, unk4);
+		}
+		);
+
 		checkTreasureRupeeReturn_trampoline = patch::hookFunction(tp::d_a_alink::checkTreasureRupeeReturn,
 			[](void* unk1, s32 item)
 			{
@@ -485,6 +497,10 @@ namespace mod
 			[](const float pos[3], s32 item, u8 unk3, s32 unk4, s32 unk5, const float unk6[3], const float unk7[3])
 			{
 				// Call replacement function
+				/*char txt[50];
+				snprintf(txt, 50, "0 = %f 1 = %f 2 = %f", pos[0], pos[1], pos[2]);
+				strcpy(sysConsolePtr->consoleLine[20].line, txt);*/
+
 				item = global::modPtr->procItemCreateFunc(pos, item, "createItemForPresentDemo");
 
 				return global::modPtr->createItemForPresentDemo_trampoline(pos, item, unk3, unk4, unk5, unk6, unk7);
@@ -571,6 +587,99 @@ namespace mod
 				return global::modPtr->procItem_func_UTUWA_HEART();
 			}
 		);
+
+		setItemBombNumCount_trampoline = patch::hookFunction(tp::d_com_inf_game::setItemBombNumCount,
+			[](u32 unk1, u8 bagNb, short amount)
+		{
+			u8 bombtype = 0;
+			if (bagNb == 0)
+			{
+				bombtype = gameInfo.scratchPad.itemWheel.Bomb_Bag_1;
+			}
+			else if (bagNb == 1)
+			{
+				bombtype = gameInfo.scratchPad.itemWheel.Bomb_Bag_2;
+			}
+			else if (bagNb == 2)
+			{
+				bombtype = gameInfo.scratchPad.itemWheel.Bomb_Bag_3;
+			}
+			char txt[50];
+			snprintf(txt, 50, "bag = %x amount = %d type = %x", bagNb, amount, bombtype);
+			strcpy(sysConsolePtr->consoleLine[20].line, txt);
+
+			/*u8 itemID = 0x0;
+			if (bombtype == items::Item::Bomb_Bag_Regular_Bombs)
+			{
+				if (amount == 5)
+				{
+					itemID = items::Item::Bombs_5;
+				}
+				else if (amount == 10)
+				{
+					itemID = items::Item::Bombs_10;
+				}
+				else if (amount == 20)
+				{
+					itemID = items::Item::Bombs_20;
+				}
+				else if (amount == 30)
+				{
+					itemID = items::Item::Bombs_30;
+				}
+			}
+			else if (bombtype == items::Item::Bomb_Bag_Water_Bombs)
+			{
+				if (amount == 3)
+				{
+					itemID = items::Item::Water_Bombs_3;
+				}
+				else if (amount == 5)
+				{
+					itemID = items::Item::Water_Bombs_5;
+				}
+				else if (amount == 10)
+				{
+					itemID = items::Item::Water_Bombs_10;
+				}
+				else if (amount == 15)
+				{
+					itemID = items::Item::Water_Bombs_15;
+				}
+			}
+			else if (bombtype == items::Item::Bomb_Bag_Bomblings)
+			{
+				if (amount == 1)
+				{
+					itemID = items::Item::Bombling_1;
+				}
+				else if (amount == 3)
+				{
+					itemID = items::Item::Bomblings_3;
+				}
+				else if (amount == 5)
+				{
+					itemID = items::Item::Bomblings_5;
+				}
+				else if (amount == 10)
+				{
+					itemID = items::Item::Bomblings_10;
+				}
+			}
+
+
+			float linkPos[3];
+			getPlayerPos(linkPos);
+
+			const float zero[3] = {0.0f,0.0f,0.0f};
+
+			amount = 0;
+
+			tp::f_op_actor_mng::createItemForPresentDemo(linkPos, itemID, 0, -1, -1, zero, zero);*/
+
+			return global::modPtr->setItemBombNumCount_trampoline(unk1, bagNb, amount);
+		}
+		);
 	}
 
 	void Mod::procNewFrame()
@@ -632,72 +741,6 @@ namespace mod
 				}
 			}*/
 		}
-
-		/*scoopResult = 0;scoopResult = 0;
-		checkResult = 0;
-		itemsResult = 0;
-		mapResult = 0;
-		equipResult = 0;
-		backResult = 0;
-		zoomInResult = 0;
-		zoomOutResult = 0;
-		moveResult = 0;
-		throwResult = 0;
-		for (u16 i = 0x0; i < 0xD3; i++)
-		{
-			if (gameInfo.unk_5de4[i] == 0x6C && scoopResult == 0)
-			{
-				scoopResult = i;
-			}
-			if (gameInfo.unk_5de4[i] == 0x4D && skipResult == 0)
-			{
-				skipResult = i;
-			}
-			if (gameInfo.unk_5de4[i] == 0x72 && actionResult == 0)
-			{
-				actionResult = i;
-			}
-			if (gameInfo.unk_5de4[i] == 0x60 && itemsResult == 0)
-			{
-				itemsResult = i;
-			}
-			if (gameInfo.unk_5de4[i] == 0x5F && mapResult == 0)
-			{
-				mapResult = i;
-			}
-			if ((gameInfo.unk_5de4[i] == 0x29 || gameInfo.unk_5de4[i] == 0x3D || gameInfo.unk_5de4[i] == 0x69) && zoomResult == 0)
-			{
-				zoomResult = i;
-			}
-			if ((gameInfo.unk_5de4[i] == 0x5E || gameInfo.unk_5de4[i] == 0x8 || gameInfo.unk_5de4[i] == 0x80) && checkResult == 0)
-			{
-				checkResult = i;
-			}
-			if (gameInfo.unk_5de4[i] == 0x54 && equipResult == 0)
-			{
-				equipResult = i;
-			}
-			if ((gameInfo.unk_5de4[i] == 0x12 || gameInfo.unk_5de4[i] == 0x6A) && backResult == 0)
-			{
-				backResult = i;
-			}
-			if (gameInfo.unk_5de4[i] == 0x7D && zoomInResult == 0)
-			{
-				zoomInResult = i;
-			}
-			if (gameInfo.unk_5de4[i] == 0x7E && zoomOutResult == 0)
-			{
-				zoomOutResult = i;
-			}
-			if (gameInfo.unk_5de4[i] == 0x78 && moveResult == 0)
-			{
-				moveResult = i;
-			}
-			if ((gameInfo.unk_5de4[i] == 0x13 || gameInfo.unk_5de4[i] == 0x50))
-			{
-				throwResult = i;
-			}		
-		}*/
 
 		if (trigerLoadSave == 1) {
 			trigerLoadSave = 0;
@@ -945,6 +988,8 @@ namespace mod
 		fixYetaAndYeto();
 
 		fixLBTBossDoor();
+
+		preventPoweringUpDomRod();
 
 		// Call original function
 		fapGm_Execute_trampoline();
@@ -1644,6 +1689,21 @@ namespace mod
 		}
 	}
 
+	void Mod::preventPoweringUpDomRod()
+	{
+		if (gameInfo.scratchPad.itemWheel.Sky_Book == 0xFF && tools::checkItemFlag(ItemFlags::Ancient_Sky_Book_empty) && !tools::checkItemFlag(ItemFlags::Ancient_Sky_Book_partly_filled))
+		{
+			gameInfo.scratchPad.itemWheel.Sky_Book = items::Item::Ancient_Sky_Book_empty;
+		}
+		if (tp::d_a_alink::checkStageName("R_SP209"))
+		{
+			if (gameInfo.scratchPad.itemWheel.Sky_Book == items::Item::Ancient_Sky_Book_empty)
+			{
+				gameInfo.scratchPad.itemWheel.Sky_Book = 0xFF;
+			}
+		}
+	}
+
 	bool Mod::isStageShop()
 	{
 		u8 totalShopStages = sizeof(stage::shopStages) / sizeof(stage::shopStages[0]);
@@ -1656,4 +1716,76 @@ namespace mod
 		}
 		return false;
 	}
-}
+
+	void Mod::doCustomTRESActor(void* mStatus_roomControl)
+	{
+		tp::d_com_inf_game::GameInfo* pGameInfo = &tp::d_com_inf_game::dComIfG_gameInfo;
+
+		u32 numChecks = sizeof(customChecks) / sizeof(customChecks[0]);
+
+		// Count and temp array for the checks for this stage+room
+		u32 checkCount = 0;
+		customCheck* checks = new customCheck[5];  // Assume there's never more than 5 custom checks per stage+room
+
+		// Loop through checks and place if correct room and stage
+		for (u32 i = 0; i < numChecks; i++)
+		{
+			customCheck* check = &customChecks[i];
+
+			if (0 == strcmp(pGameInfo->nextStageVars.nextStage, check->stage) &&
+				(0xFF == check->room || pGameInfo->nextStageVars.nextRoom == check->room) && // 0xFF = no need to check for room
+				check->requirement())
+			{
+				checks[checkCount] = *check;
+				checkCount++;
+			}
+		}
+
+		if (checkCount > 0)
+		{
+			// Create required structs
+			tp::d_stage::TRES* TRES = new tp::d_stage::TRES[checkCount];
+			tp::d_stage::dzxChunkTypeInfo chunkInfo;
+			strcpy(chunkInfo.tag, "ACTR");  // has to be ACTR for the function we use
+			chunkInfo.numChunks = checkCount;
+			chunkInfo.chunkDataPtr = TRES;
+
+			// Populate TRES array with data
+			for (u32 i = 0; i < checkCount; i++)
+			{
+				customCheck check = checks[i];
+
+				if (check.overrides != nullptr)
+				{
+					check.overrides();
+				}
+
+				strcpy(TRES[i].actorName, "tboxA0\0");
+				TRES[i].flags = 0xFF0FF000 | (check.chestType << 20) | (check.saveFlag << 4);
+
+				// Translate hex to float (1:1)
+				typeTransform<u32, float> X, Y, Z;
+				X.a = check.X;
+				Y.a = check.Y;
+				Z.a = check.Z;
+
+				TRES[i].X = X.b;
+				TRES[i].Y = Y.b;
+				TRES[i].Z = Z.b;
+
+				TRES[i].angle = check.Angle;
+
+				TRES[i].item = check.itemID;
+			}
+
+			// Create the actors; last 2 params 0 and nullptr to avoid infinite loop! (identification for self-call inside the
+			// hook)
+			tp::d_stage::actorCommonLayerInit(mStatus_roomControl, &chunkInfo, 0, nullptr);
+
+			delete[] TRES;
+		}
+
+		delete[] checks;
+		return;
+	}
+} // namespace mod

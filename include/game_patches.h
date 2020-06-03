@@ -61,12 +61,6 @@ namespace mod::game_patch
 	void skipSewers();
 	
 	/**
-	 * Skips Midna's Desperate Hour
-	 * triggers the load to zelda's tower
-	 */
-	void skipMDH();
-	
-	/**
 	 * Removes midna from preventing you from leaving faron
 	 * changes the state of faron from 0 to 2
 	 */
@@ -137,7 +131,7 @@ namespace mod::game_patch
 	/**
 	 * opens the door the the master sword in sacred grove
 	 */
-	void skipGrovePuzzle();
+	void setGroveFlags();
 
 	/**
 	 * when you spawn into the Cart Escort, game will spawn you in Kakariko Afterwards
@@ -180,12 +174,12 @@ namespace mod::game_patch
 	void accessDesert();
 
 	/**
-	 * check whether you have MS before being allowed to enter the desert
-	 */
-	void sellWaterBombs();
-
-	/**
 	 * skips midna text and story CS
 	 */
 	void skipTextAndCS();
+
+	/**
+	 * escort avalable at any time
+	 */
+	void setEscortState();
 }

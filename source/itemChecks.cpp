@@ -299,11 +299,11 @@ namespace mod::item
 		/* 289 */{0x40, 0, stage::allStages[8], 2, 0x1, 0x1, 0b000000000000000000000, 205.3669740, 3901.0000000, -6120.5043950, nullptr, nullptr}, //FT Boomerang
 		/* 290 */{ 0x42, 0, stage::allStages[29], 51, 0x11, 0x11, 0b000000100100000000000, -0.0000460, 47.0000000, -473.7650150, nullptr, nullptr }, //SPR Ball and Chain
 		/* 291 */{0x2A, 1, stage::allStages[65], 2, 0x1, 0x2, 0b000000000000000000100, -1261.1306150, 450.0000000, 10.0000000, nullptr, nullptr}, //Ordon Shield
-		/* 292 */{ 0x28, 1, stage::allStages[65], 5, 0x1, 0x7, 0b000000000000000000000, 128.0923770, 7.8601500, -167.8504940, nullptr, nullptr }, //Ordon Sword
-		/* 293 */{0x4A, 0, stage::allStages[43], 0, 0x0, 0x0, 0b000000000000000000000, -3566.3000000, 579.2000000, 2977.2000000, nullptr, nullptr}, //Fishing Rod
-		/* 294 */{0x65, 9, stage::allStages[65], 1, 0x0, 0xFF, 0b000000000000000000000, -55.0000000, 0.0000000, -156.0000000, nullptr, nullptr}, //Sera Bottle
-		/* 295 */{0x4B, 12, stage::allStages[65], 1, 0x0, 0x0, 0b000000000000000000000, -55.0000000, 0.0000000, -156.0000000, nullptr, nullptr}, //Slingshot
-		/* 296 */{0x48, 0, stage::allStages[45], 3, 0x0, 0x0, 0b100010000000000001000, -13659.0000000, 0.0000000, -14367.0000000, nullptr, nullptr}, //Lantern
+		/* 292 */{ 0x28, 1, stage::allStages[65], 4, 0x1, 0x7, 0b000000000000000000000, 266.211700, 0.000000, -55.204613, nullptr, nullptr }, //Ordon Sword
+		/* 293 */{0x4A, 0, stage::allStages[43], 0, 0x0, 0x0, 0b000000000000000000000, -532.611450, 75.000000, 2287.597412, nullptr, nullptr}, //Fishing Rod
+		/* 294 */{0x65, 9, stage::allStages[43], 0, 0x0, 0xFF, 0b000000000000000000000, 739.763489, 87.500000, -1685.456421, nullptr, nullptr}, //Sera Bottle
+		/* 295 */{0x4B, 12, stage::allStages[43], 0, 0x0, 0x0, 0b000000000000000000000, -461.078217, 1618.401978, 7681.837891, nullptr, nullptr}, //Slingshot
+		/* 296 */{0x48, 0, stage::allStages[45], 4, 0x0, 0x0, 0b100010000000000001000, -15089.815430, 26.508539, -14135.130859, nullptr, nullptr}, //Lantern
 		/* 297 */{0x2C, 12, stage::allStages[68], 3, 0x2, 0x2, 0b001000000000000000000, -500.0000000, 320.0000000, -695.0000000, nullptr, nullptr}, //Hylian Shield (Malo)
 		/* 298 */{0x2B, 12, stage::allStages[68], 3, 0x2, 0xFF, 0b001000000000000000000, -500.0000000, 320.0000000, -695.0000000, nullptr, nullptr}, //Wooden Shield (Malo)
 		/* 299 */{0x55, 1, stage::allStages[74], 7, 0x7, 0x7, 0b111111100010000000000, -4400.0000000, 0.0000000, 2500.0000000, nullptr, nullptr}, //Big Quiver
@@ -321,24 +321,24 @@ namespace mod::item
 		/* 311 */{ 0x22, 3, stage::allStages[10], 50, 0x13, 0xFF, 0b111111010110111000000, 900.0000000, 0.0000000, 0.0000000, nullptr, nullptr },
 		/* 312 */{ 0x22, 3, stage::allStages[13], 50, 0x15, 0xFF, 0b111111010101111000000, 317.0000000, 0.0000000, 764.0000000, nullptr, nullptr },
 		/* 313 */{0x22, 3, stage::allStages[16], 10, 0xFF, 0xFF, 0b111111010101111000000, -3.0000000, 2525.0000000, -14603.0000000, nullptr, nullptr}, //Zant Heart Container
-		/* 314 */{0x31, 1, stage::allStages[48], 0, 0x5, 0x5, 0b111111100000000000000, 21364.0000000, 525.0000000, -50.0000000, nullptr, nullptr}, //Zora Armor
+		/* 314 */{0x31, 1, stage::allStages[48], 0, 0x5, 0x5, 0b111111100000000000000, 21450.962891, 500.000000, 305.869934, nullptr, nullptr}, //Zora Armor
 		/* 315 */{ 0x30, 12, stage::allStages[73], 0, 0x8, 0xFF, 0b111111100000000000000, 1557.0000000, -200.0000000, 3491.0000000, nullptr, nullptr }, //Magic Armor
 		/* 316 */{0x4F, 1, stage::allStages[52], 0, 0x5, 0xFF, 0b111111110000000000000, -77679.9375000, -18765.0000000, 40764.0000000, nullptr, nullptr}, //Giant Bomb Bag
-		/* 317 */{ 0x3D, 0, stage::allStages[48], 0, 0xFF, 0x10, 0b111111010010101000000, 21070.0000000, 500.0000000, 181.0000000, nullptr, nullptr },
+		/* 317 */{ 0x3D, 0, stage::allStages[48], 0, 0xFF, 0x10, 0b111111010010101000000, 21413.962891, 500.681793, -368.516510, nullptr, nullptr },
 		/* 318 */{ 0x3E, 12, stage::allStages[68], 3, 0x4, 0x12, 0b111111000000000000000, -500.0000000, 320.0000000, -695.0000000, nullptr, nullptr }, //Hawkeye
 		/* 319 */{0x51, 0, stage::allStages[50], 0, 0x5, 0xFF, 0b111111010000000000000, 44.0000000, -3854.0000000, -2626.0000000, nullptr, nullptr}, //Goron Bomb Bag
 		/* 320 */{0x50, 0, stage::allStages[68], 1, 0x4, 0x4, 0b111111000000000000000, 800.0000000, 0.0000000, -300.0000000, nullptr, nullptr}, //Barnes Bomb Bag
 		/* 321 */{0x51, 0, stage::allStages[52], 0, 0x5, 0xFF, 0b111111100000000000000, -77680.0000000, -18765.0000000, 40764.0000000, nullptr, nullptr},//Iza Bomb Bag
-		/* 322 */{ 0x90, 4, stage::allStages[52], 0, 0xFF, 0x8, 0b111111010010001000000, -116365.0000000, -13860.0000000, 58454.0000000, nullptr, nullptr },
-		/* 323 */{ 0x91, 4, stage::allStages[51], 0, 0xFF, 0x10, 0b000000000000000000000, 31662.0000000, -13330.0000000, -11934.0000000, nullptr, nullptr },
-		/* 324 */{ 0x80, 4, stage::allStages[46], 0, 0xFF, 0x13, 0b000000000000000000000, -344.0000000, 0.0000000, 234.0000000, nullptr, nullptr },
-		/* 325 */{ 0x81, 4, stage::allStages[53], 5, 0xFF, 0x13, 0b000000000000000000000, 3505.0000000, -1150.0000000, 3388.0000000, nullptr, nullptr },
-		/* 326 */{ 0x82, 4, stage::allStages[57], 16, 0xFF, 0x13, 0b000000000000000000000, -51480.0000000, -6425.0000000, 34034.0000000, nullptr, nullptr },
-		/* 327 */{ 0x83, 4, stage::allStages[63], 0, 0xFF, 0x13, 0b000000000000000000000, 2360.0000000, 104.0000000, -1150.0000000, nullptr, nullptr },
-		/* 328 */{ 0x84, 4, stage::allStages[68], 0, 0xFF, 0x13, 0b000000000000000000000, -386.0000000, 0.0000000, 393.0000000, nullptr, nullptr }, //Horse Call
+		/* 322 */{ 0x90, 4, stage::allStages[52], 0, 0xFF, 0x8, 0b111111010010001000000, -116117.015625, -15810.000000, 58812.617188, nullptr, nullptr }, //Auru's Memo
+		/* 323 */{ 0x91, 4, stage::allStages[51], 0, 0xFF, 0x10, 0b000000000000000000000, 31608.291016, -13330.000000, -11652.610352, nullptr, nullptr }, //Aeshi's Sketch
+		/* 324 */{ 0x80, 4, stage::allStages[46], 0, 0xFF, 0x13, 0b000000000000000000000, -324.903625, 0.000000, 435.528595, nullptr, nullptr }, //Renardo's Letter
+		/* 325 */{ 0x81, 4, stage::allStages[53], 5, 0xFF, 0x13, 0b000000000000000000000, 2694.345215, -1150.000000, 3105.746826, nullptr, nullptr }, //Invoice
+		/* 326 */{ 0x82, 4, stage::allStages[57], 16, 0xFF, 0x13, 0b000000000000000000000, -51514.375000, -6269.229980, 31816.427734, nullptr, nullptr }, //Wooden Statue
+		/* 327 */{ 0x83, 4, stage::allStages[63], 0, 0xFF, 0x13, 0b000000000000000000000, 2077.769775, 104.958275, -1301.828491, nullptr, nullptr }, //Ilia's Charm
+		/* 328 */{ 0x84, 4, stage::allStages[68], 0, 0xFF, 0x13, 0b000000000000000000000, 312.675079, 0.000000, -160.984177, nullptr, nullptr }, //Horse Call
 		/* 329 */{0x9d, 9, stage::allStages[45], 4, 0x1, 0xFF, 0b000000000000000000000, -13659.433594, -0.454284, -14367.083008, nullptr, nullptr}, //Coro Bottle
 		/* 330 */{0x75, 9, stage::allStages[73], 5, 0xFF, 0xFF, 0b000000000000000000000, 4250.363281, 134.492020, 1813.639648, nullptr, nullptr}, //Jovani Bottle
-		/*TODO 331 not randomized*/{ 0x60, 9, stage::allStages[62], 0, 0x5, 0xFF, 0b000000000000000000000, -13659.0000000, 0.0000000, -14367.0000000, nullptr, nullptr },
+		/*TODO 331 not randomized*/{ 0x60, 9, stage::allStages[62], 0, 0x5, 0xFF, 0b000000000000000000000, 5772.262695, 35.000000, 2218.249512, nullptr, nullptr }, //Fishing Hole Bottle
 		/* 332 */{0x2B, 12, stage::allStages[47], 3, 0x3, 0xFF, 0b001000000000000000000, -6545.0000000, -125.0000000, -2275.0000000, nullptr, nullptr}, //Wooden Shield (Goron)
 		/* 333 */{0x21, 3, stage::allStages[46], 0, 0x4, 0xFF, 0b000001000000000000000, -900.000000, 0.780221, 6600.000000, nullptr, nullptr}, //Bow Shooting Game Heart Piece
 		/* 334 */{0x21, 3, stage::allStages[53], 2, 0x5, 0xFF, 0b000000000000000000000, -4142.703125, 0.000000, -569.375000, nullptr, nullptr}, //Donation Heart Piece
@@ -362,9 +362,9 @@ namespace mod::item
 		/* 349 */{ 0x33, 2, stage::allStages[9], 0, 0x12, 0x12, 0b000000000000000000000, -28.417549, 725.000000, 3091.288574, nullptr, nullptr },
 		/* 350 */{ 0x33, 2, stage::allStages[12], 16, 0x14, 0x14, 0b000000000000000000000, 6082.295898, 0.000000, 5896.656738, nullptr, nullptr },
 		//overworld keys
-		/* 351 */{ 0xfe, 8, stage::allStages[45], 4, 0xFF, 0xFF, 0b000000000000000000000, -13659.433594, -0.454284, -14367.083008, nullptr, nullptr },
+		/* 351 */{ 0xfe, 8, stage::allStages[45], 4, 0xFF, 0xFF, 0b000000000000000000000, -13022.520508, -3.070827, -14673.488281, nullptr, nullptr },
 		/* 352 */{ 0xf3, 4, stage::allStages[58], 13, 0x5, 0xFF, 0b000000000000000000000, -93334.218750, -5725.979980, 44504.023438, nullptr, nullptr },
-		/* 353 */{ 0x20, 8, stage::allStages[55], 1, 0x9, 0xFF, 0b000000000000000000000, 4543.199219, 261.860168, -3035.944092, nullptr, nullptr },
+		/* 353 */{ 0x20, 8, stage::allStages[55], 1, 0x9, 0xFF, 0b000000000000000000000, 4087.104248, 260.000000, -3795.968262, nullptr, nullptr },
 		//goron mines key shards
 		/* 354 */{ 0xf9, 2, stage::allStages[3], 14, 0x3, 0x3, 0b000000000000000000000, -15375.557617, -636.630005, 1595.673462, nullptr, nullptr },
 		/* 355 */{ 0xfa, 2, stage::allStages[3], 17, 0x3, 0x3, 0b000000000000000000000, 13007.017578, 2924.530029, -17705.732422, nullptr, nullptr },
@@ -424,7 +424,7 @@ namespace mod::item
 		/*#2*/{ 0xe0, 11, stage::allStages[24], 3, 0x9, 0xFF, 0b100000000010000000010, 3606.844482, 150.030182, -5323.249512, nullptr, nullptr },
 		/*#3*/{ 0xe0, 11, stage::allStages[24], 5, 0x9, 0xFF, 0b000000000000000000010, 5712.277344, 1050.019775, 4526.544922, nullptr, nullptr },
 		/*#4*/{ 0xe0, 11, stage::allStages[24], 8, 0x9, 0xFF, 0b000000000000000000010, -4197.771973, 1040.154663, 4983.674805, nullptr, nullptr },
-		/*#5*/{ 0xe0, 11, stage::allStages[73], 5, 0x8, 0xFF, 0b000000000000000000010, 4186.364746, -75.000000, 2795.808350, nullptr, nullptr },
+		/*#5*/{ 0xe0, 11, stage::allStages[73], 5, 0x8, 0xFF, 0b000000000000000000010, 4529.513672, -75.000000, 2609.175049, nullptr, nullptr },
 		/*#6*/{ 0xe0, 11, stage::allStages[31], 16, 0x10, 0xFF, 0b100000000000100000010, 126.849854, -20000.000000, -337.206903, nullptr, nullptr },
 		/*#7*/{ 0xe0, 11, stage::allStages[31], 32, 0x13, 0xFF, 0b100000000100110000010, 231.875824, -40000.000000, -216.2944296, nullptr, nullptr },
 		/*#8*/{ 0xe0, 11, stage::allStages[31], 43, 0x15, 0xFF, 0b100000000101110000010, -4560.734375, -53750.000000, -825.646851, nullptr, nullptr },
@@ -549,6 +549,7 @@ namespace mod::item
 		//{0x68, 12, stage::allStages[20], 2, 0xFF, 0xFF, 0b000000000000000000000, -1334.620239, 1250.000000, -3007.779053, nullptr, nullptr},
 		//Yeto soup
 		//{0x7f, 12, stage::allStages[27], 2, 0x11, 0xFF, 0b000000000000000000000, 3154.522705, 144.729996, 340.811127, nullptr, nullptr},
+		//Custom Chests
 	};
 
 	u16 checkPriorityOrder[20] = {
