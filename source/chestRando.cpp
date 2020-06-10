@@ -90,6 +90,30 @@ namespace mod
 			}
 		}
 
+		// Place items that unlock other locations before caring about remaining items
+		//useless
+		/*for(u16 i = 0; i < totalChecks; i++)
+		{
+			destCheck = &item::checks[i];
+			if(!destCheck->source)
+			{
+				// Free slot
+				if(item::getFlags(destCheck->itemID, 0) != 0)
+				{
+					// This would unlock new checks, so place it
+					if (destCheck->itemID == items::Item::Ordon_Shield || destCheck->itemID == items::Item::Wooden_Shield || destCheck->itemID == items::Item::Hylian_Shield)
+					{
+						sourceCheck = findSource(0xFF, 0x2, destCheck);//to prevent softlocking the game when you try to get ordon shield check
+					}
+					else
+					{
+						sourceCheck = findSource(0xFF, 0, destCheck);
+					}
+					placeCheck(sourceCheck, destCheck);
+				}
+			}
+		}*/
+
 		//do dungeon items
 		for (u16 i = 0; i <= totalChecks; i++)
 		{
@@ -162,29 +186,7 @@ namespace mod
 			}
 		}
 
-		// Place items that unlock other locations before caring about remaining items
-		//useless
-		/*for(u16 i = 0; i < totalChecks; i++)
-		{
-			destCheck = &item::checks[i];
-			if(!destCheck->source)
-			{
-				// Free slot
-				if(item::getFlags(destCheck->itemID, 0) != 0)
-				{
-					// This would unlock new checks, so place it
-					if (destCheck->itemID == items::Item::Ordon_Shield || destCheck->itemID == items::Item::Wooden_Shield || destCheck->itemID == items::Item::Hylian_Shield)
-					{
-						sourceCheck = findSource(0xFF, 0x2, destCheck);//to prevent softlocking the game when you try to get ordon shield check
-					}
-					else
-					{
-						sourceCheck = findSource(0xFF, 0, destCheck);
-					}
-					placeCheck(sourceCheck, destCheck);
-				}
-			}
-		}*/
+		
 
 		// Place remaining
 		for (u16 i = 0; i < totalChecks; i++)
@@ -310,7 +312,6 @@ namespace mod
 		case item::ItemType::Story:
 			if (check->itemID != items::Item::Aurus_Memo && check->itemID != items::Item::Asheis_Sketch)
 			{
-				// Ilia quest
 				result = true;
 			}
 			break;
@@ -335,6 +336,10 @@ namespace mod
 				result = true;
 			}
 			break;
+
+		case item::ItemType::Skill:
+			result = true;
+			break;
 		}
 
 		switch (check->itemID)
@@ -342,17 +347,15 @@ namespace mod
 			/*case items::Item::Iron_Boots:
 				result = true;
 			break;*/
+		case items::Item::Shadow_Crystal:
+			if (Singleton::getInstance()->isMDHSkipEnabled == 0)
+			{
+				result = true;
+			}
+			break;
 
 		case items::Item::Fishing_Rod:
 			result = true;
-			break;
-
-		case items::Item::Master_Sword:
-			result = true;
-			break;
-
-		case items::Item::Empty_Bottle:
-			result = true;//fishing hole bottle
 			break;
 
 		case items::Item::Ancient_Sky_Book_empty:
@@ -435,6 +438,9 @@ namespace mod
 		}
 		else if (item == items::Item::Vessel_Of_Light_Faron)
 		{
+			tp::d_com_inf_game::ScratchPad* scratchPadPtr = &gameInfo.scratchPad;
+			u8* eventBitsPtr = &scratchPadPtr->eventBits[0];
+			tp::d_com_inf_game::AllAreaNodes* allAreaNodesPtr = &scratchPadPtr->allAreaNodes;
 			if (Singleton::getInstance()->isTwilightSkipped == 1)
 			{
 				//Set Faron Twilight Flags
@@ -456,6 +462,7 @@ namespace mod
 				//Set Lanayru Twilight Flags
 				scratchPadPtr->clearedTwilights.Lanayru = 0b1; // Clear Lanayru Twilight
 				tools::setItemFlag(ItemFlags::Vessel_Of_Light_Lanayru);
+				allAreaNodesPtr->Hyrule_Field.unk_0[0xB] |= 0x80;//water on Field map
 				allAreaNodesPtr->Hyrule_Field.unk_0[0xF] |= 0x10;//open south CT Shortcut to Faron
 				eventBitsPtr[0x30] |= 0x40; //gave springwater to south CT goron
 				eventBitsPtr[0x8] |= 0x80; //ZD Thawed
@@ -481,7 +488,33 @@ namespace mod
 				allAreaNodesPtr->Lanayru.unk_0[0xB] |= 0x4; // give Zora's Domain Warp
 				allAreaNodesPtr->Lanayru.unk_0[0xA] |= 0x4;//give lake hylia warp
 
+				tools::setItemFlag(ItemFlags::Heros_Clothes);
+
+				//Faron Escape
+				if (Singleton::getInstance()->isForestEscapeEnabled == 1)
+				{
+					eventBitsPtr[0x6] |= 0x26; //warp the kak bridge, give map warp, set Forest Temple Story Flag
+				}
+				else
+				{
+					eventBitsPtr[0x6] |= 0x24; //warp the kak bridge, give map warp
+				}
+
 				gameInfo.nextStageVars.triggerLoad |= 1;
+				return item;
+			}
+			else
+			{
+				//Faron Escape
+				if (Singleton::getInstance()->isForestEscapeEnabled == 1)
+				{
+					eventBitsPtr[0x6] |= 0x26; //warp the kak bridge, give map warp, set Forest Temple Story Flag
+				}
+				else
+				{
+					eventBitsPtr[0x6] |= 0x24; //warp the kak bridge, give map warp
+				}
+				tools::setItemFlag(ItemFlags::Vessel_Of_Light_Faron);
 				return item;
 			}
 			tools::setItemFlag(ItemFlags::Vessel_Of_Light_Faron);
@@ -489,7 +522,13 @@ namespace mod
 		}
 		else if (item == items::Item::Vessel_Of_Light_Eldin)
 		{
+			tp::d_com_inf_game::ScratchPad* scratchPadPtr = &gameInfo.scratchPad;
+			u8* eventBitsPtr = &scratchPadPtr->eventBits[0];
 			tools::setItemFlag(ItemFlags::Vessel_Of_Light_Eldin);
+			eventBitsPtr[0x6] |= 0x1; //tame Epona
+			eventBitsPtr[0xA] |= 0x8; //Beat KB1
+			eventBitsPtr[0x14] |= 0x10; //Put Bo Outside
+			eventBitsPtr[0x7] = 0xD6; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched, Eldin Twilight Story Progression Flag
 			return item;
 		}
 		else if (item == items::Item::Vessel_Of_Light_Lanayru)
@@ -615,10 +654,22 @@ namespace mod
 									if (item == items::Item::Wooden_Sword && tools::checkItemFlag(ItemFlags::Wooden_Sword))
 									{
 										item = items::Item::Ordon_Sword;
+										gameInfo.scratchPad.equipedItems.sword = 0x28;
 									}
 									else if (item == items::Item::Ordon_Sword && !tools::checkItemFlag(ItemFlags::Wooden_Sword))
 									{
 										item = items::Item::Wooden_Sword;
+										gameInfo.scratchPad.equipedItems.sword = 0x3F;
+									}
+									else if (item == items::Item::Master_Sword && tools::checkItemFlag(ItemFlags::Master_Sword))
+									{//for when MS and light Ms are implemented
+										item = items::Item::Master_Sword_Light;
+										gameInfo.scratchPad.equipedItems.sword = 0x49;
+									}
+									else if (item == items::Item::Master_Sword_Light && !tools::checkItemFlag(ItemFlags::Master_Sword))
+									{//for when MS and light Ms are implemented
+										item = items::Item::Master_Sword;
+										gameInfo.scratchPad.equipedItems.sword = 0x29;
 									}
 									else if (item == items::Item::Clawshot && tools::checkItemFlag(ItemFlags::Clawshot))
 									{
@@ -873,14 +924,6 @@ namespace mod
 											tools::setItemFlag(ItemFlags::Key_Shard_3);//set this flag to show full key on the map
 										}
 									}
-									else if (item == items::Item::Master_Sword && tools::checkItemFlag(ItemFlags::Master_Sword))
-									{//for when MS and light Ms are implemented
-										item = items::Item::Master_Sword_Light;
-									}
-									else if (item == items::Item::Master_Sword_Light && !tools::checkItemFlag(ItemFlags::Master_Sword))
-									{//for when MS and light Ms are implemented
-										item = items::Item::Master_Sword;
-									}
 									else if (item == items::Item::Dominion_Rod && tools::checkItemFlag(ItemFlags::Dominion_Rod))
 									{//for when powered dominion rod is implemented
 									item = items::Item::Dominion_Rod_Uncharged;
@@ -890,17 +933,28 @@ namespace mod
 									item = items::Item::Dominion_Rod;
 									}
 								}
-								if (item == items::Item::Dominion_Rod_Uncharged)
-								{//giving Dominion_Rod_Uncharged is the same as giving Dominion_Rod but there's no text (yet)
-									gameInfo.scratchPad.eventBits[0x25] |= 0x80;//set flag to charge dominion rod
-								}  //will be changed once we implement custom chests
-								else if (item == items::Item::Poe_Soul && gameInfo.scratchPad.poeCount < 60)
+								
+								if (item == items::Item::Poe_Soul && gameInfo.scratchPad.poeCount < 60)
 								{//increase poe counter
 									gameInfo.scratchPad.poeCount++;
 								}
 								else if (item == items::Item::Shadow_Crystal)
 								{//shadow crystal doesn't actually do anything so we have to do its functionnality ourselves
 									game_patch::giveMidnaTransform();
+								}
+								else if (item == items::Item::Ordon_Pumpkin)
+								{
+									gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.unk_0[0x9] |= 0x4; //Unlock Lobby Courtyard Door
+									gameInfo.scratchPad.eventBits[0x4] |= 0x80; //Told Yeta About Pumpkin
+									gameInfo.scratchPad.eventBits[0x0] |= 0x22; //Yeto took pumpkin and put it in soup
+									gameInfo.scratchPad.eventBits[0x14] |= 0x40; //Unlock Lobby Door
+								}
+								else if (item == items::Item::Ordon_Goat_Cheese)
+								{
+									gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.unk_0[0x9] |= 0x8; //Unlock West Wing Door
+									gameInfo.scratchPad.eventBits[0x1] |= 0x20; //Told Yeta About Cheese
+									gameInfo.scratchPad.eventBits[0x0] |= 0x11; //Yeto took Cheese and put it in soup
+									gameInfo.scratchPad.eventBits[0x14] |= 0x20; //Unlock West Door
 								}
 								else if (item == 0xE1)
 								{
@@ -933,6 +987,14 @@ namespace mod
 								else if (item == items::Item::Bed_Key)
 								{
 									gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bigKeyGotten = 0b1; //unlock Blizzetta Door
+									if (Singleton::getInstance()->isBossKeyseyEnabled == 1)
+									{
+										item = items::Item::Red_Rupee;
+									}
+								}
+								else if (item == items::Item::Big_Key && Singleton::getInstance()->isBossKeyseyEnabled == 1)
+								{
+									item = items::Item::Red_Rupee;
 								}
 								else if (!tools::checkItemFlag(ItemFlags::Slingshot) &&
 									(item == items::Item::Seeds_50))

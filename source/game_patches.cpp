@@ -82,17 +82,20 @@ namespace mod::game_patch
 
 	void removeIBLimit()
 	{
-		// li 0
-		u32 li = 0x38600000;
-		// b +4C
-		u32 b  = 0x4800004C;
+		if (!tp::d_a_alink::checkStageName("D_MN07A"))
+		{
+			// li 0
+			u32 li = 0x38600000;
+			// b +4C
+			u32 b = 0x4800004C;
 
-		// CheckHeavyState overwrite
-		u32 checkHeavyStateOnAddress = reinterpret_cast<u32>(&tp::d_a_alink::checkHeavyStateOn);
-		*reinterpret_cast<u32*>(checkHeavyStateOnAddress + 0x84) = li;
+			// CheckHeavyState overwrite
+			u32 checkHeavyStateOnAddress = reinterpret_cast<u32>(&tp::d_a_alink::checkHeavyStateOn);
+			*reinterpret_cast<u32*>(checkHeavyStateOnAddress + 0x84) = li;
 
-		u32 setStickDataAddress = reinterpret_cast<u32>(&tp::d_a_alink::setStickData);
-		*reinterpret_cast<u32*>(setStickDataAddress + 0x5FC) = b;
+			u32 setStickDataAddress = reinterpret_cast<u32>(&tp::d_a_alink::setStickData);
+			*reinterpret_cast<u32*>(setStickDataAddress + 0x5FC) = b;
+		}
 	}
 
 	void increaseWalletSize()
@@ -136,20 +139,36 @@ namespace mod::game_patch
 			// We should be wolf
 			setFirstTimeWolf();
 
-			// Set sewers flags (zelda cutscenes, unchained wolf link, bla)
+			// Set sewers flags (escaped cell cs, Midna intro cs, unchained wolf link, zelda cutscene, First trip to Sewers Done)
 			gameInfo.scratchPad.eventBits[0x05] |= 0x7A;
+
+			// Set more sewers flags (talk to midna after escaping cell in sewers, listened to first guard in sewers)
+			gameInfo.scratchPad.eventBits[0x1A] |= 0x82;
+
+			// Set more sewers flags (spawned into sewers twilight as wolf)
+			gameInfo.scratchPad.eventBits[0x4D] |= 0x8;
+
 			gameInfo.scratchPad.equipedItems.sword = 0x3F;
 
 			// Load back to Ordon Spring
 			tools::triggerSaveLoad(stage::allStages[Stage_Ordon_Spring], 0x1, 0x3, 0x4);
 		}
+		gameInfo.scratchPad.equipedItems.sword = 0x3F;
 	}
 
-	void unlockHFGates()
+	void setFieldBits()
 	{
-		if (Singleton::getInstance()->isGateUnlockEnabled == 1 || tools::checkItemFlag(ItemFlags::Gate_Keys))
+		if ((Singleton::getInstance()->isGateUnlockEnabled == 1 && (gameInfo.localAreaNodes.unk_0[0x8] & 0x10) == 0) || tools::checkItemFlag(ItemFlags::Gate_Keys))
 		{
 			gameInfo.unk_979[0x7] |= 0x6;//2 = lanyru gate 4 = eldin gorge gate
+		}
+
+		//Skip MDH?
+		if (Singleton::getInstance()->isMDHSkipEnabled == 1 && gameInfo.scratchPad.clearedTwilights.Lanayru == 0b1)
+		{
+			//set MDH flags
+			gameInfo.scratchPad.eventBits[0xC] |= 0x1; //MDH Started
+			gameInfo.scratchPad.eventBits[0x1E] |= 0x8; //MDH Completed
 		}
 	}
 
@@ -208,12 +227,6 @@ namespace mod::game_patch
 			strcpy(sysConsolePtr->consoleLine[20].line, "Skipping MS Puzzle");
 			gameInfo.localAreaNodes.unk_0[0xB] |= 0x4;//skip Sacred Grove Puzzle
 		}
-		gameInfo.scratchPad.eventBits[0x8] |= 0x40; //set flag for escort started
-		gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x17] |= 0x40;//remove rock in graveyard
-		gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x16] |= 0x40;//Barnes sells water bombs
-		gameInfo.scratchPad.eventBits[0x8] |= 0x40;//escort started
-		gameInfo.scratchPad.eventBits[0x8] |= 0x10;//escort finished
-		gameInfo.scratchPad.eventBits[0x8] |= 0x4;//got zora armor from Rutela
 	}
 
 	void checkBossKeysey()
@@ -271,7 +284,7 @@ namespace mod::game_patch
 
 	void earlyDesert()
 	{
-		if (Singleton::getInstance()->isEarlyDesertEnabled == 1 && gameInfo.scratchPad.eventBits[0x26] < 0x80 && tools::checkItemFlag(ItemFlags::Master_Sword))
+		if (Singleton::getInstance()->isEarlyDesertEnabled == 1 && gameInfo.scratchPad.eventBits[0x26] < 0x80 && tools::checkItemFlag(ItemFlags::Shadow_Crystal))
 		{
 			gameInfo.scratchPad.eventBits[0x26] |= 0x80; //Allow you to use the cannon in the desert
 		}
@@ -279,7 +292,7 @@ namespace mod::game_patch
 
 	void accessDesert()
 	{
-		if (tools::checkItemFlag(ItemFlags::Master_Sword))
+		if (tools::checkItemFlag(ItemFlags::Shadow_Crystal))
 		{
 			return;
 		}
@@ -325,7 +338,7 @@ namespace mod::game_patch
 	{
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Set wolf");
 
-		if (gameInfo.scratchPad.form == 0 && !tools::checkItemFlag(ItemFlags::Master_Sword) && !tools::checkItemFlag(ItemFlags::Vessel_Of_Light_Lanayru))
+		if (gameInfo.scratchPad.form == 0 && !tools::checkItemFlag(ItemFlags::Shadow_Crystal) && !tools::checkItemFlag(ItemFlags::Vessel_Of_Light_Lanayru))
 		{
 
 			strncpy(gameInfo.nextStageVars.nextStage, stage::allStages[Stage_Hyrule_Field], sizeof(gameInfo.nextStageVars.nextStage) - 1);
@@ -448,6 +461,17 @@ namespace mod::game_patch
 		}
 	}
 
+	void skipMDH()
+	{
+		if (Singleton::getInstance()->isMDHSkipEnabled == 1)
+		{
+			strncpy(gameInfo.nextStageVars.nextStage, stage::allStages[Stage_Lake_Hylia], sizeof(gameInfo.nextStageVars.nextStage) - 1);
+			gameInfo.nextStageVars.nextSpawnPoint = 0x7;
+			gameInfo.nextStageVars.nextRoom = 0x0;
+			
+		}
+	}
+
 	void skipTextAndCS()
 	{
 		//Set Scratchpad Pointer
@@ -490,6 +514,7 @@ namespace mod::game_patch
 		eventBitsPtr[0x37] |= 0x4; // Postman Twilight Text
 		eventBitsPtr[0x38] |= 0x6; //Enter Hena Cabin CS
 		eventBitsPtr[0x42] |= 0x1; //Watched post ToT Ooccoo CS
+		eventBitsPtr[0x45] |= 0x8; //Postman Letters Text
 		eventBitsPtr[0x4A] |= 0x10; //Talo Cage CS
 		eventBitsPtr[0x3E] |= 0x2; //city OoCCoo CS watched
 		eventBitsPtr[0x59] |= 0x40; // Postman Met
@@ -511,7 +536,7 @@ namespace mod::game_patch
 		allAreaNodesPtr->Sewers.unk_0[0xB] |= 0x38; //other side of fence cs, top of stairway cs watched, stairway intro cs
 		allAreaNodesPtr->Sewers.unk_0[0xF] |= 0x11; //midna cs after digging out watched, midna text when approaching first rooftop guard
 
-		allAreaNodesPtr->Eldin.unk_0[0x9] |= 0x20;//give death mountain warp
+		allAreaNodesPtr->Eldin.unk_0[0x9] |= 0x40;//goron mines DM cs
 		allAreaNodesPtr->Eldin.unk_0[0x14] |= 1;//give midna jumps for top of sanctuary
 		allAreaNodesPtr->Eldin.unk_0[0x10] |= 0x10;//skip Graveyard CS
 		allAreaNodesPtr->Eldin.unk_0[0x11] |= 0x8;//midna text after meteor
@@ -528,7 +553,7 @@ namespace mod::game_patch
 		allAreaNodesPtr->Hyrule_Field.unk_0[0xF] |= 0xB; //cutscene for Gorge Bridge Watched, Ilia Scent CS, midna text after lanayru field cs
 		allAreaNodesPtr->Hyrule_Field.unk_0[0xE] |= 0x20; //cutscene for entering Field Watched
 		allAreaNodesPtr->Hyrule_Field.unk_0[0x8] |= 0x81; //Midna text for warping the bridge, lanayru field CS
-		allAreaNodesPtr->Hyrule_Field.unk_0[0x9] |= 0x21; //give Gorge Warp, cs before kak
+		allAreaNodesPtr->Hyrule_Field.unk_0[0x9] |= 0x1; //cs before kak
 		allAreaNodesPtr->Hyrule_Field.unk_0[0x16] |= 0x13; //midna text after entering eldin twilight, midna text after entering Lanayru twilight, midna text before eldin twilight, midna text after eldin twilight
 		allAreaNodesPtr->Hyrule_Field.unk_0[0x17] |= 0x10; //youth scent CS
 
@@ -546,10 +571,9 @@ namespace mod::game_patch
 		allAreaNodesPtr->Forest_Temple.unk_0[0x8] |= 0x61; //set Midna Text for Ook Bridge Broken, Boomerang, and freeing first monkey
 		allAreaNodesPtr->Forest_Temple.unk_0[0x9] |= 0x40; //Ook Bridge Broken
 		allAreaNodesPtr->Forest_Temple.unk_0[0xA] |= 0x3; //Boko bridge CS, one bridge CS
-		allAreaNodesPtr->Forest_Temple.unk_0[0xE] |= 0xA2; //Diababa CS, Worm Bridge CS, second monkey CS
+		allAreaNodesPtr->Forest_Temple.unk_0[0xE] |= 0x22; //Worm Bridge CS, second monkey CS
 		allAreaNodesPtr->Forest_Temple.unk_0[0xF] |= 0xE; //Midna text for pre-diababa room and open room monkey, Big Baba CS
 		allAreaNodesPtr->Forest_Temple.unk_0[0x10] |= 0x14; //Midna text for compass, eat open area bridge CS
-		allAreaNodesPtr->Forest_Temple.unk_0[0x14] |= 0x1; //Ook Miniboss CS
 		allAreaNodesPtr->Forest_Temple.unk_0[0x16] |= 0x2; //Entrance CS watched
 
 		allAreaNodesPtr->Goron_Mines.unk_0[0x8] |= 0x1F; //upper magnet CS, first room switch 3 cs, first room switch 2 cs, outside bridge cs, crystal switch bridge cs
@@ -571,7 +595,7 @@ namespace mod::game_patch
 		allAreaNodesPtr->Arbiters_Grounds.unk_0[0xE] |= 0x10; //opening CS
 		allAreaNodesPtr->Arbiters_Grounds.unk_0[0x12] |= 0x8; //cs after raising rails
 
-		allAreaNodesPtr->Snowpeak_Ruins.unk_0[0x10] |= 0x30; //enter cannonball room cs, unlock door to yeto
+		allAreaNodesPtr->Snowpeak_Ruins.unk_0[0x10] |= 0x10; //enter cannonball room cs
 		allAreaNodesPtr->Snowpeak_Ruins.unk_0[0x14] |= 0x41; //entrance cs, midna text after bedroom key
 		allAreaNodesPtr->Snowpeak_Ruins.unk_0[0x15] |= 0x2A; //freezard tower cs, enter NE room cs watched, East Courtyard Dig CS
 		allAreaNodesPtr->Snowpeak_Ruins.unk_0[0x16] |= 0x28; //midna text after cheese and pumpkin
@@ -588,7 +612,7 @@ namespace mod::game_patch
 
 		allAreaNodesPtr->Palace_of_Twilight.unk_0[0x9] |= 0x4; //Phantom zant 1 cs watched
 		allAreaNodesPtr->Palace_of_Twilight.unk_0[0xB] |= 0x2; //Entrance CS watched
-		allAreaNodesPtr->Palace_of_Twilight.unk_0[0xC] |= 0x2; //Midna Text when west hand seals sol
+		allAreaNodesPtr->Palace_of_Twilight.unk_0[0xC] |= 0x82; //Midna Text when west hand seals sol, Light Sword CS
 		allAreaNodesPtr->Palace_of_Twilight.unk_0[0xD] |= 0x1; //Midna text after forced transform
 		allAreaNodesPtr->Palace_of_Twilight.unk_0[0xE] |= 0xB0; //Midna text after west hand drops sol, midna text about transformed twili, midna text after post zant save
 		allAreaNodesPtr->Palace_of_Twilight.unk_0[0xF] |= 0xC0; //Midna text after light sword, midna text after west sol in slot
@@ -606,18 +630,20 @@ namespace mod::game_patch
 		allAreaNodesPtr->Hyrule_Castle.unk_0[0x17] |= 0x80; //lone darknut room me torch watched
 		
 		//Set Local Area Node flags
-		tp::d_com_inf_game::AreaNodes* csLocalAreaNodesPtr = &gameInfo.localAreaNodes;
-		csLocalAreaNodesPtr->unk_0[0xB] |= 0x4;//give N faron warp
-		csLocalAreaNodesPtr->unk_0[0x8] = 0xFF;//give midna jumps in mist area
-		csLocalAreaNodesPtr->unk_0[0xC] |= 0x80;//set flag for midna to think you followed the monkey in the mist
-		csLocalAreaNodesPtr->unk_0[0x12] |= 0x4;//mark read the midna text when you warp to N Faron for bridge
-		csLocalAreaNodesPtr->unk_0[0xF] |= 0x8;//set flag for midna text after twilight
-		csLocalAreaNodesPtr->unk_0[0xE] |= 0x9;//cs after entering Faron,spring cs with spirit
+		allAreaNodesPtr->Faron.unk_0[0x8] = 0xFF;//give midna jumps in mist area
+		allAreaNodesPtr->Faron.unk_0[0xC] |= 0x90;//set flag for midna to think you followed the monkey in the mist, trill lets you shop
+		allAreaNodesPtr->Faron.unk_0[0x12] |= 0x4;//mark read the midna text when you warp to N Faron for bridge
+		allAreaNodesPtr->Faron.unk_0[0xF] |= 0x8;//set flag for midna text after twilight
+		allAreaNodesPtr->Faron.unk_0[0xE] |= 0x9;//cs after entering Faron,spring cs with spirit
 
 		//Apply Randomizer Options
 		checkBossKeysey();
 		earlyCiTS();
 		earlyDesert();
+
+		//Apply Overrides for custom chests
+		gameInfo.scratchPad.eventBits[0x22] |= 0x4;/*Got Ilia's Charm from Impaz*/
+		gameInfo.scratchPad.eventBits[0x49] |= 0x2;/*Bought Slingshot from Sera*/
 
 		if (Singleton::getInstance()->isIntroSkipped == 1)
 		{
@@ -640,19 +666,28 @@ namespace mod::game_patch
 			allAreaNodesPtr->Ordon.unk_0[0xE] |= 0x2;//set flag for Fado text before goats
 			allAreaNodesPtr->Ordon.unk_0[0x9] |= 0x60;//set flag for day 3 intro cs and goats 2 done
 
+			tools::setItemFlag(ItemFlags::Heros_Clothes);
+
 
 
 			if (Singleton::getInstance()->isSewerSkipEnabled == 1)
 			{
+				// Set sewers flags (escaped cell cs, Midna intro cs, unchained wolf link, zelda cutscene, First trip to Sewers Done)
+				// Set more sewers flags (talk to midna after escaping cell in sewers, listened to first guard in sewers)
+				gameInfo.scratchPad.eventBits[0x1A] |= 0x82;
+
+				// Set more sewers flags (spawned into sewers twilight as wolf)
+				gameInfo.scratchPad.eventBits[0x4D] |= 0x8;
+
 				if (Singleton::getInstance()->isTwilightSkipped == 1)
 				{
 					//Set Faron Twilight Flags
 					scratchPadPtr->clearedTwilights.Faron = 0b1; //Clear Faron Twilight
 					tools::setItemFlag(ItemFlags::Vessel_Of_Light_Faron);
 					scratchPadPtr->tearCounters.Faron = 16;
-					eventBitsPtr[0x29] |= 0x4;//give ending blow	
 					eventBitsPtr[0x5] = 0xFF; //Ensure Epona is Stolen, give Midna Charge
 					eventBitsPtr[0x6] |= 0x10; //Faron Twilight Progression flag
+					tools::setItemFlag(ItemFlags::Heros_Clothes);
 
 					//Set Eldin Twilight Flags
 					scratchPadPtr->clearedTwilights.Eldin = 0b1; // Clear Eldin Twilight
@@ -665,6 +700,7 @@ namespace mod::game_patch
 					//Set Lanayru Twilight Flags
 					scratchPadPtr->clearedTwilights.Lanayru = 0b1; // Clear Lanayru Twilight
 					tools::setItemFlag(ItemFlags::Vessel_Of_Light_Lanayru);
+					allAreaNodesPtr->Hyrule_Field.unk_0[0xB] |= 0x80;//water on Field map
 					allAreaNodesPtr->Hyrule_Field.unk_0[0xF] |= 0x10;//open south CT Shortcut to Faron
 					eventBitsPtr[0x30] |= 0x40; //gave springwater to south CT goron
 					eventBitsPtr[0x8] |= 0x80; //ZD Thawed
@@ -688,8 +724,8 @@ namespace mod::game_patch
 
 					//Unlock Warps
 					allAreaNodesPtr->Ordon.unk_0[0xD] = 0x10; // give Ordon Spring Warp
-					gameInfo.localAreaNodes.unk_0[0x13] = 0x80;//give S faron warp
-					gameInfo.localAreaNodes.unk_0[0xB] = 0x4;//give N faron warp
+					allAreaNodesPtr->Faron.unk_0[0x13] = 0x80;//give S faron warp
+					allAreaNodesPtr->Faron.unk_0[0xB] = 0x4;//give N faron warp
 					allAreaNodesPtr->Eldin.unk_0[0x9] |= 0x20; // give Death Mountain Warp
 					allAreaNodesPtr->Eldin.unk_0[0x8] |= 0x80; // give Kakariko Warp
 					allAreaNodesPtr->Hyrule_Field.unk_0[0x17] = 0x8; //give Bridge of Eldin Warp
@@ -716,13 +752,10 @@ namespace mod::game_patch
 				eventBitsPtr[0x6] |= 0x24; //warp the kak bridge, give map warp
 			}
 
-			//Skip MDH?
-			if (Singleton::getInstance()->isMDHSkipEnabled == 1)
-			{
-				//set MDH flags
-				eventBitsPtr[0xC] |= 0x1; //MDH Started
-				eventBitsPtr[0x1E] |= 0x8; //MDH Completed
-			}
+			//Start Link in His House
+			strncpy(gameInfo.nextStageVars.nextStage, stage::allStages[Stage_Ordon_Interiors], sizeof(gameInfo.nextStageVars.nextStage) - 1);
+			gameInfo.nextStageVars.nextRoom = 0x4;
+			gameInfo.nextStageVars.nextSpawnPoint = 0x4;
 		}
 		else
 		{
@@ -730,28 +763,6 @@ namespace mod::game_patch
 			u16* secondTempAddress = reinterpret_cast<u16*>(&eventBitsPtr[0xF7]);
 			*secondTempAddress |= 0x1F4;//make it so you only have to donate 500 Rupees to Charlo
 			eventBitsPtr[0x20] |= 0x20; //MS Story Progression Flag
-
-			//remove vanilla occurances of replaced checks
-			allAreaNodesPtr->Ordon.unk_0[0x8] |= 0x5; //Ordon Shield and Sword
-			eventBitsPtr[0x3B] |= 0x80; //Coral Earring
-
-			//Faron Escape
-			if (Singleton::getInstance()->isForestEscapeEnabled == 1)
-			{
-				eventBitsPtr[0x6] |= 0x26; //warp the kak bridge, give map warp, set Forest Temple Story Flag
-			}
-			else
-			{
-				eventBitsPtr[0x6] |= 0x24; //warp the kak bridge, give map warp
-			}
-
-			//Skip MDH?
-			if (Singleton::getInstance()->isMDHSkipEnabled == 1)
-			{
-				//set MDH flags
-				eventBitsPtr[0xC] |= 0x1; //MDH Started
-				eventBitsPtr[0x1E] |= 0x8; //MDH Completed
-			}
 		}
 	}
 }

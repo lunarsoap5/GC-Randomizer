@@ -59,12 +59,6 @@ namespace mod::game_patch
 	 * and sets the flags accordingly
 	 */
 	void skipSewers();
-	
-	/**
-	 * Removes midna from preventing you from leaving faron
-	 * changes the state of faron from 0 to 2
-	 */
-	void allowFaronEscape();
 
 	/**
 	* Adds the chests that disappear after KB3
@@ -121,7 +115,7 @@ namespace mod::game_patch
 	 * Removes the locks from the 2 bulblin gates in HF
 	 * change doesn't get saved so set it evry time you load into HF
 	 */
-	void unlockHFGates();
+	void setFieldBits();
 
 	/**
 	 * when spawning in goats 2, will warp you to Illia taking Epona CS
@@ -142,11 +136,6 @@ namespace mod::game_patch
 	 * warps player to Lanayru twilight gate if they don't have MS
 	 */
 	void setLanayruWolf();
-
-	/**
-	 * sets Faron state after warping from lanayru
-	 */
-	void fixLanayruFaron();
 
 	/**
 	 * Fixes the cannon and puts it at lake hylia
@@ -182,4 +171,9 @@ namespace mod::game_patch
 	 * escort avalable at any time
 	 */
 	void setEscortState();
+
+	/**
+	 * skips the zant CS for MDH
+	 */
+	void skipMDH();
 }

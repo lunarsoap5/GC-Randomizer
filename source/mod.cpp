@@ -193,6 +193,7 @@ namespace mod
 		hudConsole->addWatch(page, "CurrentPosX:", &currentPosX, 's', WatchInterpretation::_str);
 		hudConsole->addWatch(page, "CurrentPosY:", &currentPosY, 's', WatchInterpretation::_str);
 		hudConsole->addWatch(page, "CurrentPosZ:", &currentPosZ, 's', WatchInterpretation::_str);
+		hudConsole->addWatch(page, "CurrentAngle:", &linkAngle, 's', WatchInterpretation::_str);
 		hudConsole->addWatch(page, "Sky Angle:", &skyAngle, 's', WatchInterpretation::_str);
 
 		//Game info 2
@@ -251,6 +252,7 @@ namespace mod
 		
 		//event info
 		page = hudConsole->addPage("Event Info");
+		hudConsole->addOption(page, "Coords as hex?", &coordsAreInHex, 0x1);
 				
 		hudConsole->addWatch(page, "CurrentEventID:", &gameInfo.eventSystem.currentEventID, 'x', WatchInterpretation::_u8);
 		hudConsole->addWatch(page, "NextEventID:", &gameInfo.eventSystem.nextEventID, 'x', WatchInterpretation::_u8);
@@ -431,8 +433,8 @@ namespace mod
 		//Set Bublin Camp State
 		eventListener->addLoadEvent(stage::allStages[Stage_Bublin_Camp], 0xFF, 0xFF, 0x1, 0xFF, game_patch::setBublinState, event::LoadEventAccuracy::Stage_Room_Spawn);
 		
-		//unlock HF gates
-		eventListener->addLoadEvent(stage::allStages[Stage_Hyrule_Field], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::unlockHFGates, event::LoadEventAccuracy::Stage);
+		//unlock HF gates and check for MDH
+		eventListener->addLoadEvent(stage::allStages[Stage_Hyrule_Field], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setFieldBits, event::LoadEventAccuracy::Stage);
 
 		//skip goats 2
 		eventListener->addLoadEvent(stage::allStages[Stage_Ordon_Ranch], 0x0, 0x3, 0xFF, 0xFF, game_patch::skipGoats, event::LoadEventAccuracy::Stage_Room_Spawn);
@@ -454,6 +456,9 @@ namespace mod
 		
 		//Allow Escort Any Time
 		eventListener->addLoadEvent(stage::allStages[Stage_Castle_Town_Interiors], 0x5, 0xFF, 0xFF, 0xFF, game_patch::setEscortState, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		//Skip MDH Trigger
+		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0x1, 0x16, 0xFF, 0xFF, game_patch::skipMDH, event::LoadEventAccuracy::Stage_Room_Spawn);
 
 
 		//   =================
@@ -687,10 +692,27 @@ namespace mod
 		float linkPos[3];
 		getPlayerPos(linkPos);
 
-		snprintf(currentPosX, 30, "%f", linkPos[0]);
-		snprintf(currentPosY, 30, "%f", linkPos[1]);
-		snprintf(currentPosZ, 30, "%f", linkPos[2]);
-		skyAngle = (u32)gameInfo.scratchPad.skyAngle;
+		if (coordsAreInHex == 1)
+		{
+			typeTransform<float, u32> x = { linkPos[0] };
+			typeTransform<float, u32> y = { linkPos[1] };
+			typeTransform<float, u32> z = { linkPos[2] };
+
+			snprintf(currentPosX, 30, "%04x", x.b);
+			snprintf(currentPosY, 30, "%04x", y.b);
+			snprintf(currentPosZ, 30, "%04x", z.b);
+
+			snprintf(linkAngle, 30, "%02x", static_cast<u16>(tp::d_map_path_dmap::getMapPlayerAngleY()));
+		}
+		else
+		{
+			snprintf(currentPosX, 30, "%f", linkPos[0]);
+			snprintf(currentPosY, 30, "%f", linkPos[1]);
+			snprintf(currentPosZ, 30, "%f", linkPos[2]);
+
+			snprintf(linkAngle, 30, "%d", static_cast<u16>(tp::d_map_path_dmap::getMapPlayerAngleY()));
+		}
+
 
 		if (gameInfo.ColorPtr != nullptr)
 		{
@@ -781,16 +803,20 @@ namespace mod
 			// Toggle console			
 			system_console::setState(!sysConsolePtr->consoleEnabled, 0);
 		}
-		else if (enableQuickTransform == 1 && gameInfo.rButtonText == 0 && (gameInfo.bButtonText == 0x3 || gameInfo.bButtonText == 0x26) && ((gameInfo.scratchPad.eventBits[0xD] & 0x4) != 0) && controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_R))
+		else if (tp::d_a_alink::linkStatus)
 		{
-			// Make sure Link is actually loaded
-			tp::d_com_inf_game::LinkMapVars* linkMapPtr = gameInfo.linkMapPtr;
-			if (linkMapPtr)
+			if (enableQuickTransform == 1 && gameInfo.rButtonText == 0 && ((((gameInfo.aButtonText == 0x79 || gameInfo.aButtonText == 0x0 || gameInfo.aButtonText == 0x4) && gameInfo.eventSystem.eventFlag == 0) && tp::d_a_alink::linkStatus->status == 0x1) || gameInfo.aButtonText == 0x9) &&
+				(gameInfo.scratchPad.eventBits[0xD] & 0x4) != 0 && controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_R))
 			{
-				if (!((linkMapPtr->isTargeting & 0x400000) != 0 && gameInfo.scratchPad.form == 0))
+				// Make sure Link is actually loaded
+				tp::d_com_inf_game::LinkMapVars* linkMapPtr = gameInfo.linkMapPtr;
+				if (linkMapPtr)
 				{
-					// Transform
-					tp::d_a_alink::procCoMetamorphoseInit(linkMapPtr);
+					if (!((linkMapPtr->isTargeting & 0x400000) != 0 && gameInfo.scratchPad.form == 0))
+					{
+						// Transform
+						tp::d_a_alink::procCoMetamorphoseInit(linkMapPtr);
+					}
 				}
 			}
 		}

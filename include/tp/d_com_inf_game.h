@@ -836,7 +836,9 @@ namespace tp::d_com_inf_game
 		u16 immediateControl; // 4edb - 4edc
 		u8 unk_00[0x4]; // 4edd - 4EE0
 		u8 nextEventID; // 4EE1
-		u8 unk1A[0xD1];
+		u8 unk1A[0xCB];
+		u8 eventFlag;
+		u8 unkE7[0x5];
 		u8 currentEventID;
 		u8 unk_ec[0x14];
 		tp::evt_control::csFunc* onSkip;		 // if != 0 the function stored here will run, otherwise unskippable

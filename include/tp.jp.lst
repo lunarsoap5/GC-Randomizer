@@ -41,6 +41,7 @@
 
 // d_map_path_dmap.o
 8003EE5C:getMapPlayerPos
+8003EF20:getMapPlayerAngleY
 
 // d_item.o
 80097ECC:execItemGet
@@ -53,6 +54,7 @@
 800BB4F0:checkHeavyStateOn
 800C782C:procCoMetamorphoseInit
 8011A734:checkTreasureRupeeReturn
+803D6F94:linkStatus
 // data
 80388C0C:ladderVars
 
