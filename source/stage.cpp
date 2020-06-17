@@ -138,4 +138,33 @@ namespace mod::stage
 		allStages[Stage_Grotto_4],
 		allStages[Stage_Grotto_5]
 	};
+
+	const char* caveStages[6]
+	{
+		allStages[Stage_Lanayru_Ice_Puzzle_Cave],
+		allStages[Stage_Cave_of_Ordeals],
+		allStages[Stage_Eldin_Long_Cave],
+		allStages[Stage_Lake_Hylia_Long_Cave],
+		allStages[Stage_Eldin_Goron_Stockcave],
+		allStages[Stage_Faron_Woods_Cave]
+	};
+
+	const char* interiorStages[8]
+	{
+		allStages[Stage_Ordon_Interiors],
+		allStages[Stage_Kakariko_Interiors],
+		allStages[Stage_Castle_Town_Shops],
+		allStages[Stage_Sanctuary_Basement],
+		allStages[Stage_Impaz_House],
+		allStages[Stage_Henas_Cabin],
+		allStages[Stage_Castle_Town_Interiors],
+		allStages[Stage_Castle_Town]
+	};
+
+	const char* specialStages[3]
+	{
+		allStages[Stage_Title_Screen],
+		allStages[Stage_Bublin_2],
+		allStages[Stage_Hidden_Skill]
+	};
 }

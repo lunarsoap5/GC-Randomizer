@@ -204,6 +204,7 @@ namespace mod
 		hudConsole->addOption(page, "No Shop Bottl?", &allowBottleItemsShopAnytime, 0x1);
 		hudConsole->addOption(page, "Fast transform?", &enableQuickTransform, 0x1);
 		hudConsole->addOption(page, "Skip Intro?", &Singleton::getInstance()->isIntroSkipped, 0x1);
+		hudConsole->addOption(page, "Midna ToD Skip?", &Singleton::getInstance()->midnaTimeControl, 0x1);
 		//color
 		/*page = hudConsole->addPage("Tunic Color1");
 
@@ -449,7 +450,7 @@ namespace mod
 		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0x0, 0x5, 0xE, 0xFF, game_patch::setLanayruWolf, event::LoadEventAccuracy::Stage_Room_Spawn);
 
 		//desert Access
-		eventListener->addLoadEvent(stage::allStages[Stage_Gerudo_Desert], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::accessDesert, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Gerudo_Desert], 0x0, 0x0, 0xFF, 0xFF, game_patch::accessDesert, event::LoadEventAccuracy::Stage_Room_Spawn);
 		
 		//Skip Midna Text and CS's
 		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0x1, 0x15, 0xFF, 0xFF, game_patch::skipTextAndCS, event::LoadEventAccuracy::Stage_Room_Spawn_State);
@@ -458,7 +459,17 @@ namespace mod
 		eventListener->addLoadEvent(stage::allStages[Stage_Castle_Town_Interiors], 0x5, 0xFF, 0xFF, 0xFF, game_patch::setEscortState, event::LoadEventAccuracy::Stage_Room_Spawn);
 
 		//Skip MDH Trigger
-		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0x1, 0x16, 0xFF, 0xFF, game_patch::skipMDH, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0x1, 0x16, 0xFF, 0xFF, game_patch::skipMDHCS, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		//Fix FT Boss Music
+		eventListener->addLoadEvent(stage::allStages[Stage_Diababa], 0x32, 0x1, 0xFF, 0xFF, game_patch::fixFTBossMusic, event::LoadEventAccuracy::Stage);
+
+		// Allow Faron Escape
+		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::allowFaronEscape, event::LoadEventAccuracy::Stage);
+
+		//Skip MDH After Lanayru
+		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0x1, 0x14, 0xFF, 0xFF, game_patch::skipMDH, event::LoadEventAccuracy::Stage_Room_Spawn);
+
 
 
 		//   =================
@@ -477,15 +488,7 @@ namespace mod
 		actorCommonLayerInit_trampoline = patch::hookFunction(tp::d_stage::actorCommonLayerInit,
 			[](void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, int unk3, void* unk4)
 		{
-			// if unk4 is nullptr and unk3 is 0 it's probably ourselves calling this function
-			// Thus don't call it again to avoid an infinite loop!
-			if (unk3 != 0 && unk4)
-			{
-				// doCustomTRESActor will call this function with unk3=0 and unk4=nullptr
-				// So we only need to pass the status_roomControl (which should be static through LST anyway)
-				// to maintain consistency
-				global::modPtr->doCustomTRESActor(mStatus_roomControl);
-			}
+			global::modPtr->doCustomTRESActor(mStatus_roomControl);
 
 			return global::modPtr->actorCommonLayerInit_trampoline(mStatus_roomControl, chunkTypeInfo, unk3, unk4);
 		}
@@ -805,8 +808,8 @@ namespace mod
 		}
 		else if (tp::d_a_alink::linkStatus)
 		{
-			if (enableQuickTransform == 1 && gameInfo.rButtonText == 0 && ((((gameInfo.aButtonText == 0x79 || gameInfo.aButtonText == 0x0 || gameInfo.aButtonText == 0x4) && gameInfo.eventSystem.eventFlag == 0) && tp::d_a_alink::linkStatus->status == 0x1) || gameInfo.aButtonText == 0x9) &&
-				(gameInfo.scratchPad.eventBits[0xD] & 0x4) != 0 && controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_R))
+			if (enableQuickTransform == 1 && gameInfo.rButtonText == 0 && ((((gameInfo.aButtonText == 0x24) && gameInfo.eventSystem.eventFlag == 0) && tp::d_a_alink::linkStatus)) &&
+				(gameInfo.scratchPad.eventBits[0xD] & 0x4) != 0 && controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_Z))
 			{
 				// Make sure Link is actually loaded
 				tp::d_com_inf_game::LinkMapVars* linkMapPtr = gameInfo.linkMapPtr;
@@ -819,6 +822,22 @@ namespace mod
 					}
 				}
 			}
+			/*else if (tp::d_a_alink::linkStatus->status == 0x5 && gameInfo.aButtonText == 0x23 && controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_Z) && Singleton::getInstance()->midnaTimeControl == 1 &&
+				!(chestRandomizer->isStageBoss() || chestRandomizer->isStageGrotto() || chestRandomizer->isStageDungeon() || chestRandomizer->isStageInterior() || chestRandomizer->isStageCave() || chestRandomizer->isStageSpecial()))
+			{
+				if (gameInfo.scratchPad.skyAngle >= 180 && gameInfo.scratchPad.skyAngle <= 359)
+				{
+					gameInfo.scratchPad.skyAngle = 0;
+					gameInfo.nextStageVars.nextSpawnPoint = 0x0;
+					gameInfo.nextStageVars.triggerLoad |= 1;
+				}
+				else if (gameInfo.scratchPad.skyAngle >= 0 && gameInfo.scratchPad.skyAngle <= 179)
+				{
+					gameInfo.scratchPad.skyAngle = 180;
+					gameInfo.nextStageVars.nextSpawnPoint = 0x0;
+					gameInfo.nextStageVars.triggerLoad |= 1;
+				}
+			}*/
 		}
 
 		if (sysConsolePtr->consoleEnabled)
@@ -1433,7 +1452,7 @@ namespace mod
 						shieldTrickOn = 1;
 					}
 
-					if (!tools::checkItemFlag(ItemFlags::Null_DA) && bombBagTrickOn == 0 && tp::d_a_alink::checkStageName("R_SP109") && tp::d_kankyo::env_light.currentRoom == 1 &&
+					if ((gameInfo.scratchPad.eventBits[0x9] & 0x8) == 0/*didn't buy bomb bag yet*/ && bombBagTrickOn == 0 && tp::d_a_alink::checkStageName("R_SP109") && tp::d_kankyo::env_light.currentRoom == 1 &&
 						linkPos[2] > -600)
 					{
 						bombBag1Contents = gameInfo.scratchPad.itemWheel.Bomb_Bag_1;
@@ -1483,7 +1502,7 @@ namespace mod
 						bombBagTrickOn = 0;
 					}
 				}
-				if (tools::checkItemFlag(ItemFlags::Null_DA) && bombBagTrickOn == 1)
+				if ((gameInfo.scratchPad.eventBits[0x9] & 0x8) != 0/*bought bomb bag*/ && bombBagTrickOn == 1)
 				{//bought bomb bag check
 					gameInfo.scratchPad.itemWheel.Bomb_Bag_1 = bombBag1Contents;
 					gameInfo.scratchPad.itemWheel.Bomb_Bag_2 = bombBag2Contents;
@@ -1786,7 +1805,7 @@ namespace mod
 					check.overrides();
 				}
 
-				strcpy(TRES[i].actorName, "tboxA0\0");
+				strcpy(TRES[i].actorName, "tboxA0");
 				TRES[i].flags = 0xFF0FF000 | (check.chestType << 20) | (check.saveFlag << 4);
 
 				// Translate hex to float (1:1)
@@ -1804,9 +1823,8 @@ namespace mod
 				TRES[i].item = check.itemID;
 			}
 
-			// Create the actors; last 2 params 0 and nullptr to avoid infinite loop! (identification for self-call inside the
-			// hook)
-			tp::d_stage::actorCommonLayerInit(mStatus_roomControl, &chunkInfo, 0, nullptr);
+			/// Create the actors
+			global::modPtr->actorCommonLayerInit_trampoline(mStatus_roomControl, &chunkInfo, 0, nullptr);
 
 			delete[] TRES;
 		}

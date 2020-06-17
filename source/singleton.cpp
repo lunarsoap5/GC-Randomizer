@@ -32,6 +32,8 @@ namespace mod
 		shuffledSkybook = 1;
 		isIntroSkipped = 1;
 		isTwilightSkipped = 1;
+		diababaMusicFixed = 0;
+		midnaTimeControl = 1;
 	}
 
 } 

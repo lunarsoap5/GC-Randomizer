@@ -76,7 +76,7 @@ namespace mod
 		/*Powered Dominion Rod*/
 		{"R_SP209", 7, 1, 0x70, 0x4C, 0xC3DB30E9, 0xC4408000, 0xC523C471, 0x3CF0, nullptr, []() { return tools::checkItemFlag(ItemFlags::Ancient_Sky_Book_empty); } },
 		/*Light Master Sword*/
-		{"F_SP125", 4, 1, 0x7C, 0x49, 0x44E0DBF7, 0x45898B09, 0xC6A4AAFA, 0x7DBC, nullptr, []() { return ((((gameInfo.scratchPad.eventBits[0x43] & 0x2) != 0) && ((gameInfo.scratchPad.eventBits[0x45] & 0x80) != 0)) || ((gameInfo.scratchPad.eventBits[0x44] & 0x28) != 0));/*both sols placed*/ } },
+		{"F_SP125", 4, 1, 0x74, 0x49, 0x44E0DBF7, 0x45898B09, 0xC6A4AAFA, 0x7DBC, nullptr, []() { return ((gameInfo.scratchPad.eventBits[0x26] & 0x40) != 0) && (gameInfo.scratchPad.eventBits[0x26] & 0x20) != 0;/*both sols outside of Palace*/ } },
 		/*Ending Blow*/
 		{"F_SP108", 6, 2, 0xF0, 0xE1, 0xC71A5B41, 0x44898000, 0xC6E08544, 0x0000, nullptr, []() { return gameInfo.scratchPad.clearedTwilights.Faron == 0b1; } },
 		/*Shield Bash*/

@@ -28,6 +28,8 @@ namespace mod
 		u8 shuffledSkybook;
 		u8 isIntroSkipped;
 		u8 isTwilightSkipped;
+		u8 diababaMusicFixed;
+		u8 midnaTimeControl;
 
 		private:
 
