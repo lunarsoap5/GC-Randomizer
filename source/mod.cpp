@@ -823,7 +823,7 @@ namespace mod
 				}
 			}
 			/*else if (tp::d_a_alink::linkStatus->status == 0x5 && gameInfo.aButtonText == 0x23 && controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_Z) && Singleton::getInstance()->midnaTimeControl == 1 &&
-				!(chestRandomizer->isStageBoss() || chestRandomizer->isStageGrotto() || chestRandomizer->isStageDungeon() || chestRandomizer->isStageInterior() || chestRandomizer->isStageCave() || chestRandomizer->isStageSpecial()))
+				chestRandomizer->isStageTOD())
 			{
 				if (gameInfo.scratchPad.skyAngle >= 180 && gameInfo.scratchPad.skyAngle <= 359)
 				{

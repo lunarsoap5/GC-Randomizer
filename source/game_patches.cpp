@@ -804,6 +804,7 @@ namespace mod::game_patch
 			strncpy(gameInfo.nextStageVars.nextStage, stage::allStages[Stage_Ordon_Interiors], sizeof(gameInfo.nextStageVars.nextStage) - 1);
 			gameInfo.nextStageVars.nextRoom = 0x4;
 			gameInfo.nextStageVars.nextSpawnPoint = 0x4;
+			gameInfo.scratchPad.skyAngle = 0;
 		}
 		else
 		{

@@ -1202,6 +1202,19 @@ namespace mod
 		return false;
 	}
 
+	bool ChestRandomizer::isStageTOD()
+	{
+		u32 totalTODStages = sizeof(stage::timeOfDayStages) / sizeof(stage::timeOfDayStages[0]);
+		for (u32 i = 0; i < totalTODStages; i++)
+		{
+			if (tp::d_a_alink::checkStageName(stage::timeOfDayStages[i]))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	void ChestRandomizer::handleKeysanity()
 	{
 		if (isKeysanityEnabled == 1)
