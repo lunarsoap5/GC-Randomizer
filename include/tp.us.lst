@@ -1,5 +1,6 @@
 // memory
 80003458:memset
+80003540:memcpy
 
 // m_Do_ext.o
 // text
@@ -7,23 +8,64 @@
 // data
 80450C34:archiveHeap
 
+// d_save.o
+80032AA8:getRupeeMax
+800350BC:getSave
+800350F0:putSave
+
+// d_stage.o
+8002586C:actorCommonLayerInit
+// data
+803F6094:mStatus_roomControl
+
+// d_event.o
+80042778:defaultSkipStb
+800429D4:skipper
+
+// f_op_scene_req.o
+// data
+80450614:freezeActors
+80450CE0:isUsingOfOverlap
+
 // f_ap_game.o
 80018A6C:fapGm_Execute
 
 // f_op_actor_mng.o
+8001BBE8:createItemForPresentDemo
 8001BC74:createItemForTrBoxDemo
+8001C078:createDemoItem
+8001C0D4:createItemForBoss
+8001C174:createItemForMidBoss
+8001C1B8:createItemForDirectGet
+8001C1FC:createItemForSimpleDemo
 
 // d_map_path_dmap.o
 8003EE5C:getMapPlayerPos
+8003EF20:getMapPlayerAngleY
 
 // d_item.o
+80097E8C:execItemGet
 80097EE0:checkItemGet
+800982B4:item_func_UTUWA_HEART
 
-// d_a_alink.o
-// text
+// d_a_alink.h
+8009DA60:checkStageName
+800B271C:setStickData
+800BB4B8:checkHeavyStateOn
+800C77F4:procCoMetamorphoseInit
 8011A6FC:checkTreasureRupeeReturn
+803DCE54:linkStatus
 // data
 8038EB8C:ladderVars
+
+// d_menu_collect.o
+801B3340:setWalletMaxNum
+
+// d_msg_flow.o
+8024B8E4:query022
+
+// DynamicLink.o
+80262C5C:do_link
 
 // JKRExpHeap.o
 802CF128:do_alloc_JKRExpHeap
@@ -97,7 +139,12 @@
 803665BC:snprintf
 
 // string.o
+80368994:strcmp
 80368B2C:strcpy
+80368AE8:strncpy
+
+//currentState
+803A66B3:current_state
 
 // m_Do_controller_pad.o
 // data
@@ -106,6 +153,7 @@
 // d_com_inf_game.o
 // data
 804061C0:dComIfG_gameInfo
+8002B36C:setItemBombNumCount
 
 // d_kankyo.o
 // data
@@ -114,3 +162,18 @@
 // JFWSystem.o
 // data
 804511B8:systemConsole
+
+//currentState
+803A66B3:current_state
+
+//walletText
+80bbc749:wallet_text
+
+//walletdescription
+80BBD835:wallet_description
+
+//canwarp
+804069B6:can_warp
+
+//resource.o
+802a9490:parseCharacter_1Byte
