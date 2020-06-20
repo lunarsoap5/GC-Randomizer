@@ -10,10 +10,7 @@
 This is template code without any game changing logic whatsoever.
 It randomizes every item Link gets then turns towards the camera with the item floating above his hands (excluding getting an item for the first time on the ground).
 This means these items are not randomized in this version:
-* Master Sword
-* Shadow Crystal
 * Horse Call
-* Master Sword infused with light
 * Shop ammo that doesn't trigger a cutscene
 * Floor rupees/arrows/seeds
 * Scoopable bottle contents (might be possible in an update from the [official version](https://github.com/zsrtp/Randomizer) )
