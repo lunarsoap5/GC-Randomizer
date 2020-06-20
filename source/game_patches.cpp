@@ -133,7 +133,6 @@ namespace mod::game_patch
 			strcpy(sysConsolePtr->consoleLine[20].line, "-> Skipping Sewers");
 
 			// Set sewers flags
-			giveMidna();
 			giveSense();
 
 			// We should be wolf
@@ -153,6 +152,7 @@ namespace mod::game_patch
 			// Load back to Ordon Spring
 			tools::triggerSaveLoad(stage::allStages[Stage_Ordon_Spring], 0x1, 0x3, 0x4);
 		}
+		giveMidna();
 		gameInfo.scratchPad.equipedItems.sword = 0x3F;
 	}
 
@@ -301,13 +301,13 @@ namespace mod::game_patch
 	{
 		if (Singleton::getInstance()->isCartEscortSkipEnabled == 1)
 		{
-			gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x17] |= 0x40;//remove rock in graveyard
-			gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x16] |= 0x40;
 			gameInfo.scratchPad.eventBits[0x8] |= 0x40;//escort started
 			gameInfo.scratchPad.eventBits[0x8] |= 0x10;//escort finished
 			gameInfo.scratchPad.eventBits[0x8] |= 0x4;//got zora armor from Rutela
 			tools::triggerSaveLoad(stage::allStages[Stage_Kakariko_Interiors], 0x2, 0x3, 0xD);
 		}
+		gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x17] |= 0x40;//remove rock in graveyard
+		gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x16] |= 0x40;
 	}
 
 	void setEscortState()
@@ -456,7 +456,7 @@ namespace mod::game_patch
 	{
 		if (Singleton::getInstance()->isForestEscapeEnabled == 0)
 		{
-			if (gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.bossBeaten == 0b1 ||
+			if (((gameInfo.scratchPad.eventBits[0x6] & 0x2) != 0) ||
 				(gameInfo.scratchPad.eventBits[0x6] & 0x10) == 0)
 			{
 				return;
@@ -466,6 +466,11 @@ namespace mod::game_patch
 				gameInfo.nextStageVars.nextState = 0x0;
 			}
 		}
+	}
+
+	void setLanternFlag()
+	{
+		gameInfo.scratchPad.eventBits[0xF] |= 0x1;/*got lantern from Coro*/
 	}
 
 	void skipMDHCS()
@@ -529,7 +534,6 @@ namespace mod::game_patch
 		eventBitsPtr[0x5] |= 0x10; //unchain wolf link
 		eventBitsPtr[0x6] |= 0xC0; //CS after beating Ordon Shadow, cs after entering Faron twilight
 		eventBitsPtr[0xB] |= 0x20; //Talked to Yeta First Time
-		eventBitsPtr[0xC] |= 0x10; //Midna accompanies link
 		eventBitsPtr[0x10] |= 0x2; //Talked to Jaggle after climbing vines
 		eventBitsPtr[0x5E] |= 0x10; //Midna Text After Beating Forest Temple
 		eventBitsPtr[0x40] |= 0x8; //have been to desert (prevents cannon warp crash)
@@ -554,7 +558,7 @@ namespace mod::game_patch
 		allAreaNodesPtr->Ordon.unk_0[0x9] |= 0xAA; //exit shield house CS watched, day 3 intro CS, bee nest CS, Ranch first time CS
 		allAreaNodesPtr->Ordon.unk_0[0xA] |= 0xF; //Ilia spring CS, Ordon Village CS 
 		allAreaNodesPtr->Ordon.unk_0[0xD] |= 0x82; //Approach Faron Twilight CS, Shield house intro cs
-		allAreaNodesPtr->Ordon.unk_0[0xE] |= 0x84; //Midna CS after watching Bo and Jaggle Talk about shield, midna text leaving spring
+		allAreaNodesPtr->Ordon.unk_0[0xE] |= 0x4; //Midna CS after watching Bo and Jaggle Talk about shield
 		allAreaNodesPtr->Ordon.unk_0[0xF] |= 0xC; //rusl talking to wife CS
 		allAreaNodesPtr->Ordon.unk_0[0x17] |= 0x80; //enter village as wolf CS 
 
@@ -664,6 +668,7 @@ namespace mod::game_patch
 		allAreaNodesPtr->Faron.unk_0[0x12] |= 0x4;//mark read the midna text when you warp to N Faron for bridge
 		allAreaNodesPtr->Faron.unk_0[0xF] |= 0x8;//set flag for midna text after twilight
 		allAreaNodesPtr->Faron.unk_0[0xE] |= 0x9;//cs after entering Faron,spring cs with spirit
+		allAreaNodesPtr->Faron.unk_0[0x17] |= 0xC0;//kill bugs in Coro's House
 
 		//Apply Randomizer Options
 		checkBossKeysey();
@@ -689,6 +694,7 @@ namespace mod::game_patch
 			eventBitsPtr[0x4A] |= 0x60; //Day 1 done, sword training done
 
 			eventBitsPtr[0x2] |= 0x40; //Slingshot and Sword Training started
+			allAreaNodesPtr->Ordon.unk_0[0x8] |= 0x20; //Sword Training Started
 			eventBitsPtr[0x10] |= 0x1; //Cat got Fish
 			eventBitsPtr[0x16] |= 0x1; //Day 2 done
 
@@ -696,7 +702,8 @@ namespace mod::game_patch
 			allAreaNodesPtr->Ordon.unk_0[0x9] |= 0x60;//set flag for day 3 intro cs and goats 2 done
 			eventBitsPtr[0x15] |= 0x80; //Watched CS for goats 2 done
 
-			tools::setItemFlag(ItemFlags::Heros_Clothes);
+			eventBitsPtr[0x1] |= 0x4; //Talked to Colin Day 3
+			eventBitsPtr[0x3] |= 0x2; //Gave Sword to Talo
 
 
 
@@ -804,7 +811,7 @@ namespace mod::game_patch
 			strncpy(gameInfo.nextStageVars.nextStage, stage::allStages[Stage_Ordon_Interiors], sizeof(gameInfo.nextStageVars.nextStage) - 1);
 			gameInfo.nextStageVars.nextRoom = 0x4;
 			gameInfo.nextStageVars.nextSpawnPoint = 0x4;
-			gameInfo.scratchPad.skyAngle = 0;
+			gameInfo.scratchPad.skyAngle = 180;
 		}
 		else
 		{

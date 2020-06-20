@@ -499,8 +499,6 @@ namespace mod
 				allAreaNodesPtr->Lanayru.unk_0[0xB] |= 0x4; // give Zora's Domain Warp
 				allAreaNodesPtr->Lanayru.unk_0[0xA] |= 0x4;//give lake hylia warp
 
-				tools::setItemFlag(ItemFlags::Heros_Clothes);
-
 				//Faron Escape
 				if (Singleton::getInstance()->isForestEscapeEnabled == 1)
 				{
@@ -525,10 +523,10 @@ namespace mod
 				{
 					eventBitsPtr[0x6] |= 0x24; //warp the kak bridge, give map warp
 				}
+				gameInfo.localAreaNodes.unk_0[0x9] = 0x10;//unlock N Faron gate
 				tools::setItemFlag(ItemFlags::Vessel_Of_Light_Faron);
 				return item;
 			}
-			tools::setItemFlag(ItemFlags::Vessel_Of_Light_Faron);
 			return item;
 		}
 		else if (item == items::Item::Vessel_Of_Light_Eldin)
@@ -539,7 +537,7 @@ namespace mod
 			eventBitsPtr[0x6] |= 0x1; //tame Epona
 			eventBitsPtr[0xA] |= 0x8; //Beat KB1
 			eventBitsPtr[0x14] |= 0x10; //Put Bo Outside
-			eventBitsPtr[0x7] = 0xD6; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched, Eldin Twilight Story Progression Flag
+			eventBitsPtr[0x7] = 0xD6; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
 			return item;
 		}
 		else if (item == items::Item::Vessel_Of_Light_Lanayru)

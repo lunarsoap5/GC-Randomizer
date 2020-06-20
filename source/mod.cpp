@@ -204,7 +204,7 @@ namespace mod
 		hudConsole->addOption(page, "No Shop Bottl?", &allowBottleItemsShopAnytime, 0x1);
 		hudConsole->addOption(page, "Fast transform?", &enableQuickTransform, 0x1);
 		hudConsole->addOption(page, "Skip Intro?", &Singleton::getInstance()->isIntroSkipped, 0x1);
-		hudConsole->addOption(page, "Midna ToD Skip?", &Singleton::getInstance()->midnaTimeControl, 0x1);
+		//hudConsole->addOption(page, "Midna ToD Skip?", &Singleton::getInstance()->midnaTimeControl, 0x1);
 		//color
 		/*page = hudConsole->addPage("Tunic Color1");
 
@@ -253,7 +253,7 @@ namespace mod
 		
 		//event info
 		page = hudConsole->addPage("Event Info");
-		hudConsole->addOption(page, "Coords as hex?", &coordsAreInHex, 0x1);
+		//hudConsole->addOption(page, "Coords as hex?", &coordsAreInHex, 0x1);
 				
 		hudConsole->addWatch(page, "CurrentEventID:", &gameInfo.eventSystem.currentEventID, 'x', WatchInterpretation::_u8);
 		hudConsole->addWatch(page, "NextEventID:", &gameInfo.eventSystem.nextEventID, 'x', WatchInterpretation::_u8);
@@ -470,6 +470,9 @@ namespace mod
 		//Skip MDH After Lanayru
 		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0x1, 0x14, 0xFF, 0xFF, game_patch::skipMDH, event::LoadEventAccuracy::Stage_Room_Spawn);
 
+		//Set Lantern gotten from Coro Flag
+		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0xFF, 0x0, 0xFF, 0xFF, game_patch::setLanternFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+
 
 
 		//   =================
@@ -488,9 +491,34 @@ namespace mod
 		actorCommonLayerInit_trampoline = patch::hookFunction(tp::d_stage::actorCommonLayerInit,
 			[](void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, int unk3, void* unk4)
 		{
-			global::modPtr->doCustomTRESActor(mStatus_roomControl);
-
+			if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Faron_Woods]))
+			{
+				if (Singleton::getInstance()->hasActorCommonLayerRan <= 4)
+				{
+					global::modPtr->doCustomTRESActor(mStatus_roomControl);
+				}
+			}
+			else if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Hyrule_Field]) && gameInfo.nextStageVars.nextSpawnPoint == 0xFC)
+			{
+				if (Singleton::getInstance()->hasActorCommonLayerRan <= 2)
+				{
+					global::modPtr->doCustomTRESActor(mStatus_roomControl);
+				}
+			}
+			else
+			{
+				global::modPtr->doCustomTRESActor(mStatus_roomControl);
+			}
 			return global::modPtr->actorCommonLayerInit_trampoline(mStatus_roomControl, chunkTypeInfo, unk3, unk4);
+		}
+		);
+
+
+		putSave_trampoline = patch::hookFunction(tp::d_save::putSave,
+			[](tp::d_com_inf_game::GameInfo* gameInfoPtr, s32 areaID)
+		{
+			Singleton::getInstance()->hasActorCommonLayerRan = 0;
+			return global::modPtr->putSave_trampoline(gameInfoPtr, areaID);
 		}
 		);
 
@@ -808,7 +836,7 @@ namespace mod
 		}
 		else if (tp::d_a_alink::linkStatus)
 		{
-			if (enableQuickTransform == 1 && gameInfo.rButtonText == 0 && ((((gameInfo.aButtonText == 0x24) && gameInfo.eventSystem.eventFlag == 0) && tp::d_a_alink::linkStatus)) &&
+			if (enableQuickTransform == 1 && gameInfo.rButtonText == 0 && ((((gameInfo.aButtonText == 0x24) && gameInfo.eventSystem.eventFlag == 0) && tp::d_a_alink::linkStatus->status == 0x1)) &&
 				(gameInfo.scratchPad.eventBits[0xD] & 0x4) != 0 && controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_Z))
 			{
 				// Make sure Link is actually loaded
@@ -1824,9 +1852,9 @@ namespace mod
 			}
 
 			/// Create the actors
-			global::modPtr->actorCommonLayerInit_trampoline(mStatus_roomControl, &chunkInfo, 0, nullptr);
-
+			global::modPtr->actorCommonLayerInit_trampoline(mStatus_roomControl, &chunkInfo, 0, nullptr);	
 			delete[] TRES;
+			Singleton::getInstance()->hasActorCommonLayerRan++;
 		}
 
 		delete[] checks;
