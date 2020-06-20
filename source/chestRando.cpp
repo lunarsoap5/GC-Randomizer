@@ -509,6 +509,14 @@ namespace mod
 					eventBitsPtr[0x6] |= 0x24; //warp the kak bridge, give map warp
 				}
 
+				//Skip MDH?
+				if (Singleton::getInstance()->isMDHSkipEnabled == 1)
+				{
+					//set MDH flags
+					gameInfo.scratchPad.eventBits[0xC] |= 0x1; //MDH Started
+					gameInfo.scratchPad.eventBits[0x1E] |= 0x8; //MDH Completed
+				}
+
 				gameInfo.nextStageVars.triggerLoad |= 1;
 				return item;
 			}
