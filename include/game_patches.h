@@ -188,4 +188,6 @@ namespace mod::game_patch
 	 * set MDH skip after Lanayru Twilight
 	 */
 	void skipMDH();
+
+	void setLanternFlag();
 }

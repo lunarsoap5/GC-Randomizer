@@ -30,6 +30,7 @@ namespace mod
 		u8 isTwilightSkipped;
 		u8 diababaMusicFixed;
 		u8 midnaTimeControl;
+		u8 hasActorCommonLayerRan;
 
 		private:
 

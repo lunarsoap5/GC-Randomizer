@@ -85,6 +85,8 @@ namespace mod
 
 			bool isStageSpecial();
 
+			bool isStageTOD();
+
 
 		private:
 			/**

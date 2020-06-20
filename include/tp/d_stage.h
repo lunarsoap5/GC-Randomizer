@@ -25,5 +25,6 @@ namespace tp::d_stage
 		 *  @param unk4 unknown
 		 */
 		bool actorCommonLayerInit(void* mStatus_roomControl, dzxChunkTypeInfo* chunkTypeInfo, int unk3, void* unk4);
+		bool actorInit(void* mStatus_roomControl, dzxChunkTypeInfo* chunkTypeInfo, int unk3, void* unk4);
 	}
 }  // namespace tp::d_stage
