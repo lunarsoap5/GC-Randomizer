@@ -51,7 +51,7 @@ namespace mod::item
 		/* 41 */{0x06, 7, stage::allStages[46], 0, 0x5, 0xFF, 0b000000101100000000000, -4027.7336430, 3200.0000000, -8970.9990230, nullptr, nullptr}, //Kakariko Watchtower Alcove Chest
 		/* 42 */{0x21, 3, stage::allStages[56], 0, 0x5, 0xFF, 0b000000001000000000000, 11550.0000000, 2700.0000000, 24090.0000000, nullptr, nullptr}, //Eldin Bomb Rock Ledge Heart Piece Chest
 		/* 43 */{0x03, 7, stage::allStages[50], 1, 0x5, 0xFF, 0b000000000000000000000, 2784.3178710, -4587.8901370, 10773.4140620, nullptr, nullptr}, //ZD Small Chest By Mother and Child Isles
-		/* 44 */{0x04, 7, stage::allStages[50], 1, 0x8, 0x8, 0b000000000000000000000, 3810.8435060, -3535.5300290, 11344.8876950, nullptr, nullptr}, //ZD Small Chest Under Waterfall
+		/* 44 */{0x04, 7, stage::allStages[50], 1, 0x8, 0xFF, 0b000000000000000000000, 3810.8435060, -3535.5300290, 11344.8876950, nullptr, nullptr}, //ZD Small Chest Under Waterfall
 		/* 45 */{0x06, 7, stage::allStages[52], 0, 0x5, 0xFF, 0b001000000000000000000, -97123.5468750, -19490.0000000, 58585.6992190, nullptr, nullptr}, //Lake Hylia Underwater Chest
 		/* 46 */{0x0F, 5, stage::allStages[0], 0, 0x6, 0xFF, 0b000000000000001000000, -1707.6793210, 1250.0000000, 15388.9882810, nullptr, nullptr}, //LBT Lobby Left Chest
 		/* 47 */{0x17, 5, stage::allStages[0], 0, 0x6, 0xFF, 0b000000000000001000000, -144.6737980, 1250.0000000, 16525.8710940, nullptr, nullptr}, //LBT Lobby Rear Chest
@@ -480,7 +480,7 @@ namespace mod::item
 		/*#58*/{ 0xe0, 11, stage::allStages[61], 0, 0x8, 0xFF, 0b000000000000000000010, 942.983948, 817.438049, 3387.270996, nullptr, nullptr },
 		/*#59*/{ 0xe0, 11, stage::allStages[50], 0, 0x8, 0xFF, 0b000000000000000000010, 3444.790039, -4658.747559, 11720.103516, nullptr, nullptr },
 		/*#60*/{ 0xe0, 11, stage::allStages[50], 0, 0x8, 0xFF, 0b000000000000000000010, 297.160065, -4608.964844, 7384.047852, nullptr, nullptr },
-		/*60 poe reward*/{ 0x07, 7, stage::allStages[73], 5, 0x15, 0xFF, 0b000000000000000000000, 4250.363281, 134.492020, 1813.639648, nullptr, nullptr },
+		/*60 poe reward*/{ 0x07, 7, stage::allStages[73], 5, 0xFF, 0xFF, 0b000000000000000000000, 4250.363281, 134.492020, 1813.639648, nullptr, nullptr },
 		//sky book quest
 		/*empty*/{ 0xe9, 0, stage::allStages[72], 0, 0x13, 0x13, 0b000000000000010000000, -532.266479, 1.500000, -343.810791, nullptr, nullptr },
 		/*faron*/{ 0xea, 0, stage::allStages[45], 8, 0x13, 0x13, 0b000000000000010000000, -17500.000000, -310.000000, -20950.000000, nullptr, nullptr },
@@ -552,7 +552,7 @@ namespace mod::item
 
 		//Custom Chests
 		//Shadow Crystal
-		/*493*/{ 0x32, 0, stage::allStages[54], 1, 0x7, 0x7, 0b000000000000000000000, -235.256332, 1625.000000, -4709.996582, nullptr, nullptr },
+		/*493*/{ 0x32, 0, stage::allStages[54], 1, 0x6, 0x6, 0b000000000000000000000, -235.256332, 1625.000000, -4709.996582, nullptr, nullptr },
 		//Master Sword
 		/*494*/{ 0x29, 0, stage::allStages[54], 1, 0x7, 0x7, 0b000000000000000000000, 246.137573, 1625.000000, -4787.551270, nullptr, nullptr },
 		//Dominion Rod Uncharged
