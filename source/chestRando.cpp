@@ -70,18 +70,6 @@ namespace mod
 				{
 					sourceCheck = findSource(destCheck->destLayer, 0x1, destCheck);//to prevent woodensword from being overwritten before losing it			
 				}
-				else if (destCheck->itemID == items::Item::Ordon_Shield || destCheck->itemID == items::Item::Wooden_Shield || destCheck->itemID == items::Item::Hylian_Shield)
-				{
-					sourceCheck = findSource(destCheck->destLayer, 0x2, destCheck);//to prevent softlocking the game when you try to get ordon shield check		
-				}
-				else if (destCheck->itemID == items::Item::Zora_Armor || destCheck->itemID == items::Item::Magic_Armor)
-				{
-					sourceCheck = findSource(destCheck->destLayer, 0x2, destCheck);//to prevent softlocking the game when you try to get ordon shield check		
-				}
-				else if (isProgressiveEnabled == 0 && destCheck->itemID == items::Item::Clawshots)
-				{
-					sourceCheck = findSource(destCheck->destLayer, 0x7, destCheck);//to prevent Clawshots from being overwritten by Clawshot
-				}
 				else
 				{
 					sourceCheck = findSource(destCheck->destLayer, 0x0, destCheck);
@@ -124,6 +112,66 @@ namespace mod
 				sourceCheck = findSource(destCheck->destLayer, 0x0, destCheck);
 				placeCheck(sourceCheck, destCheck);
 				//layerCheckCount++;
+			}
+		}
+
+		// Place layer checks
+		for (u16 i = 0; i < totalChecks; i++)
+		{
+			destCheck = &item::checks[i];
+
+			if (!destCheck->source)
+			{
+				// Free slot
+				if (destCheck->destLayer != 0xFF)
+				{
+					// Layer check	
+					if (destCheck->itemID == items::Item::Ordon_Sword)
+					{
+						sourceCheck = findSource(destCheck->destLayer, 0x1, destCheck);//to prevent woodensword from being overwritten before losing it			
+					}
+					else if (destCheck->itemID == items::Item::Ordon_Shield || destCheck->itemID == items::Item::Wooden_Shield || destCheck->itemID == items::Item::Hylian_Shield)
+					{
+						sourceCheck = findSource(destCheck->destLayer, 0x2, destCheck);//to prevent softlocking the game when you try to get ordon shield check		
+					}
+					else if (destCheck->itemID == items::Item::Zora_Armor || destCheck->itemID == items::Item::Magic_Armor)
+					{
+						sourceCheck = findSource(destCheck->destLayer, 0x2, destCheck);//to prevent softlocking the game when you try to get ordon shield check		
+					}
+					else if (isProgressiveEnabled == 0)
+					{
+						if (destCheck->itemID == items::Item::Clawshots)
+						{
+							sourceCheck = findSource(destCheck->destLayer, 0x7, destCheck);//to prevent Clawshots from being overwritten by Clawshot
+						}
+						else if (destCheck->itemID == items::Item::Big_Quiver)
+						{
+							sourceCheck = findSource(destCheck->destLayer, 0x4, destCheck);//to prevent bow from being overwritten
+						}
+						else if (destCheck->itemID == items::Item::Giant_Quiver)
+						{
+							sourceCheck = findSource(destCheck->destLayer, 0x8, destCheck);//to prevent bow from being overwritten
+						}
+						else if (destCheck->itemID == items::Item::Giant_Wallet)
+						{
+							sourceCheck = findSource(destCheck->destLayer, 0x7, destCheck);//to prevent overwriting giant wallet with big wallet
+						}
+						else if (destCheck->itemID == items::Item::Giant_Bomb_Bag)
+						{
+							sourceCheck = findSource(destCheck->destLayer, 0x6, destCheck);//to prevent getting a 4th bag and possibly crashing the game
+						}
+						else
+						{
+							sourceCheck = findSource(destCheck->destLayer, 0x0, destCheck);
+						}
+					}
+					else
+					{
+						sourceCheck = findSource(destCheck->destLayer, 0x0, destCheck);
+					}
+					placeCheck(sourceCheck, destCheck);
+					layerCheckCount++;
+				}
 			}
 		}
 
@@ -249,9 +297,33 @@ namespace mod
 				result = true;
 			}
 			break;
+		
+		case item::ItemType::HeartPiece:
+			// Map, compass, big key
+			if (areHeartPiecesRandomized == 0)
+			{
+				result = true;
+			}
+			break;
+		
+		case item::ItemType::Rupee:
+			// Map, compass, big key
+			if (areRupeesRandomized == 0)
+			{
+				result = true;
+			}
+			break;
+
+		case item::ItemType::Ammo:
+			// Map, compass, big key
+			if (areAmmoRandomized == 0)
+			{
+				result = true;
+			}
+			break;
 
 		case item::ItemType::Story:
-			if (Singleton::getInstance()->areStoryItemsRandomized == 1)
+			if (check->itemID != items::Item::Aurus_Memo && check->itemID != items::Item::Asheis_Sketch)
 			{
 				result = true;
 			}
@@ -293,10 +365,14 @@ namespace mod
 				result = true;
 			break;*/
 		case items::Item::Shadow_Crystal:
-			if (Singleton::getInstance()->isMDHSkipEnabled == 0 || Singleton::getInstance()->isCrystalRandomized == 0)
+			if (Singleton::getInstance()->isMDHSkipEnabled == 0)
 			{
 				result = true;
 			}
+			break;
+
+		case items::Item::Fishing_Rod:
+			result = true;
 			break;
 
 		case items::Item::Ancient_Sky_Book_empty:

@@ -7,6 +7,7 @@
 #include "eventListener.h"
 #include "chestRando.h"
 #include "HUDConsole.h"
+#include <string>
 
 namespace mod
 {
@@ -124,6 +125,7 @@ namespace mod
 			u8 bombBag1Ammo;
 			u8 bombBag2Ammo;
 			u8 bombBag3Ammo;
+			u8 lastGoodSpawn;
 
 			u8 yetaTrickOn = 0;
 
@@ -133,6 +135,9 @@ namespace mod
 			u8 eventFlagToEdit = 0;
 			u8 newValueForEventFlag = 0;
 			u8 triggerEventFlagEdit = 0;
+
+			char itemName[10];
+			//u8 newItemId;
 
 		// Functions
 		private:
@@ -202,7 +207,9 @@ namespace mod
 			 */
 			void doCustomTRESActor(void* mStatus_roomControl);
 
+			//void setFieldModels();
 
+			//bool procActorCommonLayerInit(void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, s32 unk3, void* unk4);
 		// Private members
 		//private:
 			

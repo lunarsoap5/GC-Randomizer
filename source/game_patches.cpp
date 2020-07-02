@@ -82,21 +82,20 @@ namespace mod::game_patch
 
 	void removeIBLimit()
 	{
-		if (!tp::d_a_alink::checkStageName("D_MN07A"))
-		{
-			// li 0
-			u32 li = 0x38600000;
-			// b +4C
-			u32 b = 0x4800004C;
+		// li 0
+		u32 li = 0x38600000;
+		// b +4C
+		u32 b = 0x4800004C;
 
-			// CheckHeavyState overwrite
-			u32 checkHeavyStateOnAddress = reinterpret_cast<u32>(&tp::d_a_alink::checkHeavyStateOn);
-			*reinterpret_cast<u32*>(checkHeavyStateOnAddress + 0x84) = li;
+		// CheckHeavyState overwrite
+		u32 checkHeavyStateOnAddress = reinterpret_cast<u32>(&tp::d_a_alink::checkHeavyStateOn);
+		*reinterpret_cast<u32*>(checkHeavyStateOnAddress + 0x84) = li;
 
-			u32 setStickDataAddress = reinterpret_cast<u32>(&tp::d_a_alink::setStickData);
-			*reinterpret_cast<u32*>(setStickDataAddress + 0x5FC) = b;
-		}
+		u32 setStickDataAddress = reinterpret_cast<u32>(&tp::d_a_alink::setStickData);
+		*reinterpret_cast<u32*>(setStickDataAddress + 0x5FC) = b;
 	}
+
+
 
 	void increaseWalletSize()
 	{
@@ -468,14 +467,6 @@ namespace mod::game_patch
 		}
 	}
 
-	void breakBarrier()
-	{
-		if (Singleton::getInstance()->isEarlyHCEnabled == 1 && ((gameInfo.scratchPad.eventBits[0x1E] & 0x8) != 0))
-		{
-			gameInfo.scratchPad.eventBits[0x42] |= 0x8;
-		}
-	}
-
 	void setLanternFlag()
 	{
 		gameInfo.scratchPad.eventBits[0xF] |= 0x1;/*got lantern from Coro*/
@@ -682,24 +673,6 @@ namespace mod::game_patch
 		checkBossKeysey();
 		earlyCiTS();
 		earlyDesert();
-
-		if (Singleton::getInstance()->isEarlyToTEnabled == 1)
-		{
-			gameInfo.scratchPad.eventBits[0x20] |= 0x8; //SPR Story Flag
-			gameInfo.scratchPad.allAreaNodes.Sacred_Grove.unk_0[0x17] |= 0x10; //SG Portal
-			gameInfo.scratchPad.allAreaNodes.Sacred_Grove.unk_0[0x16] |= 0x2; //SK Human Beat
-			gameInfo.scratchPad.allAreaNodes.Sacred_Grove.unk_0[0x9] |= 0x40; //ToT Stairs
-		}
-
-		if (Singleton::getInstance()->isEarlyPoTEnabled == 1)
-		{
-			gameInfo.scratchPad.eventBits[0x20] |= 0x2; //CiTS Story Flag
-		}
-
-		if (Singleton::getInstance()->isGMStoryPatch == 1)
-		{
-			gameInfo.scratchPad.eventBits[0x7] |= 0x1; //Mines Story Flag
-		}
 
 		//Apply Overrides for custom chests
 		gameInfo.scratchPad.eventBits[0x22] |= 0x4;/*Got Ilia's Charm from Impaz*/

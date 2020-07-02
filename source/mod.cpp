@@ -33,6 +33,7 @@
 #include <tp/d_msg_flow.h>
 #include <tp/DynamicLink.h>
 #include <tp/d_item.h>
+#include <tp/d_item_data.h>
 #include <cstdio>
 #include <cstring>
 
@@ -70,10 +71,12 @@ namespace mod
 		game_patch::assemblyOverwrites();
 		game_patch::increaseWalletSize();
 		game_patch::increaseClimbSpeed();
-		/*
-		 * Causes issues right now (argarok cannot be beaten)
-		 * game_patch::removeIBLimit();
-		 */
+		
+		
+		// Causes issues right now (argarok cannot be beaten)
+		//game_patch::removeIBLimit();
+		
+		 
 
 		// Init rando
 		tools::randomSeed = 0x9e3779b97f4a7c15;
@@ -119,13 +122,6 @@ namespace mod
 		// Debug
 		page = hudConsole->addPage("Debug Info");
 		
-		hudConsole->addOption(page, "Bugsanity?", &chestRandomizer->isBugsanityEnabled, 0x1);
-		hudConsole->addOption(page, "Poesanity?", &chestRandomizer->isPoesanityEnabled, 0x1);
-		hudConsole->addOption(page, "Shopsanity?", &chestRandomizer->isShopsanityEnabled, 0x1);	
-		hudConsole->addOption(page, "Dungeon Items?", &chestRandomizer->areDungeonItemsRandomized, 0x1);
-		hudConsole->addOption(page, "Key Shuffle?", &chestRandomizer->isKeysanityEnabled, 0x1);
-		hudConsole->addOption(page, "Skybooksanity?", &Singleton::getInstance()->shuffledSkybook, 0x1);
-		
 		
 		
 		hudConsole->addWatch(page, "Function:", &lastItemFunc, 's', WatchInterpretation::_str);
@@ -166,6 +162,19 @@ namespace mod
 		hudConsole->addWatch(page, "Reverse ID:", &checkReverseSearchID, 'd', WatchInterpretation::_u16);
 		hudConsole->addWatch(page, "Search Result:", &checkSearchResults, 's', WatchInterpretation::_str);
 		hudConsole->addWatch(page, "Reverse Result:", &checkReverseSearchResults, 's', WatchInterpretation::_str);
+
+		//Shuffled Checks
+		page = hudConsole->addPage("Shuffled Checks");
+		
+		hudConsole->addOption(page, "Bugsanity?", &chestRandomizer->isBugsanityEnabled, 0x1);
+		hudConsole->addOption(page, "Poesanity?", &chestRandomizer->isPoesanityEnabled, 0x1);
+		hudConsole->addOption(page, "Shopsanity?", &chestRandomizer->isShopsanityEnabled, 0x1);	
+		hudConsole->addOption(page, "Dungeon Items?", &chestRandomizer->areDungeonItemsRandomized, 0x1);
+		hudConsole->addOption(page, "Key Shuffle?", &chestRandomizer->isKeysanityEnabled, 0x1);
+		hudConsole->addOption(page, "Sky Character?", &Singleton::getInstance()->shuffledSkybook, 0x1);
+		hudConsole->addOption(page, "Heart Pieces?", &chestRandomizer->areHeartPiecesRandomized, 0x1);
+		hudConsole->addOption(page, "Rupees?", &chestRandomizer->areRupeesRandomized, 0x1);
+		hudConsole->addOption(page, "Ammo Refills?", &chestRandomizer->areAmmoRandomized, 0x1);
 		
 		// Game info 1
 		page = hudConsole->addPage("Skips 1");
@@ -204,15 +213,7 @@ namespace mod
 		hudConsole->addOption(page, "No Shop Bottl?", &allowBottleItemsShopAnytime, 0x1);
 		hudConsole->addOption(page, "Fast transform?", &enableQuickTransform, 0x1);
 		hudConsole->addOption(page, "Skip Intro?", &Singleton::getInstance()->isIntroSkipped, 0x1);
-		hudConsole->addOption(page, "Early ToT?", &Singleton::getInstance()->isEarlyToTEnabled, 0x1);
-		hudConsole->addOption(page, "Early PoT?", &Singleton::getInstance()->isEarlyPoTEnabled, 0x1);
-		hudConsole->addOption(page, "Break HC Barrier?", &Singleton::getInstance()->isEarlyHCEnabled, 0x1);
-		hudConsole->addOption(page, "GM Story Flag?", &Singleton::getInstance()->isGMStoryPatch, 0x1);
-
-		page = hudConsole->addPage("Skips 3");
-		hudConsole->addOption(page, "Shfl Stry Itm?", &Singleton::getInstance()->areStoryItemsRandomized, 0x1);
-		hudConsole->addOption(page, "Shuffle Crstl?", &Singleton::getInstance()->isCrystalRandomized, 0x1);
-		//hudConsole->addOption(page, "Midna ToD Skip?", &Singleton::getInstance()->midnaTimeControl, 0x1);
+		hudConsole->addOption(page, "Midna ToD Skip?", &Singleton::getInstance()->midnaTimeControl, 0x1);
 		//color
 		/*page = hudConsole->addPage("Tunic Color1");
 
@@ -480,9 +481,6 @@ namespace mod
 
 		//Set Lantern gotten from Coro Flag
 		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0xFF, 0x0, 0xFF, 0xFF, game_patch::setLanternFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
-
-		//Break Barrier
-		eventListener->addLoadEvent(stage::allStages[Stage_Castle_Town], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::breakBarrier, event::LoadEventAccuracy::Stage_Room_Spawn);
 
 
 
@@ -755,6 +753,11 @@ namespace mod
 			snprintf(linkAngle, 30, "%d", static_cast<u16>(tp::d_map_path_dmap::getMapPlayerAngleY()));
 		}
 
+		if (gameInfo.nextStageVars.nextSpawnPoint != 0xFF)
+		{
+			lastGoodSpawn = gameInfo.nextStageVars.nextSpawnPoint;
+		}
+
 
 		if (gameInfo.ColorPtr != nullptr)
 		{
@@ -847,8 +850,8 @@ namespace mod
 		}
 		else if (tp::d_a_alink::linkStatus)
 		{
-			if (enableQuickTransform == 1 && gameInfo.rButtonText == 0 && ((((gameInfo.aButtonText == 0x24) && gameInfo.eventSystem.eventFlag == 0) && tp::d_a_alink::linkStatus->status == 0x1)) &&
-				(gameInfo.scratchPad.eventBits[0xD] & 0x4) != 0 && controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_Z))
+			if (enableQuickTransform == 1 && gameInfo.rButtonText == 0 && (((gameInfo.eventSystem.eventFlag == 0) && tp::d_a_alink::linkStatus->status == 0x1)) &&
+				(gameInfo.scratchPad.eventBits[0xD] & 0x4) != 0 && controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_R))
 			{
 				// Make sure Link is actually loaded
 				tp::d_com_inf_game::LinkMapVars* linkMapPtr = gameInfo.linkMapPtr;
@@ -861,22 +864,28 @@ namespace mod
 					}
 				}
 			}
-			/*else if (tp::d_a_alink::linkStatus->status == 0x5 && gameInfo.aButtonText == 0x23 && controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_Z) && Singleton::getInstance()->midnaTimeControl == 1 &&
-				chestRandomizer->isStageTOD())
+			else if (tp::d_a_alink::linkStatus->status == 0x1 && gameInfo.aButtonText == 0x24 && controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_Z) && Singleton::getInstance()->midnaTimeControl == 1 &&
+					chestRandomizer->isStageTOD())
 			{
 				if (gameInfo.scratchPad.skyAngle >= 180 && gameInfo.scratchPad.skyAngle <= 359)
 				{
 					gameInfo.scratchPad.skyAngle = 0;
-					gameInfo.nextStageVars.nextSpawnPoint = 0x0;
+					if (gameInfo.nextStageVars.nextSpawnPoint == 0xFF)
+					{
+						gameInfo.nextStageVars.nextSpawnPoint = lastGoodSpawn;
+					}
 					gameInfo.nextStageVars.triggerLoad |= 1;
 				}
 				else if (gameInfo.scratchPad.skyAngle >= 0 && gameInfo.scratchPad.skyAngle <= 179)
 				{
 					gameInfo.scratchPad.skyAngle = 180;
-					gameInfo.nextStageVars.nextSpawnPoint = 0x0;
+					if (gameInfo.nextStageVars.nextSpawnPoint == 0xFF)
+					{
+						gameInfo.nextStageVars.nextSpawnPoint = lastGoodSpawn;
+					}
 					gameInfo.nextStageVars.triggerLoad |= 1;
 				}
-			}*/
+			}
 		}
 
 		if (sysConsolePtr->consoleEnabled)
@@ -950,7 +959,7 @@ namespace mod
 					if (check->destination->itemID == itemSearchID)
 					{
 						// Found the source
-						snprintf(itemSearchResults, 40, "ID: %x Stage: %s Room: %d", check->itemID, check->stage, check->room);
+						snprintf(itemSearchResults, 40, "ID: %s Stage: %s Room: %d", itemName, check->stage, check->room);
 					}
 				}
 			}
@@ -1077,6 +1086,9 @@ namespace mod
 
 		// Call original function
 		fapGm_Execute_trampoline();
+
+		//setFieldModels();
+
 	}
 
 	s32 Mod::procItemCreateFunc(const float pos[3], s32 item, const char funcIdentifier[32])
@@ -1275,12 +1287,18 @@ namespace mod
 				gameInfo.scratchPad.itemWheel.Story = items::Item::Aurus_Memo;
 			}
 		}
-		else if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Snowpeak]) || tp::d_a_alink::checkStageName(stage::allStages[Stage_Kakariko_Graveyard]) ||
-			tp::d_a_alink::checkStageName(stage::allStages[Stage_Zoras_Domain]))
+		else if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Snowpeak]) || tp::d_a_alink::checkStageName(stage::allStages[Stage_Zoras_Domain]))
 		{
 			if (tools::checkItemFlag(ItemFlags::Asheis_Sketch))
 			{
 				gameInfo.scratchPad.itemWheel.Story = items::Item::Asheis_Sketch;
+			}
+		}
+		else if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Kakariko_Graveyard]))
+		{
+			if (tools::checkItemFlag(ItemFlags::Asheis_Sketch))
+			{
+				gameInfo.scratchPad.itemWheel.Story = items::Item::NullItem;
 			}
 		}
 		else if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Kakariko_Interiors]) && tp::d_kankyo::env_light.currentRoom == 0)
@@ -1871,4 +1889,83 @@ namespace mod
 		delete[] checks;
 		return;
 	}
+
+	/*void Mod::setFieldModels()
+	{
+		// cpp stuff
+		// For items that dont have a field model, use get item model
+		tp::d_item_data::ItemResource* itemResPtr = &tp::d_item_data::item_resource[0];
+		tp::d_item_data::FieldItemRes* fieldItemResPtr = &tp::d_item_data::field_item_res[0];
+
+		u32 loopCount = sizeof(item::itemsWithNoFieldModel) / sizeof(item::itemsWithNoFieldModel[0]);
+		for (u32 i = 0; i < loopCount; i++)
+		{
+			u32 item = item::itemsWithNoFieldModel[i]; // Retrieve as u32 to prevent rlwinm shenanigans
+			fieldItemResPtr[item].arcName = itemResPtr[item].arcName;
+			fieldItemResPtr[item].modelResIdx = itemResPtr[item].modelResIdx;
+		}
+
+		// For items that dont have a field model, use rupee item info to allow the item to be collected and whatnot
+		// Using the yellow rupee because thats what i used in testing
+		tp::d_item_data::ItemInfo* itemInfoPtr = &tp::d_item_data::item_info[0];
+		tp::d_item_data::ItemInfo* yellowRupeeInfoPtr = &tp::d_item_data::item_info[items::Yellow_Rupee];
+
+		loopCount = sizeof(item::itemsWithNoFieldModel) / sizeof(item::itemsWithNoFieldModel[0]);
+		for (u32 i = 0; i < loopCount; i++)
+		{
+			u32 item = item::itemsWithNoFieldModel[i]; // Retrieve as u32 to prevent rlwinm shenanigans
+			itemInfoPtr[item].mShadowSize = yellowRupeeInfoPtr[0].mShadowSize;
+			itemInfoPtr[item].mCollisionH = yellowRupeeInfoPtr[0].mCollisionH;
+			itemInfoPtr[item].mCollisionR = yellowRupeeInfoPtr[0].mCollisionR;
+			itemInfoPtr[item].mFlags = yellowRupeeInfoPtr[0].mFlags;
+		}
+
+		// Modify a branch in itemGetNextExecute to allow the item get cutscene to play with items past 0x40
+		// If you already have the item it gives you, then itll act like a rupee and appear over your head. This could be changed though.
+		u32 address_US = 0x8015CF64;
+		*reinterpret_cast<u32*>(address_US) = 0x48000018; // b 0x18
+	}
+		// Hook dStage_actorCommonLayerInit to search for field items (probably only rupees) to replace based on object name
+		bool Mod::procActorCommonLayerInit(void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, s32 unk3, void* unk4)
+		{
+			item::ItemCheck* sourceCheck;
+			sourceCheck->itemID = 0x0;
+			tp::d_stage::Item* itemActrPtr = reinterpret_cast<tp::d_stage::Item*>(chunkTypeInfo->chunkDataPtr);
+			u32 numChunks = chunkTypeInfo->numChunks;
+			for (u32 i = 0; i < numChunks; i++)
+			{
+				// Check for "item", as that seems to be whats used for rupees
+				// Would check for chests and whatnot as well when changing the contents of those
+				if (strncmp(itemActrPtr->objectName, "item", sizeof(itemActrPtr->objectName)))
+				{
+					// Change the item id
+					itemActrPtr->item = sourceCheck->itemID;
+
+					// Changing the parameters probably isnt necessary for "item", but I'll add them anyway
+					// Refer to Winditor for what the parameters do
+					itemActrPtr->paramOne = 0xF3;
+					itemActrPtr->paramTwo = 0xFF;
+					itemActrPtr->membitFlag = 0x80;
+					itemActrPtr->rot[2] = 0x3F;
+				}
+				else if (strncmp(itemActrPtr->objectName, "htPiece", sizeof(itemActrPtr->objectName)))
+				{
+					// Change the object name to "item"
+					strncpy(itemActrPtr->objectName, "item", sizeof(itemActrPtr->objectName));
+
+					// Change the item id
+					itemActrPtr->item = sourceCheck->itemID;
+
+					// Changing the parameters is necessary for this, as its being changed to use rupee parameters
+					// Currently allows the item to respawn, so need to look into what handles that
+					// Refer to Winditor for what the parameters do
+					itemActrPtr->paramOne = 0xF3;
+					itemActrPtr->paramTwo = 0xFF;
+					itemActrPtr->membitFlag = 0x80;
+					itemActrPtr->rot[2] = 0x3F;
+				}
+			}
+			return 0;
+		}*/
+	
 } // namespace mod

@@ -946,9 +946,8 @@ namespace tp::d_com_inf_game
 		extern u8 current_state;
 		extern void setItemBombNumCount(u32 unk1, u8 bagNb, short amout);//amount will be the og (ex: if you can only have 5 more bombs and buy 10, it'll still ahow 10)
 		extern u8 next_state;
-		//extern char wallet_text[13];
+		extern char izaBoatSignText[100];
 		//extern char wallet_description[96];
 		extern u8 can_warp;
-		
 	}
 }

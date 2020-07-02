@@ -47,6 +47,7 @@ namespace mod::game_patch
 	 */
 	void removeIBLimit();
 
+
 	/**
 	 * Changes the max rupee amounts for each
 	 * of the wallets
@@ -190,6 +191,4 @@ namespace mod::game_patch
 	void skipMDH();
 
 	void setLanternFlag();
-
-	void breakBarrier();
 }
