@@ -127,66 +127,6 @@ namespace mod
 			}
 		}
 
-		// Place layer checks
-		for (u16 i = 0; i < totalChecks; i++)
-		{
-			destCheck = &item::checks[i];
-
-			if (!destCheck->source)
-			{
-				// Free slot
-				if (destCheck->destLayer != 0xFF)
-				{
-					// Layer check	
-					if (destCheck->itemID == items::Item::Ordon_Sword)
-					{
-						sourceCheck = findSource(destCheck->destLayer, 0x1, destCheck);//to prevent woodensword from being overwritten before losing it			
-					}
-					else if (destCheck->itemID == items::Item::Ordon_Shield || destCheck->itemID == items::Item::Wooden_Shield || destCheck->itemID == items::Item::Hylian_Shield)
-					{
-						sourceCheck = findSource(destCheck->destLayer, 0x2, destCheck);//to prevent softlocking the game when you try to get ordon shield check		
-					}
-					else if (destCheck->itemID == items::Item::Zora_Armor || destCheck->itemID == items::Item::Magic_Armor)
-					{
-						sourceCheck = findSource(destCheck->destLayer, 0x2, destCheck);//to prevent softlocking the game when you try to get ordon shield check		
-					}
-					else if (isProgressiveEnabled == 0)
-					{
-						if (destCheck->itemID == items::Item::Clawshots)
-						{
-							sourceCheck = findSource(destCheck->destLayer, 0x7, destCheck);//to prevent Clawshots from being overwritten by Clawshot
-						}
-						else if (destCheck->itemID == items::Item::Big_Quiver)
-						{
-							sourceCheck = findSource(destCheck->destLayer, 0x4, destCheck);//to prevent bow from being overwritten
-						}
-						else if (destCheck->itemID == items::Item::Giant_Quiver)
-						{
-							sourceCheck = findSource(destCheck->destLayer, 0x8, destCheck);//to prevent bow from being overwritten
-						}
-						else if (destCheck->itemID == items::Item::Giant_Wallet)
-						{
-							sourceCheck = findSource(destCheck->destLayer, 0x7, destCheck);//to prevent overwriting giant wallet with big wallet
-						}
-						else if (destCheck->itemID == items::Item::Giant_Bomb_Bag)
-						{
-							sourceCheck = findSource(destCheck->destLayer, 0x6, destCheck);//to prevent getting a 4th bag and possibly crashing the game
-						}
-						else
-						{
-							sourceCheck = findSource(destCheck->destLayer, 0x0, destCheck);
-						}
-					}
-					else
-					{
-						sourceCheck = findSource(destCheck->destLayer, 0x0, destCheck);
-					}
-					placeCheck(sourceCheck, destCheck);
-					layerCheckCount++;
-				}
-			}
-		}
-
 		
 
 		// Place remaining
@@ -311,7 +251,7 @@ namespace mod
 			break;
 
 		case item::ItemType::Story:
-			if (check->itemID != items::Item::Aurus_Memo && check->itemID != items::Item::Asheis_Sketch)
+			if (Singleton::getInstance()->areStoryItemsRandomized == 1)
 			{
 				result = true;
 			}
@@ -353,14 +293,10 @@ namespace mod
 				result = true;
 			break;*/
 		case items::Item::Shadow_Crystal:
-			if (Singleton::getInstance()->isMDHSkipEnabled == 0)
+			if (Singleton::getInstance()->isMDHSkipEnabled == 0 || Singleton::getInstance()->isCrystalRandomized == 0)
 			{
 				result = true;
 			}
-			break;
-
-		case items::Item::Fishing_Rod:
-			result = true;
 			break;
 
 		case items::Item::Ancient_Sky_Book_empty:
@@ -464,7 +400,7 @@ namespace mod
 					eventBitsPtr[0x6] |= 0x1; //tame Epona
 					eventBitsPtr[0xA] |= 0x8; //Beat KB1
 					eventBitsPtr[0x14] |= 0x10; //Put Bo Outside
-					eventBitsPtr[0x7] = 0xDE; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched, Eldin Twilight Story Progression Flag
+					eventBitsPtr[0x7] |= 0xDE; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched, Eldin Twilight Story Progression Flag
 					eventBitsPtr[0x41] |= 0x10; //Told Fado about the Kids
 
 					//Set Lanayru Twilight Flags
@@ -545,7 +481,7 @@ namespace mod
 			eventBitsPtr[0x6] |= 0x1; //tame Epona
 			eventBitsPtr[0xA] |= 0x8; //Beat KB1
 			eventBitsPtr[0x14] |= 0x10; //Put Bo Outside
-			eventBitsPtr[0x7] = 0xD6; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
+			eventBitsPtr[0x7] |= 0xD6; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched
 			return item;
 		}
 		else if (item == items::Item::Vessel_Of_Light_Lanayru)

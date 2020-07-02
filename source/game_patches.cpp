@@ -468,6 +468,14 @@ namespace mod::game_patch
 		}
 	}
 
+	void breakBarrier()
+	{
+		if (Singleton::getInstance()->isEarlyHCEnabled == 1 && ((gameInfo.scratchPad.eventBits[0x1E] & 0x8) != 0))
+		{
+			gameInfo.scratchPad.eventBits[0x42] |= 0x8;
+		}
+	}
+
 	void setLanternFlag()
 	{
 		gameInfo.scratchPad.eventBits[0xF] |= 0x1;/*got lantern from Coro*/
@@ -675,6 +683,24 @@ namespace mod::game_patch
 		earlyCiTS();
 		earlyDesert();
 
+		if (Singleton::getInstance()->isEarlyToTEnabled == 1)
+		{
+			gameInfo.scratchPad.eventBits[0x20] |= 0x8; //SPR Story Flag
+			gameInfo.scratchPad.allAreaNodes.Sacred_Grove.unk_0[0x17] |= 0x10; //SG Portal
+			gameInfo.scratchPad.allAreaNodes.Sacred_Grove.unk_0[0x16] |= 0x2; //SK Human Beat
+			gameInfo.scratchPad.allAreaNodes.Sacred_Grove.unk_0[0x9] |= 0x40; //ToT Stairs
+		}
+
+		if (Singleton::getInstance()->isEarlyPoTEnabled == 1)
+		{
+			gameInfo.scratchPad.eventBits[0x20] |= 0x2; //CiTS Story Flag
+		}
+
+		if (Singleton::getInstance()->isGMStoryPatch == 1)
+		{
+			gameInfo.scratchPad.eventBits[0x7] |= 0x1; //Mines Story Flag
+		}
+
 		//Apply Overrides for custom chests
 		gameInfo.scratchPad.eventBits[0x22] |= 0x4;/*Got Ilia's Charm from Impaz*/
 		gameInfo.scratchPad.eventBits[0x49] |= 0x2;/*Bought Slingshot from Sera*/
@@ -734,7 +760,7 @@ namespace mod::game_patch
 					eventBitsPtr[0x6] |= 0x1; //tame Epona
 					eventBitsPtr[0xA] |= 0x8; //Beat KB1
 					eventBitsPtr[0x14] |= 0x10; //Put Bo Outside
-					eventBitsPtr[0x7] = 0xDE; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched, Eldin Twilight Story Progression Flag
+					eventBitsPtr[0x7] |= 0xDE; //skip Gor Coron Sumo and Enter Mines also Trigger KB1 and mark Post-KB1 CS as watched, Eldin Twilight Story Progression Flag
 					eventBitsPtr[0x41] |= 0x10; //Told Fado about the Kids
 
 					//Set Lanayru Twilight Flags
