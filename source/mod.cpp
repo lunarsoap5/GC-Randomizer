@@ -204,6 +204,12 @@ namespace mod
 		hudConsole->addOption(page, "No Shop Bottl?", &allowBottleItemsShopAnytime, 0x1);
 		hudConsole->addOption(page, "Fast transform?", &enableQuickTransform, 0x1);
 		hudConsole->addOption(page, "Skip Intro?", &Singleton::getInstance()->isIntroSkipped, 0x1);
+		hudConsole->addOption(page, "Early ToT?", &Singleton::getInstance()->isEarlyToTEnabled, 0x1);
+		hudConsole->addOption(page, "Early PoT?", &Singleton::getInstance()->isEarlyPoTEnabled, 0x1);
+		hudConsole->addOption(page, "Break HC Barrier?", &Singleton::getInstance()->isEarlyHCEnabled, 0x1);
+		hudConsole->addOption(page, "GM Story Flag?", &Singleton::getInstance()->isGMStoryPatch, 0x1);
+		hudConsole->addOption(page, "Shfl Stry Itm?", &Singleton::getInstance()->areStoryItemsRandomized, 0x1);
+		hudConsole->addOption(page, "Shuffle Crystal?", &Singleton::getInstance()->isCrystalRandomized, 0x1);
 		//hudConsole->addOption(page, "Midna ToD Skip?", &Singleton::getInstance()->midnaTimeControl, 0x1);
 		//color
 		/*page = hudConsole->addPage("Tunic Color1");
@@ -472,6 +478,9 @@ namespace mod
 
 		//Set Lantern gotten from Coro Flag
 		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0xFF, 0x0, 0xFF, 0xFF, game_patch::setLanternFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		//Break Barrier
+		eventListener->addLoadEvent(stage::allStages[Stage_Castle_Town], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::breakBarrier, event::LoadEventAccuracy::Stage_Room_Spawn);
 
 
 

@@ -251,7 +251,7 @@ namespace mod
 			break;
 
 		case item::ItemType::Story:
-			if (check->itemID != items::Item::Aurus_Memo && check->itemID != items::Item::Asheis_Sketch)
+			if (Singleton::getInstance()->areStoryItemsRandomized == 1)
 			{
 				result = true;
 			}
@@ -293,14 +293,10 @@ namespace mod
 				result = true;
 			break;*/
 		case items::Item::Shadow_Crystal:
-			if (Singleton::getInstance()->isMDHSkipEnabled == 0)
+			if (Singleton::getInstance()->isMDHSkipEnabled == 0 || Singleton::getInstance()->isCrystalRandomized == 0)
 			{
 				result = true;
 			}
-			break;
-
-		case items::Item::Fishing_Rod:
-			result = true;
 			break;
 
 		case items::Item::Ancient_Sky_Book_empty:

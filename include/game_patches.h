@@ -190,4 +190,6 @@ namespace mod::game_patch
 	void skipMDH();
 
 	void setLanternFlag();
+
+	void breakBarrier();
 }

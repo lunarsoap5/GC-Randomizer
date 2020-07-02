@@ -468,6 +468,14 @@ namespace mod::game_patch
 		}
 	}
 
+	void breakBarrier()
+	{
+		if (Singleton::getInstance()->isEarlyHCEnabled == 1 && ((gameInfo.scratchPad.eventBits[0x1E] & 0x8) != 0))
+		{
+			gameInfo.scratchPad.eventBits[0x42] |= 0x8;
+		}
+	}
+
 	void setLanternFlag()
 	{
 		gameInfo.scratchPad.eventBits[0xF] |= 0x1;/*got lantern from Coro*/
@@ -674,6 +682,23 @@ namespace mod::game_patch
 		checkBossKeysey();
 		earlyCiTS();
 		earlyDesert();
+
+		if (Singleton::getInstance()->isEarlyToTEnabled == 1)
+		{
+			eventBitsPtr[0x20] |= 0x8; //SPR Story Flag
+			gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x17] |= 0x10; //SG Portal
+			gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x16] |= 0x2; //SK Human Beat
+		}
+
+		if (Singleton::getInstance()->isEarlyPoTEnabled == 1)
+		{
+			eventBitsPtr[0x20] |= 0x2; //CiTS Story Flag
+		}
+
+		if (Singleton::getInstance()->isGMStoryPatch == 1)
+		{
+			eventBitsPtr[0x7] |= 0x1; //Mines Story Flag
+		}
 
 		//Apply Overrides for custom chests
 		gameInfo.scratchPad.eventBits[0x22] |= 0x4;/*Got Ilia's Charm from Impaz*/
