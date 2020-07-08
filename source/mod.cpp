@@ -172,9 +172,6 @@ namespace mod
 		hudConsole->addOption(page, "Dungeon Items?", &chestRandomizer->areDungeonItemsRandomized, 0x1);
 		hudConsole->addOption(page, "Key Shuffle?", &chestRandomizer->isKeysanityEnabled, 0x1);
 		hudConsole->addOption(page, "Sky Character?", &Singleton::getInstance()->shuffledSkybook, 0x1);
-		hudConsole->addOption(page, "Heart Pieces?", &chestRandomizer->areHeartPiecesRandomized, 0x1);
-		hudConsole->addOption(page, "Rupees?", &chestRandomizer->areRupeesRandomized, 0x1);
-		hudConsole->addOption(page, "Ammo Refills?", &chestRandomizer->areAmmoRandomized, 0x1);
 		
 		// Game info 1
 		page = hudConsole->addPage("Skips 1");
@@ -451,9 +448,6 @@ namespace mod
 		
 		//skip MS Puzzle
 		eventListener->addLoadEvent(stage::allStages[Stage_Sacred_Grove], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setGroveFlags, event::LoadEventAccuracy::Stage);
-
-		//skip Cart Escort
-		eventListener->addLoadEvent(stage::allStages[Stage_Hyrule_Field], 0xC, 0x2, 0xFF, 0xFF, game_patch::skipCartEscort, event::LoadEventAccuracy::Stage_Room_Spawn);
 		
 		//Fix Lanayru Softlock
 		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0x0, 0x5, 0xE, 0xFF, game_patch::setLanayruWolf, event::LoadEventAccuracy::Stage_Room_Spawn);
@@ -471,7 +465,7 @@ namespace mod
 		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0x1, 0x16, 0xFF, 0xFF, game_patch::skipMDHCS, event::LoadEventAccuracy::Stage_Room_Spawn);
 
 		//Fix FT Boss Music
-		eventListener->addLoadEvent(stage::allStages[Stage_Diababa], 0x32, 0x1, 0xFF, 0xFF, game_patch::fixFTBossMusic, event::LoadEventAccuracy::Stage);
+		eventListener->addLoadEvent(stage::allStages[Stage_Diababa], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::fixFTBossMusic, event::LoadEventAccuracy::Stage);
 
 		// Allow Faron Escape
 		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::allowFaronEscape, event::LoadEventAccuracy::Stage);
@@ -479,11 +473,39 @@ namespace mod
 		//Skip MDH After Lanayru
 		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0x1, 0x14, 0xFF, 0xFF, game_patch::skipMDH, event::LoadEventAccuracy::Stage_Room_Spawn);
 
-		//Set Lantern gotten from Coro Flag
-		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0xFF, 0x0, 0xFF, 0xFF, game_patch::setLanternFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+		//set Coro Lantern Flag
+		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setLanternFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
 
+		//unset dungeon flags after beating dungeon
+		eventListener->addLoadEvent(stage::allStages[Stage_Forest_Temple], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::fixFTState, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Goron_Mines], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::fixGMState, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Lakebed_Temple], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::fixLBTState, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Arbiters_Grounds], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::fixAGState, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Snowpeak_Ruins], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::fixSPRState, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Temple_of_Time], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::fixToTState, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_City_in_the_Sky], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::fixCiTSState, event::LoadEventAccuracy::Stage_Room_Spawn);
 
+		//set dungeon and boss flags
+		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setFTDungeonFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+		
+		eventListener->addLoadEvent(stage::allStages[Stage_Death_Mountain_Sumo_Hall], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setGMDungeonFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Kakariko_Village], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setGMDungeonFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Fyrus], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setGMBossFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+		
+		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setLakeDungeonFlags, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Morpheel], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setLBTBossFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
 
+		eventListener->addLoadEvent(stage::allStages[Stage_Bublin_Camp], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setAGDungeonFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Mirror_Chamber], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setAGDungeonFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Stallord], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setAGBossFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		eventListener->addLoadEvent(stage::allStages[Stage_Snowpeak], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setSPRDungeonFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Blizzeta], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setSPRBossFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		eventListener->addLoadEvent(stage::allStages[Stage_Sacred_Grove], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setToTDungeonFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Armogohma], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setToTBossFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		eventListener->addLoadEvent(stage::allStages[Stage_Argorok], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setCiTSBossFlagFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
 		//   =================
 		//  | Function Hooks  |
 		//   =================
@@ -864,8 +886,8 @@ namespace mod
 					}
 				}
 			}
-			else if (tp::d_a_alink::linkStatus->status == 0x1 && gameInfo.aButtonText == 0x24 && controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_Z) && Singleton::getInstance()->midnaTimeControl == 1 &&
-					chestRandomizer->isStageTOD())
+			else if ((gameInfo.scratchPad.eventBits[0xD] & 0x4) != 0 && gameInfo.aButtonText == 0x23 && gameInfo.eventSystem.actionStatus == 0x29 &&
+				controller::checkForButtonInputSingleFrame((controller::PadInputs::Button_R | controller::PadInputs::Button_Y)) && Singleton::getInstance()->midnaTimeControl == 1 && chestRandomizer->isStageTOD())
 			{
 				if (gameInfo.scratchPad.skyAngle >= 180 && gameInfo.scratchPad.skyAngle <= 359)
 				{
@@ -959,7 +981,7 @@ namespace mod
 					if (check->destination->itemID == itemSearchID)
 					{
 						// Found the source
-						snprintf(itemSearchResults, 40, "ID: %s Stage: %s Room: %d", itemName, check->stage, check->room);
+						snprintf(itemSearchResults, 40, "ID: %x Stage: %s Room: %d", check->itemID, check->stage, check->room);
 					}
 				}
 			}

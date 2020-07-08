@@ -96,7 +96,6 @@ namespace mod::game_patch
 	}
 
 
-
 	void increaseWalletSize()
 	{
 		// li
@@ -189,6 +188,145 @@ namespace mod::game_patch
 				// Load back to Ordon village
 				tools::triggerSaveLoad(stage::allStages[Stage_Ordon_Village], 0x0, 0x19, 0x8);
 			}
+		}
+	}
+
+	void fixFTState()
+	{
+		if (Singleton::getInstance()->hasFTBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.bossBeaten = 0b0; //unset boss flag
+			gameInfo.scratchPad.eventBits[0x6] &= ~0x2; //unset story flag
+		}
+	}
+
+	void fixGMState()
+	{
+		if (Singleton::getInstance()->hasGMBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.Goron_Mines.dungeon.bossBeaten = 0b0; //unset boss flag
+				gameInfo.scratchPad.eventBits[0x7] &= ~0x1; //unset story flag
+		}
+	}
+
+	void fixLBTState()
+	{
+		if (Singleton::getInstance()->hasLBTBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten = 0b0; //unset boss flag
+				gameInfo.scratchPad.eventBits[0x9] &= ~0x4; //unset story flag
+		}
+	}
+
+	void fixAGState()
+	{
+		if (Singleton::getInstance()->hasAGBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.Arbiters_Grounds.dungeon.bossBeaten = 0b0; //unset boss flag
+				gameInfo.scratchPad.eventBits[0x20] &= ~0x10; //unset story flag
+		}
+	}
+
+	void fixSPRState()
+	{
+		if (Singleton::getInstance()->hasSPRBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bossBeaten = 0b0; //unset boss flag
+				gameInfo.scratchPad.eventBits[0x20] &= ~0x8; //unset story flag
+		}
+	}
+
+	void fixToTState()
+	{
+		if (Singleton::getInstance()->hasToTBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.Temple_of_Time.dungeon.bossBeaten = 0b0; //unset boss flag
+				gameInfo.scratchPad.eventBits[0x20] &= ~0x4; //unset story flag
+		}
+	}
+
+	void fixCiTSState()
+	{
+		if (Singleton::getInstance()->hasCiTSBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.City_in_the_Sky.dungeon.bossBeaten = 0b0; //unset boss flag
+				gameInfo.scratchPad.eventBits[0x20] &= ~0x2; //unset story flag
+		}
+	}
+
+	void setFTDungeonFlag()
+	{
+		if (Singleton::getInstance()->hasFTBeenBeaten == 0 && gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.bossBeaten == 0b1)
+		{
+			Singleton::getInstance()->hasFTBeenBeaten = 1;
+		}
+		else if (Singleton::getInstance()->hasFTBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.bossBeaten = 0b1; //set boss flag
+			gameInfo.scratchPad.eventBits[0x6] |= 0x2; //set story flag
+		}
+	}
+
+	void setGMDungeonFlag()
+	{
+		if (Singleton::getInstance()->hasGMBeenBeaten == 0 && gameInfo.scratchPad.allAreaNodes.Goron_Mines.dungeon.bossBeaten == 0b1)
+		{
+			Singleton::getInstance()->hasGMBeenBeaten = 1;
+		}
+		else if (Singleton::getInstance()->hasGMBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.Goron_Mines.dungeon.bossBeaten = 0b1; //set boss flag
+			gameInfo.scratchPad.eventBits[0x7] |= 0x1; //set story flag
+		}
+	}
+
+	void setGMBossFlag()
+	{
+		if (Singleton::getInstance()->hasGMBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.Goron_Mines.dungeon.bossBeaten = 0b1; //set boss flag
+		}
+	}
+
+	void setLBTDungeonFlag()
+	{
+		if (Singleton::getInstance()->hasLBTBeenBeaten == 0 && gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten == 0b1)
+		{
+			Singleton::getInstance()->hasLBTBeenBeaten = 1;
+		}
+		else if (Singleton::getInstance()->hasLBTBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten = 0b1; //set boss flag
+			gameInfo.scratchPad.eventBits[0x9] |= 0x4; //set story flag
+		}
+	}
+
+	void setLBTBossFlag()
+	{
+		if (Singleton::getInstance()->hasLBTBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten = 0b1; //set boss flag
+		}
+	}
+
+	void setAGDungeonFlag()
+	{
+		if (Singleton::getInstance()->hasAGBeenBeaten == 0 && gameInfo.scratchPad.allAreaNodes.Arbiters_Grounds.dungeon.bossBeaten == 0b1)
+		{
+			Singleton::getInstance()->hasAGBeenBeaten = 1;
+		}
+		else if (Singleton::getInstance()->hasAGBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.Arbiters_Grounds.dungeon.bossBeaten = 0b1; //set boss flag
+			gameInfo.scratchPad.eventBits[0x20] |= 0x10; //set story flag
+		}
+	}
+
+	void setAGBossFlag()
+	{
+		if (Singleton::getInstance()->hasAGBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.Arbiters_Grounds.dungeon.bossBeaten = 0b1; //set boss flag
 		}
 	}
 
@@ -296,22 +434,9 @@ namespace mod::game_patch
 		}
 	}
 
-	void skipCartEscort()
-	{
-		if (Singleton::getInstance()->isCartEscortSkipEnabled == 1)
-		{
-			gameInfo.scratchPad.eventBits[0x8] |= 0x40;//escort started
-			gameInfo.scratchPad.eventBits[0x8] |= 0x10;//escort finished
-			gameInfo.scratchPad.eventBits[0x8] |= 0x4;//got zora armor from Rutela
-			tools::triggerSaveLoad(stage::allStages[Stage_Kakariko_Interiors], 0x2, 0x3, 0xD);
-		}
-		gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x17] |= 0x40;//remove rock in graveyard
-		gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x16] |= 0x40;
-	}
-
 	void setEscortState()
 	{
-		if ((gameInfo.scratchPad.eventBits[0x8] & 0x40) == 0 && (Singleton::getInstance()->isCartEscortSkipEnabled == 1 || (tools::checkItemFlag(ItemFlags::Heros_Bow) && tools::checkItemFlag(ItemFlags::Boomerang))) && gameInfo.scratchPad.clearedTwilights.Lanayru == 0b1)
+		if ((gameInfo.scratchPad.eventBits[0x8] & 0x40) == 0 && Singleton::getInstance()->isCartEscortSkipEnabled == 0 && tools::checkItemFlag(ItemFlags::Heros_Bow) && tools::checkItemFlag(ItemFlags::Boomerang) && gameInfo.scratchPad.clearedTwilights.Lanayru == 0b1)
 		{
 			gameInfo.nextStageVars.nextState = 0x8;
 			gameInfo.nextStageVars.nextSpawnPoint = 0x14;
@@ -500,6 +625,11 @@ namespace mod::game_patch
 			gameInfo.scratchPad.eventBits[0x6] &= ~0x2;
 			Singleton::getInstance()->diababaMusicFixed = 1;
 		}
+		
+		if (Singleton::getInstance()->hasFTBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.bossBeaten = 0b1; //set boss flag
+		}
 	}
 
 	void skipTextAndCS()
@@ -677,6 +807,16 @@ namespace mod::game_patch
 		//Apply Overrides for custom chests
 		gameInfo.scratchPad.eventBits[0x22] |= 0x4;/*Got Ilia's Charm from Impaz*/
 		gameInfo.scratchPad.eventBits[0x49] |= 0x2;/*Bought Slingshot from Sera*/
+
+		if (Singleton::getInstance()->isCartEscortSkipEnabled == 1)
+		{
+			gameInfo.scratchPad.eventBits[0x8] |= 0x40;//escort started
+			gameInfo.scratchPad.eventBits[0x8] |= 0x10;//escort finished
+			gameInfo.scratchPad.eventBits[0x8] |= 0x4;//got zora armor from Rutela
+			gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x17] |= 0x40;//remove rock in graveyard
+			gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x16] |= 0x40;
+		}
+		
 
 		if (Singleton::getInstance()->isIntroSkipped == 1)
 		{

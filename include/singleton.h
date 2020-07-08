@@ -31,6 +31,15 @@ namespace mod
 		u8 diababaMusicFixed;
 		u8 midnaTimeControl;
 		u8 hasActorCommonLayerRan;
+		
+		//dungeon flags
+		u8 hasFTBeenBeaten;
+		u8 hasGMBeenBeaten;
+		u8 hasLBTBeenBeaten;
+		u8 hasAGBeenBeaten;
+		u8 hasSPRBeenBeaten;
+		u8 hasToTBeenBeaten;
+		u8 hasCiTSBeenBeaten;
 
 		private:
 

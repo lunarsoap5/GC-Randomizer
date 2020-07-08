@@ -836,7 +836,9 @@ namespace tp::d_com_inf_game
 		u16 immediateControl; // 4edb - 4edc
 		u8 unk_00[0x4]; // 4edd - 4EE0
 		u8 nextEventID; // 4EE1
-		u8 unk1A[0xCB];
+		u8 unk1A[0xC5];
+		u8 actionStatus;
+		u8 unkDF[0x5];
 		u8 eventFlag;
 		u8 unkE7[0x5];
 		u8 currentEventID;

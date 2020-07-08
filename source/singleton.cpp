@@ -35,6 +35,15 @@ namespace mod
 		diababaMusicFixed = 0;
 		midnaTimeControl = 1;
 		hasActorCommonLayerRan = 0;
+
+		//dungeon fixes
+		hasFTBeenBeaten = 0;
+		hasGMBeenBeaten = 0;
+		hasLBTBeenBeaten = 0;
+		hasAGBeenBeaten = 0;
+		hasSPRBeenBeaten = 0;
+		hasToTBeenBeaten = 0;
+		hasCiTSBeenBeaten = 0;
 	}
 
 } 

@@ -190,5 +190,24 @@ namespace mod::game_patch
 	 */
 	void skipMDH();
 
+	/**
+	 * unset the story flag and boss flag when re-entering a dungeon
+	 */
 	void setLanternFlag();
+
+	/**
+	 * unset the story flag and boss flag when re-entering a dungeon
+	 */
+	void fixFTState();
+	void fixGMState();
+	void fixLBTState();
+	void fixAGState();
+	void fixSPRState();
+	void fixToTState();
+	void fixCiTSState();
+	
+	/**
+	 * reset the flags for a dungeon if it has been beaten or if a skip is active
+	 */
+	void setFTDungeonFlag();
 }

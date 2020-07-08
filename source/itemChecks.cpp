@@ -586,7 +586,6 @@ namespace mod::item
 		0, //wooden sword
 		295, //slingshot
 		296, //lantern
-		292, //ordon sword
 		298, //boomerang
 		21, //iron boots
 		291, //ordon shield
@@ -595,6 +594,7 @@ namespace mod::item
 		320, //bomb bag
 		314, //zora armor
 		58, //clawshot
+		292, //ordon sword
 		493, //Shadow Crystal
 		494, //Master Sword
 		322, //Auru memo
