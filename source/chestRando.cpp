@@ -16,6 +16,7 @@
 #include <tp/d_a_alink.h>
 #include <tp/d_kankyo.h>
 #include <tp/JFWSystem.h>
+#include <tp/resource.h>
 #include <cstdio>
 #include <cstring>
 
@@ -464,7 +465,7 @@ namespace mod
 					scratchPadPtr->clearedTwilights.Faron = 0b1; //Clear Faron Twilight
 					tools::setItemFlag(ItemFlags::Vessel_Of_Light_Faron);
 					scratchPadPtr->tearCounters.Faron = 16;
-					eventBitsPtr[0x5] = 0xFF; //Ensure Epona is Stolen, give Midna Charge
+					eventBitsPtr[0x5] |= 0xFF; //Ensure Epona is Stolen, give Midna Charge
 					eventBitsPtr[0x6] |= 0x10; //Faron Twilight Progression flag
 					eventBitsPtr[0xC] |= 0x8; //Set Sword and Shield to not be on back
 					tools::setItemFlag(ItemFlags::Heros_Clothes);
@@ -1033,7 +1034,7 @@ namespace mod
 									}
 									else
 									{
-										gameInfo.scratchPad.eventBits[0x29] |= 0x4;//give ending blow
+										gameInfo.scratchPad.eventBits[0x29] |= 0x4;//give ending blow										
 									}
 								}
 								else if (item == 0xE2)

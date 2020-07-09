@@ -259,6 +259,12 @@ namespace mod
 		
 		//event info
 		page = hudConsole->addPage("Event Info");
+		hudConsole->addOption(page, "Inner Red:", &innerRed, 0xFF);
+		hudConsole->addOption(page, "Inner Green:", &innerGreen, 0xFF);
+		hudConsole->addOption(page, "Inner Blue:", &innerBlue, 0xFF);
+		hudConsole->addOption(page, "Outer Red:", &outerRed, 0xFF);
+		hudConsole->addOption(page, "Outer Green:", &outerGreen, 0xFF);
+		hudConsole->addOption(page, "Outer Blue:", &outerBlue, 0xFF);
 		//hudConsole->addOption(page, "Coords as hex?", &coordsAreInHex, 0x1);
 				
 		hudConsole->addWatch(page, "CurrentEventID:", &gameInfo.eventSystem.currentEventID, 'x', WatchInterpretation::_u8);
@@ -505,7 +511,7 @@ namespace mod
 		eventListener->addLoadEvent(stage::allStages[Stage_Sacred_Grove], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setToTDungeonFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
 		eventListener->addLoadEvent(stage::allStages[Stage_Armogohma], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setToTBossFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
 
-		eventListener->addLoadEvent(stage::allStages[Stage_Argorok], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setCiTSBossFlagFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Argorok], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setCiTSBossFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
 		//   =================
 		//  | Function Hooks  |
 		//   =================
@@ -1027,7 +1033,6 @@ namespace mod
 				frame_counter = 0;
 			}
 		}
-
 		checkSearchID = (checkSearchID2 * 0x100) + checkSearchID1;
 		checkReverseSearchID = (checkReverseSearchID2 * 0x100) + checkReverseSearchID1;
 		if (checkSearchID != lastCheckSearchID)
@@ -1109,6 +1114,7 @@ namespace mod
 		// Call original function
 		fapGm_Execute_trampoline();
 
+		changeLanternColor();
 		//setFieldModels();
 
 	}
@@ -1912,82 +1918,16 @@ namespace mod
 		return;
 	}
 
-	/*void Mod::setFieldModels()
+	void Mod::changeLanternColor()
 	{
-		// cpp stuff
-		// For items that dont have a field model, use get item model
-		tp::d_item_data::ItemResource* itemResPtr = &tp::d_item_data::item_resource[0];
-		tp::d_item_data::FieldItemRes* fieldItemResPtr = &tp::d_item_data::field_item_res[0];
 
-		u32 loopCount = sizeof(item::itemsWithNoFieldModel) / sizeof(item::itemsWithNoFieldModel[0]);
-		for (u32 i = 0; i < loopCount; i++)
-		{
-			u32 item = item::itemsWithNoFieldModel[i]; // Retrieve as u32 to prevent rlwinm shenanigans
-			fieldItemResPtr[item].arcName = itemResPtr[item].arcName;
-			fieldItemResPtr[item].modelResIdx = itemResPtr[item].modelResIdx;
-		}
-
-		// For items that dont have a field model, use rupee item info to allow the item to be collected and whatnot
-		// Using the yellow rupee because thats what i used in testing
-		tp::d_item_data::ItemInfo* itemInfoPtr = &tp::d_item_data::item_info[0];
-		tp::d_item_data::ItemInfo* yellowRupeeInfoPtr = &tp::d_item_data::item_info[items::Yellow_Rupee];
-
-		loopCount = sizeof(item::itemsWithNoFieldModel) / sizeof(item::itemsWithNoFieldModel[0]);
-		for (u32 i = 0; i < loopCount; i++)
-		{
-			u32 item = item::itemsWithNoFieldModel[i]; // Retrieve as u32 to prevent rlwinm shenanigans
-			itemInfoPtr[item].mShadowSize = yellowRupeeInfoPtr[0].mShadowSize;
-			itemInfoPtr[item].mCollisionH = yellowRupeeInfoPtr[0].mCollisionH;
-			itemInfoPtr[item].mCollisionR = yellowRupeeInfoPtr[0].mCollisionR;
-			itemInfoPtr[item].mFlags = yellowRupeeInfoPtr[0].mFlags;
-		}
-
-		// Modify a branch in itemGetNextExecute to allow the item get cutscene to play with items past 0x40
-		// If you already have the item it gives you, then itll act like a rupee and appear over your head. This could be changed though.
-		u32 address_US = 0x8015CF64;
-		*reinterpret_cast<u32*>(address_US) = 0x48000018; // b 0x18
+		// CheckHeavyState overwrite
+		u32 lanternVariableAddress = reinterpret_cast<u32>(&tp::d_a_alink::lanternVariables);
+		*reinterpret_cast<u8*>(lanternVariableAddress + 0x3D) = reinterpret_cast<u8>(innerRed);
+		*reinterpret_cast<u8*>(lanternVariableAddress + 0x3F) = reinterpret_cast<u8>(innerGreen);
+		*reinterpret_cast<u8*>(lanternVariableAddress + 0x41) = reinterpret_cast<u8>(innerBlue);
+		*reinterpret_cast<u8*>(lanternVariableAddress + 0x43) = reinterpret_cast<u8>(outerRed);
+		*reinterpret_cast<u8*>(lanternVariableAddress + 0x45) = reinterpret_cast<u8>(outerGreen);
+		*reinterpret_cast<u8*>(lanternVariableAddress + 0x47) = reinterpret_cast<u8>(outerBlue);
 	}
-		// Hook dStage_actorCommonLayerInit to search for field items (probably only rupees) to replace based on object name
-		bool Mod::procActorCommonLayerInit(void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, s32 unk3, void* unk4)
-		{
-			item::ItemCheck* sourceCheck;
-			sourceCheck->itemID = 0x0;
-			tp::d_stage::Item* itemActrPtr = reinterpret_cast<tp::d_stage::Item*>(chunkTypeInfo->chunkDataPtr);
-			u32 numChunks = chunkTypeInfo->numChunks;
-			for (u32 i = 0; i < numChunks; i++)
-			{
-				// Check for "item", as that seems to be whats used for rupees
-				// Would check for chests and whatnot as well when changing the contents of those
-				if (strncmp(itemActrPtr->objectName, "item", sizeof(itemActrPtr->objectName)))
-				{
-					// Change the item id
-					itemActrPtr->item = sourceCheck->itemID;
-
-					// Changing the parameters probably isnt necessary for "item", but I'll add them anyway
-					// Refer to Winditor for what the parameters do
-					itemActrPtr->paramOne = 0xF3;
-					itemActrPtr->paramTwo = 0xFF;
-					itemActrPtr->membitFlag = 0x80;
-					itemActrPtr->rot[2] = 0x3F;
-				}
-				else if (strncmp(itemActrPtr->objectName, "htPiece", sizeof(itemActrPtr->objectName)))
-				{
-					// Change the object name to "item"
-					strncpy(itemActrPtr->objectName, "item", sizeof(itemActrPtr->objectName));
-
-					// Change the item id
-					itemActrPtr->item = sourceCheck->itemID;
-
-					// Changing the parameters is necessary for this, as its being changed to use rupee parameters
-					// Currently allows the item to respawn, so need to look into what handles that
-					// Refer to Winditor for what the parameters do
-					itemActrPtr->paramOne = 0xF3;
-					itemActrPtr->paramTwo = 0xFF;
-					itemActrPtr->membitFlag = 0x80;
-					itemActrPtr->rot[2] = 0x3F;
-				}
-			}
-			return 0;
-		}*/
-	
 } // namespace mod

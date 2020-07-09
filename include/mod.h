@@ -135,6 +135,12 @@ namespace mod
 			u8 eventFlagToEdit = 0;
 			u8 newValueForEventFlag = 0;
 			u8 triggerEventFlagEdit = 0;
+			u8 innerRed = 0x50;
+			u8 innerGreen = 0x28;
+			u8 innerBlue = 0x14;
+			u8 outerRed = 0x28;
+			u8 outerGreen = 0x1E;
+			u8 outerBlue = 0x0A;
 
 			char itemName[10];
 			//u8 newItemId;
@@ -206,6 +212,8 @@ namespace mod
 			 * Inserts custom TRES Boxes if applicable to this stage+room
 			 */
 			void doCustomTRESActor(void* mStatus_roomControl);
+
+			void changeLanternColor();
 
 			//void setFieldModels();
 

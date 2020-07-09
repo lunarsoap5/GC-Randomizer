@@ -210,4 +210,17 @@ namespace mod::game_patch
 	 * reset the flags for a dungeon if it has been beaten or if a skip is active
 	 */
 	void setFTDungeonFlag();
+	void setFTBossFlag();
+	void setGMDungeonFlag();
+	void setGMBossFlag();
+	void setLakeDungeonFlags();
+	void setLBTBossFlag();
+	void setAGDungeonFlag();
+	void setAGBossFlag();
+	void setSPRDungeonFlag();
+	void setSPRBossFlag();
+	void setToTDungeonFlag();
+	void setToTBossFlag();
+	void setCiTSDungeonFlag();
+	void setCiTSBossFlag();
 }

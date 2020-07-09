@@ -3,6 +3,8 @@
 #include "stage.h"
 #include "tools.h"
 #include "singleton.h"
+#include "items.h"
+#include "itemChecks.h"
 
 #include <tp/d_menu_collect.h>
 #include <tp/d_a_alink.h>
@@ -11,6 +13,10 @@
 #include <tp/JFWSystem.h>
 #include <tp/d_com_inf_game.h>
 #include <tp/evt_control.h>
+#include <tp/d_stage.h>
+#include <tp/d_a_shop_item_static.h>
+#include <tp/d_item_data.h>
+#include <tp/d_item.h>
 #include <cstring>
 #include <cstdio>
 
@@ -197,6 +203,10 @@ namespace mod::game_patch
 		{
 			gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.bossBeaten = 0b0; //unset boss flag
 			gameInfo.scratchPad.eventBits[0x6] &= ~0x2; //unset story flag
+			if ((gameInfo.localAreaNodes.unk_0[0x6] & 0x1) == 0)
+			{
+				gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.ooccooGotten = 0b0;
+			}
 		}
 	}
 
@@ -205,7 +215,11 @@ namespace mod::game_patch
 		if (Singleton::getInstance()->hasGMBeenBeaten == 1)
 		{
 			gameInfo.scratchPad.allAreaNodes.Goron_Mines.dungeon.bossBeaten = 0b0; //unset boss flag
-				gameInfo.scratchPad.eventBits[0x7] &= ~0x1; //unset story flag
+			gameInfo.scratchPad.eventBits[0x7] &= ~0x1; //unset story flag
+			if ((gameInfo.localAreaNodes.unk_0[0x1] & 0x40) == 0)
+			{
+				gameInfo.scratchPad.allAreaNodes.Goron_Mines.dungeon.ooccooGotten = 0b0;
+			}
 		}
 	}
 
@@ -214,7 +228,11 @@ namespace mod::game_patch
 		if (Singleton::getInstance()->hasLBTBeenBeaten == 1)
 		{
 			gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten = 0b0; //unset boss flag
-				gameInfo.scratchPad.eventBits[0x9] &= ~0x4; //unset story flag
+			gameInfo.scratchPad.eventBits[0x9] &= ~0x4; //unset story flag
+			if ((gameInfo.localAreaNodes.unk_0[0x1] & 0x40) == 0)
+			{
+				gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.ooccooGotten = 0b0;
+			}
 		}
 	}
 
@@ -223,7 +241,11 @@ namespace mod::game_patch
 		if (Singleton::getInstance()->hasAGBeenBeaten == 1)
 		{
 			gameInfo.scratchPad.allAreaNodes.Arbiters_Grounds.dungeon.bossBeaten = 0b0; //unset boss flag
-				gameInfo.scratchPad.eventBits[0x20] &= ~0x10; //unset story flag
+			gameInfo.scratchPad.eventBits[0x20] &= ~0x10; //unset story flag
+			if ((gameInfo.localAreaNodes.unk_0[0x0] & 0x80) == 0)
+			{
+				gameInfo.scratchPad.allAreaNodes.Arbiters_Grounds.dungeon.ooccooGotten = 0b0;
+			}
 		}
 	}
 
@@ -232,7 +254,11 @@ namespace mod::game_patch
 		if (Singleton::getInstance()->hasSPRBeenBeaten == 1)
 		{
 			gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bossBeaten = 0b0; //unset boss flag
-				gameInfo.scratchPad.eventBits[0x20] &= ~0x8; //unset story flag
+			gameInfo.scratchPad.eventBits[0x20] &= ~0x8; //unset story flag
+			if ((gameInfo.localAreaNodes.unk_0[0x1] & 0x1) == 0)
+			{
+				gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.ooccooGotten = 0b0;
+			}
 		}
 	}
 
@@ -241,7 +267,11 @@ namespace mod::game_patch
 		if (Singleton::getInstance()->hasToTBeenBeaten == 1)
 		{
 			gameInfo.scratchPad.allAreaNodes.Temple_of_Time.dungeon.bossBeaten = 0b0; //unset boss flag
-				gameInfo.scratchPad.eventBits[0x20] &= ~0x4; //unset story flag
+			gameInfo.scratchPad.eventBits[0x20] &= ~0x4; //unset story flag
+			if ((gameInfo.localAreaNodes.unk_0[0x4] & 0x80) == 0)
+			{
+				gameInfo.scratchPad.allAreaNodes.Temple_of_Time.dungeon.ooccooGotten = 0b0;
+			}
 		}
 	}
 
@@ -250,7 +280,7 @@ namespace mod::game_patch
 		if (Singleton::getInstance()->hasCiTSBeenBeaten == 1)
 		{
 			gameInfo.scratchPad.allAreaNodes.City_in_the_Sky.dungeon.bossBeaten = 0b0; //unset boss flag
-				gameInfo.scratchPad.eventBits[0x20] &= ~0x2; //unset story flag
+			gameInfo.scratchPad.eventBits[0x20] &= ~0x2; //unset story flag
 		}
 	}
 
@@ -288,7 +318,7 @@ namespace mod::game_patch
 		}
 	}
 
-	void setLBTDungeonFlag()
+	void setLakeDungeonFlags()
 	{
 		if (Singleton::getInstance()->hasLBTBeenBeaten == 0 && gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten == 0b1)
 		{
@@ -298,6 +328,16 @@ namespace mod::game_patch
 		{
 			gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten = 0b1; //set boss flag
 			gameInfo.scratchPad.eventBits[0x9] |= 0x4; //set story flag
+		}
+
+		if (Singleton::getInstance()->hasCiTSBeenBeaten == 0 && gameInfo.scratchPad.allAreaNodes.City_in_the_Sky.dungeon.bossBeaten == 0b1)
+		{
+			Singleton::getInstance()->hasCiTSBeenBeaten = 1;
+		}
+		else if (Singleton::getInstance()->hasCiTSBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.City_in_the_Sky.dungeon.bossBeaten = 0b1; //set boss flag
+			gameInfo.scratchPad.eventBits[0x20] |= 0x2; //set story flag
 		}
 	}
 
@@ -327,6 +367,56 @@ namespace mod::game_patch
 		if (Singleton::getInstance()->hasAGBeenBeaten == 1)
 		{
 			gameInfo.scratchPad.allAreaNodes.Arbiters_Grounds.dungeon.bossBeaten = 0b1; //set boss flag
+		}
+	}
+
+	void setSPRDungeonFlag()
+	{
+		if (Singleton::getInstance()->hasSPRBeenBeaten == 0 && gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bossBeaten == 0b1)
+		{
+			Singleton::getInstance()->hasSPRBeenBeaten = 1;
+		}
+		else if (Singleton::getInstance()->hasSPRBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bossBeaten = 0b1; //set boss flag
+			gameInfo.scratchPad.eventBits[0x20] |= 0x8; //set story flag
+		}
+	}
+
+	void setSPRBossFlag()
+	{
+		if (Singleton::getInstance()->hasSPRBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bossBeaten = 0b1; //set boss flag
+		}
+	}
+
+	void setToTDungeonFlag()
+	{
+		if (Singleton::getInstance()->hasToTBeenBeaten == 0 && gameInfo.scratchPad.allAreaNodes.Temple_of_Time.dungeon.bossBeaten == 0b1)
+		{
+			Singleton::getInstance()->hasToTBeenBeaten = 1;
+		}
+		else if (Singleton::getInstance()->hasToTBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.Temple_of_Time.dungeon.bossBeaten = 0b1; //set boss flag
+			gameInfo.scratchPad.eventBits[0x20] |= 0x4; //set story flag
+		}
+	}
+
+	void setToTBossFlag()
+	{
+		if (Singleton::getInstance()->hasToTBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.Temple_of_Time.dungeon.bossBeaten = 0b1; //set boss flag
+		}
+	}
+
+	void setCiTSBossFlag()
+	{
+		if (Singleton::getInstance()->hasCiTSBeenBeaten == 1)
+		{
+			gameInfo.scratchPad.allAreaNodes.City_in_the_Sky.dungeon.bossBeaten = 0b1; //set boss flag
 		}
 	}
 
@@ -861,7 +951,7 @@ namespace mod::game_patch
 					scratchPadPtr->clearedTwilights.Faron = 0b1; //Clear Faron Twilight
 					tools::setItemFlag(ItemFlags::Vessel_Of_Light_Faron);
 					scratchPadPtr->tearCounters.Faron = 16;
-					eventBitsPtr[0x5] = 0xFF; //Ensure Epona is Stolen, give Midna Charge
+					eventBitsPtr[0x5] |= 0xFF; //Ensure Epona is Stolen, give Midna Charge
 					eventBitsPtr[0x6] |= 0x10; //Faron Twilight Progression flag
 					eventBitsPtr[0xC] |= 0x8; //Set Sword and Shield to not be on back
 					tools::setItemFlag(ItemFlags::Heros_Clothes);
@@ -961,6 +1051,95 @@ namespace mod::game_patch
 			eventBitsPtr[0x1E] |= 0x80; //Gor Ebizo at Malo Mart
 			eventBitsPtr[0xA] |= 0x20; //Steal Eldin Bridge
 			eventBitsPtr[0xF] |= 0x8; //Put Eldin BRidge Back
+		}
+	}
+
+	void setFieldModels()
+	{
+		tp::d_item_data::ItemResource* itemResPtr = &tp::d_item_data::item_resource[0];
+		tp::d_item_data::FieldItemRes* fieldItemResPtr = &tp::d_item_data::field_item_res[0];
+
+		u32 loopCount = sizeof(item::itemsWithNoFieldModel) / sizeof(item::itemsWithNoFieldModel[0]);
+		for (u32 i = 0; i < loopCount; i++)
+		{
+			u32 item = item::itemsWithNoFieldModel[i]; // Retrieve as u32 to prevent rlwinm shenanigans
+			fieldItemResPtr[item].arcName = itemResPtr[item].arcName;
+			fieldItemResPtr[item].modelResIdx = itemResPtr[item].modelResIdx;
+		}
+
+		// For items that dont have a field model, use rupee item info to allow the item to be collected and whatnot
+		// Using the yellow rupee because thats what i used in testing
+		tp::d_item_data::ItemInfo* itemInfoPtr = &tp::d_item_data::item_info[0];
+		tp::d_item_data::ItemInfo* yellowRupeeInfoPtr = &tp::d_item_data::item_info[items::Yellow_Rupee];
+
+		loopCount = sizeof(item::itemsWithNoFieldModel) / sizeof(item::itemsWithNoFieldModel[0]);
+		for (u32 i = 0; i < loopCount; i++)
+		{
+			u32 item = item::itemsWithNoFieldModel[i]; // Retrieve as u32 to prevent rlwinm shenanigans
+			itemInfoPtr[item].mShadowSize = yellowRupeeInfoPtr[0].mShadowSize;
+			itemInfoPtr[item].mCollisionH = yellowRupeeInfoPtr[0].mCollisionH;
+			itemInfoPtr[item].mCollisionR = yellowRupeeInfoPtr[0].mCollisionR;
+			itemInfoPtr[item].mFlags = yellowRupeeInfoPtr[0].mFlags;
+		}
+
+		// Modify a branch in itemGetNextExecute to allow the item get cutscene to play with items past 0x40
+		// If you already have the item it gives you, then itll act like a rupee and appear over your head. This could be changed though.
+		u32 address_US = 0x8015CF64;
+		*reinterpret_cast<u32*>(address_US) = 0x48000018; // b 0x18
+
+		// Hook dStage_actorCommonLayerInit to search for field items (probably only rupees) to replace based on object name
+		bool procActorCommonLayerInit(void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, s32 unk3, void* unk4)
+		{
+			Actr* actrPtr = chunkTypeInfo->chunkDataPtr;
+			u32 numChunks = chunkTypeInfo->numChunks;
+			for (u32 i = 0; i < numChunks; i++)
+			{
+				// Check for "item", as that seems to be whats used for rupees
+				// Would check for chests and whatnot as well when changing the contents of those
+				if (strncmp(actrPtr->objectName, "item", sizeof(Actr.objectName)))
+				{
+					// Change the item id
+					u8* tempParamBytes = reinterpret_cast<u8*>(&actrPtr->parameters);
+					tempParamBytes[3] = newItemId;
+
+					// Changing the parameters probably isnt necessary for "item", but I'll add them anyway
+					// Refer to Winditor for what the parameters do
+					tempParamBytes[0] = 0xF3;
+					tempParamBytes[1] = 0xFF;
+					tempParamBytes[2] = 0x80;
+					actrPtr->rot[2] = 0x3F;
+				}
+			}
+		}
+
+		// hook dStage_actorInit to search for field items (probably only heart containers) to replace based on object name
+		// Not sure what is passed into dStage_actorInit, but r4 seems to be the same as dStage_actorCommonLayerInit
+		bool procActorCommonLayerInit(void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, s32 unk3, void* unk4)
+		{
+			Actr* actrPtr = chunkTypeInfo->chunkDataPtr;
+			u32 numChunks = chunkTypeInfo->numChunks;
+			for (u32 i = 0; i < numChunks; i++)
+			{
+				// Check for "htPiece", as that seems to be whats used for heart pieces
+				// Not sure what name heart containers use
+				if (strncmp(actrPtr->objectName, "htPiece", sizeof(Actr.objectName)))
+				{
+					// Change the object name to "item"
+					strncpy(actrPtr->objectName, "item", sizeof(Actr.objectName));
+
+					// Change the item id
+					u8* tempParamBytes = reinterpret_cast<u8*>(&actrPtr->parameters);
+					tempParamBytes[3] = newItemId;
+
+					// Changing the parameters is necessary for this, as its being changed to use rupee parameters
+					// Currently allows the item to respawn, so need to look into what handles that
+					// Refer to Winditor for what the parameters do
+					tempParamBytes[0] = 0xF3;
+					tempParamBytes[1] = 0xFF;
+					tempParamBytes[2] = 0x80;
+					actrPtr->rot[2] = 0x3F;
+				}
+			}
 		}
 	}
 }
