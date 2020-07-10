@@ -127,10 +127,6 @@ namespace mod::game_patch
 	 */
 	void setGroveFlags();
 
-	/**
-	 * when you spawn into the Cart Escort, game will spawn you in Kakariko Afterwards
-	 */
-	void skipCartEscort();
 
 	/**
 	 * warps player to Lanayru twilight gate if they don't have MS
@@ -192,4 +188,33 @@ namespace mod::game_patch
 	void setLanternFlag();
 
 	void breakBarrier();
+
+	/**
+	 * unset the story flag and boss flag when re-entering a dungeon
+	 */
+	void fixFTState();
+	void fixGMState();
+	void fixLBTState();
+	void fixAGState();
+	void fixSPRState();
+	void fixToTState();
+	void fixCiTSState();
+
+	/**
+	 * reset the flags for a dungeon if it has been beaten or if a skip is active
+	 */
+	void setFTDungeonFlag();
+	void setFTBossFlag();
+	void setGMDungeonFlag();
+	void setGMBossFlag();
+	void setLakeDungeonFlags();
+	void setLBTBossFlag();
+	void setAGDungeonFlag();
+	void setAGBossFlag();
+	void setSPRDungeonFlag();
+	void setSPRBossFlag();
+	void setToTDungeonFlag();
+	void setToTBossFlag();
+	void setCiTSDungeonFlag();
+	void setCiTSBossFlag();
 }

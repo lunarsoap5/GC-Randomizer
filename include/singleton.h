@@ -38,6 +38,15 @@ namespace mod
 		u8 areStoryItemsRandomized;
 		u8 isCrystalRandomized;
 
+		//dungeon flags
+		u8 hasFTBeenBeaten;
+		u8 hasGMBeenBeaten;
+		u8 hasLBTBeenBeaten;
+		u8 hasAGBeenBeaten;
+		u8 hasSPRBeenBeaten;
+		u8 hasToTBeenBeaten;
+		u8 hasCiTSBeenBeaten;
+
 		private:
 
 		static Singleton* instance;

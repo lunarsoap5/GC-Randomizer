@@ -208,8 +208,10 @@ namespace mod
 		hudConsole->addOption(page, "Early PoT?", &Singleton::getInstance()->isEarlyPoTEnabled, 0x1);
 		hudConsole->addOption(page, "Break HC Barrier?", &Singleton::getInstance()->isEarlyHCEnabled, 0x1);
 		hudConsole->addOption(page, "GM Story Flag?", &Singleton::getInstance()->isGMStoryPatch, 0x1);
+
+		page = hudConsole->addPage("Skips 3");
 		hudConsole->addOption(page, "Shfl Stry Itm?", &Singleton::getInstance()->areStoryItemsRandomized, 0x1);
-		hudConsole->addOption(page, "Shuffle Crystal?", &Singleton::getInstance()->isCrystalRandomized, 0x1);
+		hudConsole->addOption(page, "Shuffle Crstl?", &Singleton::getInstance()->isCrystalRandomized, 0x1);
 		//hudConsole->addOption(page, "Midna ToD Skip?", &Singleton::getInstance()->midnaTimeControl, 0x1);
 		//color
 		/*page = hudConsole->addPage("Tunic Color1");
@@ -448,9 +450,6 @@ namespace mod
 		
 		//skip MS Puzzle
 		eventListener->addLoadEvent(stage::allStages[Stage_Sacred_Grove], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setGroveFlags, event::LoadEventAccuracy::Stage);
-
-		//skip Cart Escort
-		eventListener->addLoadEvent(stage::allStages[Stage_Hyrule_Field], 0xC, 0x2, 0xFF, 0xFF, game_patch::skipCartEscort, event::LoadEventAccuracy::Stage_Room_Spawn);
 		
 		//Fix Lanayru Softlock
 		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0x0, 0x5, 0xE, 0xFF, game_patch::setLanayruWolf, event::LoadEventAccuracy::Stage_Room_Spawn);
@@ -481,6 +480,37 @@ namespace mod
 
 		//Break Barrier
 		eventListener->addLoadEvent(stage::allStages[Stage_Castle_Town], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::breakBarrier, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		//unset dungeon flags after beating dungeon
+		eventListener->addLoadEvent(stage::allStages[Stage_Forest_Temple], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::fixFTState, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Goron_Mines], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::fixGMState, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Lakebed_Temple], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::fixLBTState, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Arbiters_Grounds], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::fixAGState, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Snowpeak_Ruins], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::fixSPRState, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Temple_of_Time], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::fixToTState, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_City_in_the_Sky], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::fixCiTSState, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		//set dungeon and boss flags
+		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setFTDungeonFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		eventListener->addLoadEvent(stage::allStages[Stage_Death_Mountain_Sumo_Hall], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setGMDungeonFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Kakariko_Village], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setGMDungeonFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Fyrus], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setGMBossFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setLakeDungeonFlags, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Morpheel], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setLBTBossFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		eventListener->addLoadEvent(stage::allStages[Stage_Bublin_Camp], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setAGDungeonFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Mirror_Chamber], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setAGDungeonFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Stallord], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setAGBossFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		eventListener->addLoadEvent(stage::allStages[Stage_Snowpeak], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setSPRDungeonFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Blizzeta], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setSPRBossFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		eventListener->addLoadEvent(stage::allStages[Stage_Sacred_Grove], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setToTDungeonFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+		eventListener->addLoadEvent(stage::allStages[Stage_Armogohma], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setToTBossFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		eventListener->addLoadEvent(stage::allStages[Stage_Argorok], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setCiTSBossFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
 
 
 

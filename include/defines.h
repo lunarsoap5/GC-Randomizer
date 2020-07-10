@@ -34,7 +34,7 @@ union typeTransform {
 };
 
 // Array modification
-#define MAX_LOAD_EVENTS 20 // eventListener
+#define MAX_LOAD_EVENTS 40 // eventListener
 #define MAX_HUDCONSOLE_PAGES 12 // HUDConsole
 
 // Mnemonics
