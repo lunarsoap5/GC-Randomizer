@@ -856,6 +856,8 @@ namespace tp::d_com_inf_game
 		float pos[3];
 		u8 unk_4DC[0x94];
 		u32 isTargeting;//570    at 0x400000 link is targeting
+		u8 unk_574[0x2A68];
+		u16 equippedItem;
 	} __attribute__((__packed__));
 
 	struct TunicColor

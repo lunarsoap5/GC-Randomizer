@@ -31,6 +31,11 @@ namespace mod
 		u8 diababaMusicFixed;
 		u8 midnaTimeControl;
 		u8 hasActorCommonLayerRan;
+		u8 isEarlyToTEnabled;
+		u8 isEarlyPoTEnabled;
+		u8 isGMStoryPatch;
+		u8 isEarlyHCEnabled;
+		u8 startWithCrystal;
 		
 		//dungeon flags
 		u8 hasFTBeenBeaten;
@@ -40,6 +45,7 @@ namespace mod
 		u8 hasSPRBeenBeaten;
 		u8 hasToTBeenBeaten;
 		u8 hasCiTSBeenBeaten;
+		u8 hasCiTSOoccoo;
 
 		private:
 

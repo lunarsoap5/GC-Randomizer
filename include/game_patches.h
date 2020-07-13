@@ -195,6 +195,8 @@ namespace mod::game_patch
 	 */
 	void setLanternFlag();
 
+	void breakBarrier();
+
 	/**
 	 * unset the story flag and boss flag when re-entering a dungeon
 	 */

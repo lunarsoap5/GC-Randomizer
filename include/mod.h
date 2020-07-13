@@ -166,6 +166,10 @@ namespace mod
 
 			void procItem_func_UTUWA_HEART();
 
+			bool canQuickTransform();
+
+			bool canChangeToD();
+
 			/**
 			 * gives the unlocked scent that can be seen in the current area (defaults to most advanced one obtained)
 			 */

@@ -42,6 +42,12 @@ namespace tp::d_a_alink
 		bool procCoMetamorphoseInit(tp::d_com_inf_game::LinkMapVars* linkMapPtr);
 		bool checkTreasureRupeeReturn(void* unk1, s32 item);
 		bool lanternVariables(s8 unk1, s8 unk2);
+		bool checkEventRun(tp::d_com_inf_game::LinkMapVars* linkMapPtr);
+		bool checkBoardRide(tp::d_com_inf_game::LinkMapVars* linkMapPtr);
+		bool checkCanoeRide(tp::d_com_inf_game::LinkMapVars* linkMapPtr);
+		bool checkHorseRide(tp::d_com_inf_game::LinkMapVars* linkMapPtr);
+		bool checkBoarRide(tp::d_com_inf_game::LinkMapVars* linkMapPtr);
+		bool checkSpinnerRide(tp::d_com_inf_game::LinkMapVars* linkMapPtr);
 
 		// Variables
 		extern LadderVars ladderVars;

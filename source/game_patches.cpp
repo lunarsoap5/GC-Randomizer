@@ -203,7 +203,7 @@ namespace mod::game_patch
 		{
 			gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.bossBeaten = 0b0; //unset boss flag
 			gameInfo.scratchPad.eventBits[0x6] &= ~0x2; //unset story flag
-			if ((gameInfo.localAreaNodes.unk_0[0x6] & 0x1) == 0)
+			if ((gameInfo.scratchPad.allAreaNodes.Forest_Temple.unk_0[0x12] & 0x10) == 0)
 			{
 				gameInfo.scratchPad.allAreaNodes.Forest_Temple.dungeon.ooccooGotten = 0b0;
 			}
@@ -212,11 +212,11 @@ namespace mod::game_patch
 
 	void fixGMState()
 	{
-		if (Singleton::getInstance()->hasGMBeenBeaten == 1)
+		if (Singleton::getInstance()->hasGMBeenBeaten == 1 || Singleton::getInstance()->isGMStoryPatch == 1)
 		{
 			gameInfo.scratchPad.allAreaNodes.Goron_Mines.dungeon.bossBeaten = 0b0; //unset boss flag
 			gameInfo.scratchPad.eventBits[0x7] &= ~0x1; //unset story flag
-			if ((gameInfo.localAreaNodes.unk_0[0x1] & 0x40) == 0)
+			if ((gameInfo.scratchPad.allAreaNodes.Goron_Mines.unk_0[0xE] & 0x2) == 0)
 			{
 				gameInfo.scratchPad.allAreaNodes.Goron_Mines.dungeon.ooccooGotten = 0b0;
 			}
@@ -229,7 +229,7 @@ namespace mod::game_patch
 		{
 			gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.bossBeaten = 0b0; //unset boss flag
 			gameInfo.scratchPad.eventBits[0x9] &= ~0x4; //unset story flag
-			if ((gameInfo.localAreaNodes.unk_0[0x1] & 0x40) == 0)
+			if ((gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.unk_0[0x11] & 0x80) == 0)
 			{
 				gameInfo.scratchPad.allAreaNodes.Lakebed_Temple.dungeon.ooccooGotten = 0b0;
 			}
@@ -242,7 +242,7 @@ namespace mod::game_patch
 		{
 			gameInfo.scratchPad.allAreaNodes.Arbiters_Grounds.dungeon.bossBeaten = 0b0; //unset boss flag
 			gameInfo.scratchPad.eventBits[0x20] &= ~0x10; //unset story flag
-			if ((gameInfo.localAreaNodes.unk_0[0x0] & 0x80) == 0)
+			if ((gameInfo.scratchPad.allAreaNodes.Arbiters_Grounds.unk_0[0x17] & 0x20) == 0)
 			{
 				gameInfo.scratchPad.allAreaNodes.Arbiters_Grounds.dungeon.ooccooGotten = 0b0;
 			}
@@ -251,11 +251,11 @@ namespace mod::game_patch
 
 	void fixSPRState()
 	{
-		if (Singleton::getInstance()->hasSPRBeenBeaten == 1)
+		if (Singleton::getInstance()->hasSPRBeenBeaten == 1 || Singleton::getInstance()->isEarlyToTEnabled == 1)
 		{
 			gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bossBeaten = 0b0; //unset boss flag
 			gameInfo.scratchPad.eventBits[0x20] &= ~0x8; //unset story flag
-			if ((gameInfo.localAreaNodes.unk_0[0x1] & 0x1) == 0)
+			if ((gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.unk_0[0x1] & 0x1) == 0)
 			{
 				gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.ooccooGotten = 0b0;
 			}
@@ -268,7 +268,7 @@ namespace mod::game_patch
 		{
 			gameInfo.scratchPad.allAreaNodes.Temple_of_Time.dungeon.bossBeaten = 0b0; //unset boss flag
 			gameInfo.scratchPad.eventBits[0x20] &= ~0x4; //unset story flag
-			if ((gameInfo.localAreaNodes.unk_0[0x4] & 0x80) == 0)
+			if ((gameInfo.scratchPad.allAreaNodes.Temple_of_Time.unk_0[0x4] & 0x80) == 0)
 			{
 				gameInfo.scratchPad.allAreaNodes.Temple_of_Time.dungeon.ooccooGotten = 0b0;
 			}
@@ -277,10 +277,14 @@ namespace mod::game_patch
 
 	void fixCiTSState()
 	{
-		if (Singleton::getInstance()->hasCiTSBeenBeaten == 1)
+		if (Singleton::getInstance()->hasCiTSBeenBeaten == 1 || Singleton::getInstance()->isEarlyPoTEnabled == 1)
 		{
 			gameInfo.scratchPad.allAreaNodes.City_in_the_Sky.dungeon.bossBeaten = 0b0; //unset boss flag
 			gameInfo.scratchPad.eventBits[0x20] &= ~0x2; //unset story flag
+		}
+		if (Singleton::getInstance()->hasCiTSOoccoo == 0)
+		{
+			gameInfo.scratchPad.allAreaNodes.City_in_the_Sky.dungeon.ooccooGotten = 0b0;
 		}
 	}
 
@@ -306,6 +310,10 @@ namespace mod::game_patch
 		else if (Singleton::getInstance()->hasGMBeenBeaten == 1)
 		{
 			gameInfo.scratchPad.allAreaNodes.Goron_Mines.dungeon.bossBeaten = 0b1; //set boss flag
+			gameInfo.scratchPad.eventBits[0x7] |= 0x1; //set story flag
+		}
+		else if (Singleton::getInstance()->isGMStoryPatch == 1)
+		{
 			gameInfo.scratchPad.eventBits[0x7] |= 0x1; //set story flag
 		}
 	}
@@ -337,6 +345,10 @@ namespace mod::game_patch
 		else if (Singleton::getInstance()->hasCiTSBeenBeaten == 1)
 		{
 			gameInfo.scratchPad.allAreaNodes.City_in_the_Sky.dungeon.bossBeaten = 0b1; //set boss flag
+			gameInfo.scratchPad.eventBits[0x20] |= 0x2; //set story flag
+		}
+		else if (Singleton::getInstance()->isEarlyPoTEnabled == 1)
+		{
 			gameInfo.scratchPad.eventBits[0x20] |= 0x2; //set story flag
 		}
 	}
@@ -379,6 +391,10 @@ namespace mod::game_patch
 		else if (Singleton::getInstance()->hasSPRBeenBeaten == 1)
 		{
 			gameInfo.scratchPad.allAreaNodes.Snowpeak_Ruins.dungeon.bossBeaten = 0b1; //set boss flag
+			gameInfo.scratchPad.eventBits[0x20] |= 0x8; //set story flag
+		}
+		else if (Singleton::getInstance()->isEarlyToTEnabled == 1)
+		{
 			gameInfo.scratchPad.eventBits[0x20] |= 0x8; //set story flag
 		}
 	}
@@ -521,6 +537,14 @@ namespace mod::game_patch
 			gameInfo.nextStageVars.nextRoom = 0x0;
 			gameInfo.nextStageVars.nextSpawnPoint = 0x4D;
 			tp::d_item::execItemGet(0x2);
+		}
+	}
+
+	void breakBarrier()
+	{
+		if (Singleton::getInstance()->isEarlyHCEnabled == 1 && ((gameInfo.scratchPad.eventBits[0x1E] & 0x8) != 0))
+		{
+			gameInfo.scratchPad.eventBits[0x42] |= 0x8;
 		}
 	}
 
@@ -760,6 +784,7 @@ namespace mod::game_patch
 		eventBitsPtr[0x1D] = 0x40; //fight bublin after Fyer
 		eventBitsPtr[0x22] |= 0x1; //Plumm initial CS watched
 		eventBitsPtr[0x26] |= 0x2; //Talked to Yeto on Snowpeak
+		eventBitsPtr[0x28] |= 0x40; //Used Ooccoo for the First Time
 		eventBitsPtr[0x37] |= 0x4; // Postman Twilight Text
 		eventBitsPtr[0x38] |= 0x6; //Enter Hena Cabin CS
 		eventBitsPtr[0x3A] |= 0x1; //Talked to Ralis
@@ -889,14 +914,36 @@ namespace mod::game_patch
 		allAreaNodesPtr->Faron.unk_0[0xE] |= 0x9;//cs after entering Faron,spring cs with spirit
 		allAreaNodesPtr->Faron.unk_0[0x17] |= 0xC0;//kill bugs in Coro's House
 
+
+		//Apply Overrides for custom chests
+		gameInfo.scratchPad.eventBits[0x22] |= 0x4;/*Got Ilia's Charm from Impaz*/
+		gameInfo.scratchPad.eventBits[0x49] |= 0x2;/*Bought Slingshot from Sera*/
+
 		//Apply Randomizer Options
 		checkBossKeysey();
 		earlyCiTS();
 		earlyDesert();
 
-		//Apply Overrides for custom chests
-		gameInfo.scratchPad.eventBits[0x22] |= 0x4;/*Got Ilia's Charm from Impaz*/
-		gameInfo.scratchPad.eventBits[0x49] |= 0x2;/*Bought Slingshot from Sera*/
+		if (Singleton::getInstance()->isEarlyToTEnabled == 1)
+		{
+			gameInfo.scratchPad.eventBits[0x20] |= 0x8; //SPR Story Flag
+			gameInfo.scratchPad.allAreaNodes.Sacred_Grove.unk_0[0x17] |= 0x10; //SG Portal
+			gameInfo.scratchPad.allAreaNodes.Sacred_Grove.unk_0[0x16] |= 0x2; //SK Human Beat
+			gameInfo.scratchPad.allAreaNodes.Sacred_Grove.unk_0[0x9] |= 0x40; //ToT Stairs
+			gameInfo.scratchPad.allAreaNodes.Sacred_Grove.unk_0[0xB] |= 0x10; //Pushed block as human
+		}
+
+		if (Singleton::getInstance()->isEarlyPoTEnabled == 1)
+		{
+			gameInfo.scratchPad.eventBits[0x20] |= 0x2; //CiTS Story Flag
+		}
+
+		if (Singleton::getInstance()->isGMStoryPatch == 1)
+		{
+			gameInfo.scratchPad.eventBits[0x7] |= 0x1; //Mines Story Flag
+			gameInfo.scratchPad.eventBits[0x13] |= 0x20; //watched post GM cs
+			gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x14] |= 0x10; //barnes sells bombs
+		}
 
 		if (Singleton::getInstance()->isCartEscortSkipEnabled == 1)
 		{
@@ -905,6 +952,17 @@ namespace mod::game_patch
 			gameInfo.scratchPad.eventBits[0x8] |= 0x4;//got zora armor from Rutela
 			gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x17] |= 0x40;//remove rock in graveyard
 			gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x16] |= 0x40;
+		}
+
+		if (Singleton::getInstance()->startWithCrystal == 1)
+		{
+			giveMidnaTransform();
+			tools::setItemFlag(ItemFlags::Shadow_Crystal);
+
+			if (Singleton::getInstance()->isMDHSkipEnabled == 1)
+			{
+				gameInfo.scratchPad.unk_1F[0x11] |= 0x8; //Midna on Back
+			}
 		}
 		
 
@@ -1054,7 +1112,7 @@ namespace mod::game_patch
 		}
 	}
 
-	void setFieldModels()
+	/*void setFieldModels()
 	{
 		tp::d_item_data::ItemResource* itemResPtr = &tp::d_item_data::item_resource[0];
 		tp::d_item_data::FieldItemRes* fieldItemResPtr = &tp::d_item_data::field_item_res[0];
@@ -1076,10 +1134,10 @@ namespace mod::game_patch
 		for (u32 i = 0; i < loopCount; i++)
 		{
 			u32 item = item::itemsWithNoFieldModel[i]; // Retrieve as u32 to prevent rlwinm shenanigans
-			itemInfoPtr[item].mShadowSize = yellowRupeeInfoPtr[0].mShadowSize;
-			itemInfoPtr[item].mCollisionH = yellowRupeeInfoPtr[0].mCollisionH;
-			itemInfoPtr[item].mCollisionR = yellowRupeeInfoPtr[0].mCollisionR;
-			itemInfoPtr[item].mFlags = yellowRupeeInfoPtr[0].mFlags;
+			itemInfoPtr[item].mShadowSize = yellowRupeeInfoPtr->mShadowSize;
+			itemInfoPtr[item].mCollisionH = yellowRupeeInfoPtr->mCollisionH;
+			itemInfoPtr[item].mCollisionR = yellowRupeeInfoPtr->mCollisionR;
+			itemInfoPtr[item].mFlags = yellowRupeeInfoPtr->mFlags;
 		}
 
 		// Modify a branch in itemGetNextExecute to allow the item get cutscene to play with items past 0x40
@@ -1141,5 +1199,5 @@ namespace mod::game_patch
 				}
 			}
 		}
-	}
+	}*/
 }

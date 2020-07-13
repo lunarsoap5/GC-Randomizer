@@ -35,6 +35,11 @@ namespace mod
 		diababaMusicFixed = 0;
 		midnaTimeControl = 1;
 		hasActorCommonLayerRan = 0;
+		isEarlyToTEnabled = 0;
+		isEarlyPoTEnabled = 0;
+		isGMStoryPatch = 0;
+		isEarlyHCEnabled = 0;
+		startWithCrystal = 0;
 
 		//dungeon fixes
 		hasFTBeenBeaten = 0;
@@ -44,6 +49,7 @@ namespace mod
 		hasSPRBeenBeaten = 0;
 		hasToTBeenBeaten = 0;
 		hasCiTSBeenBeaten = 0;
+		hasCiTSOoccoo = 0;
 	}
 
 } 

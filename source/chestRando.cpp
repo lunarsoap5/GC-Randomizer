@@ -454,6 +454,10 @@ namespace mod
 		{//decrease poe counter
 			gameInfo.scratchPad.poeCount--;
 		}
+		else if (item == items::Item::Ooccoo_Dungeon && tp::d_a_alink::checkStageName(stage::allStages[Stage_City_in_the_Sky]))
+		{
+			Singleton::getInstance()->hasCiTSOoccoo = 1;
+		}
 		else if (item == items::Item::Vessel_Of_Light_Faron)
 		{
 			tp::d_com_inf_game::ScratchPad* scratchPadPtr = &gameInfo.scratchPad;
@@ -958,10 +962,17 @@ namespace mod
 								}
 								else if (item == items::Item::Shadow_Crystal)
 								{//shadow crystal doesn't actually do anything so we have to do its functionnality ourselves
-									game_patch::giveMidnaTransform();
-									if (Singleton::getInstance()->isMDHSkipEnabled == 1)
+									if (Singleton::getInstance()->startWithCrystal == 1)
 									{
-										gameInfo.scratchPad.unk_1F[0x11] |= 0x8; //Midna on Back
+										item = items::Item::Silver_Rupee;
+									}
+									else
+									{
+										game_patch::giveMidnaTransform();
+										if (Singleton::getInstance()->isMDHSkipEnabled == 1)
+										{
+											gameInfo.scratchPad.unk_1F[0x11] |= 0x8; //Midna on Back
+										}
 									}
 								}
 								else if (item == items::Item::Dominion_Rod_Uncharged)

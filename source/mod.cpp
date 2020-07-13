@@ -34,6 +34,7 @@
 #include <tp/DynamicLink.h>
 #include <tp/d_item.h>
 #include <tp/d_item_data.h>
+#include <tp/d_meter2_info.h>
 #include <cstdio>
 #include <cstring>
 
@@ -211,6 +212,9 @@ namespace mod
 		hudConsole->addOption(page, "Fast transform?", &enableQuickTransform, 0x1);
 		hudConsole->addOption(page, "Skip Intro?", &Singleton::getInstance()->isIntroSkipped, 0x1);
 		hudConsole->addOption(page, "Midna ToD Skip?", &Singleton::getInstance()->midnaTimeControl, 0x1);
+		hudConsole->addOption(page, "Early ToT?", &Singleton::getInstance()->isEarlyToTEnabled, 0x1);
+		hudConsole->addOption(page, "Early PoT?", &Singleton::getInstance()->isEarlyPoTEnabled, 0x1);
+		hudConsole->addOption(page, "Open HC?", &Singleton::getInstance()->isEarlyHCEnabled, 0x1);
 		//color
 		/*page = hudConsole->addPage("Tunic Color1");
 
@@ -258,14 +262,10 @@ namespace mod
 
 		
 		//event info
-		page = hudConsole->addPage("Event Info");
-		hudConsole->addOption(page, "Inner Red:", &innerRed, 0xFF);
-		hudConsole->addOption(page, "Inner Green:", &innerGreen, 0xFF);
-		hudConsole->addOption(page, "Inner Blue:", &innerBlue, 0xFF);
-		hudConsole->addOption(page, "Outer Red:", &outerRed, 0xFF);
-		hudConsole->addOption(page, "Outer Green:", &outerGreen, 0xFF);
-		hudConsole->addOption(page, "Outer Blue:", &outerBlue, 0xFF);
+		page = hudConsole->addPage("Skips 3/ Event");
 		//hudConsole->addOption(page, "Coords as hex?", &coordsAreInHex, 0x1);
+		hudConsole->addOption(page, "GM Story Flag?", &Singleton::getInstance()->isGMStoryPatch, 0x1);
+		hudConsole->addOption(page, "Start w/ Crstl?", &Singleton::getInstance()->startWithCrystal, 0x1);
 				
 		hudConsole->addWatch(page, "CurrentEventID:", &gameInfo.eventSystem.currentEventID, 'x', WatchInterpretation::_u8);
 		hudConsole->addWatch(page, "NextEventID:", &gameInfo.eventSystem.nextEventID, 'x', WatchInterpretation::_u8);
@@ -273,6 +273,15 @@ namespace mod
 		hudConsole->addWatch(page, "NextRoom:", &gameInfo.nextStageVars.nextRoom, 'd', WatchInterpretation::_u8);
 		hudConsole->addWatch(page, "NextSpawnPoint:", &gameInfo.nextStageVars.nextSpawnPoint, 'x', WatchInterpretation::_u8);
 		hudConsole->addWatch(page, "NextSate:", &gameInfo.nextStageVars.nextState, 'x', WatchInterpretation::_u8);
+
+		//Cosmetic Changes
+		page = hudConsole->addPage("Cosmetic");
+		hudConsole->addOption(page, "LTN In Rd:", &innerRed, 0xFF);
+		hudConsole->addOption(page, "LTN In Green:", &innerGreen, 0xFF);
+		hudConsole->addOption(page, "LTN In Blue:", &innerBlue, 0xFF);
+		hudConsole->addOption(page, "LTN Ot Red:", &outerRed, 0xFF);
+		hudConsole->addOption(page, "LTN Ot Green:", &outerGreen, 0xFF);
+		hudConsole->addOption(page, "LTN Ot Blue:", &outerBlue, 0xFF);
 		
 		//local area
 		/*page = hudConsole->addPage("Local Area 1");		
@@ -512,6 +521,9 @@ namespace mod
 		eventListener->addLoadEvent(stage::allStages[Stage_Armogohma], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setToTBossFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
 
 		eventListener->addLoadEvent(stage::allStages[Stage_Argorok], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::setCiTSBossFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
+
+		//Break Barrier
+		eventListener->addLoadEvent(stage::allStages[Stage_Castle_Town], 0xFF, 0xFF, 0xFF, 0xFF, game_patch::breakBarrier, event::LoadEventAccuracy::Stage_Room_Spawn);
 		//   =================
 		//  | Function Hooks  |
 		//   =================
@@ -876,24 +888,20 @@ namespace mod
 			// Toggle console			
 			system_console::setState(!sysConsolePtr->consoleEnabled, 0);
 		}
-		else if (tp::d_a_alink::linkStatus)
+
+		if (controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_R | controller::PadInputs::Button_Y))
 		{
-			if (enableQuickTransform == 1 && gameInfo.rButtonText == 0 && (((gameInfo.eventSystem.eventFlag == 0) && tp::d_a_alink::linkStatus->status == 0x1)) &&
-				(gameInfo.scratchPad.eventBits[0xD] & 0x4) != 0 && controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_R))
+			if (canQuickTransform())
 			{
-				// Make sure Link is actually loaded
-				tp::d_com_inf_game::LinkMapVars* linkMapPtr = gameInfo.linkMapPtr;
-				if (linkMapPtr)
+				if (gameInfo.linkMapPtr->equippedItem != items::Ball_and_Chain)
 				{
-					if (!((linkMapPtr->isTargeting & 0x400000) != 0 && gameInfo.scratchPad.form == 0))
-					{
-						// Transform
-						tp::d_a_alink::procCoMetamorphoseInit(linkMapPtr);
-					}
+					// Transform
+					tp::d_a_alink::procCoMetamorphoseInit(gameInfo.linkMapPtr);
 				}
+				
 			}
-			else if ((gameInfo.scratchPad.eventBits[0xD] & 0x4) != 0 && gameInfo.aButtonText == 0x23 && gameInfo.eventSystem.actionStatus == 0x29 &&
-				controller::checkForButtonInputSingleFrame((controller::PadInputs::Button_R | controller::PadInputs::Button_Y)) && Singleton::getInstance()->midnaTimeControl == 1 && chestRandomizer->isStageTOD())
+			
+			if (canChangeToD())
 			{
 				if (gameInfo.scratchPad.skyAngle >= 180 && gameInfo.scratchPad.skyAngle <= 359)
 				{
@@ -915,6 +923,7 @@ namespace mod
 				}
 			}
 		}
+		
 
 		if (sysConsolePtr->consoleEnabled)
 		{
@@ -1930,4 +1939,134 @@ namespace mod
 		*reinterpret_cast<u8*>(lanternVariableAddress + 0x45) = reinterpret_cast<u8>(outerGreen);
 		*reinterpret_cast<u8*>(lanternVariableAddress + 0x47) = reinterpret_cast<u8>(outerBlue);
 	}
+
+	bool Mod::canQuickTransform()
+	{
+		// Make sure Link is actually loaded
+		tp::d_com_inf_game::LinkMapVars* linkMapPtr = gameInfo.linkMapPtr;
+		//check to make sure that the quick transform variable is enabled
+		if (enableQuickTransform == 0)
+		{
+			strcpy(sysConsolePtr->consoleLine[20].line, "-> option disabled");
+			return false;
+		}
+		
+		if (!linkMapPtr)
+		{
+			strcpy(sysConsolePtr->consoleLine[20].line, "-> no valid spot");
+			return false;
+		}
+
+		// Make sure Link currently isnt in an event
+		if (tp::d_a_alink::checkEventRun(linkMapPtr))
+		{
+			return false;
+		}
+
+		// Get the value for the alpha of the Z button
+		// Pointer path is not currently defined yet
+		u32 zButtonAlphaPtr = reinterpret_cast<u32>(tp::d_meter2_info::wZButtonPtr);
+		if (!zButtonAlphaPtr)
+		{
+			strcpy(sysConsolePtr->consoleLine[20].line, "-> alpha ptr 1 failed");
+			return false;
+		}
+
+		zButtonAlphaPtr = *reinterpret_cast<u32*>(zButtonAlphaPtr + 0x10C);
+		if (!zButtonAlphaPtr)
+		{
+			strcpy(sysConsolePtr->consoleLine[20].line, "-> alpha ptr 2 failed");
+			return false;
+		}
+
+		float zButtonAlpha = *reinterpret_cast<float*>(zButtonAlphaPtr + 0x720);
+
+		// Check if the Z button is dimmed
+		if (zButtonAlpha != 1.f)
+		{
+			// Z button is currently dimmed, so don't allow transforming
+			strcpy(sysConsolePtr->consoleLine[20].line, "-> z button dimmed");
+			return false;
+		}
+
+		//make sure link is not underwater, or talking to anyone
+		if (tp::d_a_alink::linkStatus->status != 0x1)
+		{
+			//link is in an invalid state
+			return false;
+		} 
+
+		// Make sure you have the ability to warp
+		if ((gameInfo.scratchPad.eventBits[0xD] & 0x4) == 0) 
+		{
+			return false;
+		}
+
+		//Check to see if link is riding a snowboard
+		if (tp::d_a_alink::checkBoardRide(linkMapPtr))
+		{
+			strcpy(sysConsolePtr->consoleLine[20].line, "-> on board");
+			return false;
+		}
+		
+		//Check to see if link is riding the canoe
+		if (tp::d_a_alink::checkCanoeRide(linkMapPtr))
+		{
+			strcpy(sysConsolePtr->consoleLine[20].line, "-> on canoe");
+			return false;
+		}
+		
+		//Check to see if link is riding Epona
+		if (tp::d_a_alink::checkHorseRide(linkMapPtr))
+		{
+			strcpy(sysConsolePtr->consoleLine[20].line, "-> on horse");
+			return false;
+		}
+		
+		//Check to see if link is riding a boar
+		if (tp::d_a_alink::checkBoarRide(linkMapPtr))
+		{
+			strcpy(sysConsolePtr->consoleLine[20].line, "-> on boar");
+			return false;
+		}
+		
+		//Check to see if link is riding the spinner
+		if (tp::d_a_alink::checkSpinnerRide(linkMapPtr))
+		{
+			strcpy(sysConsolePtr->consoleLine[20].line, "-> on spinner");
+			return false;
+		}
+		strcpy(sysConsolePtr->consoleLine[20].line, "-> Can Transform");
+		return true;
+	}
+
+	bool Mod::canChangeToD()
+	{
+		if ((gameInfo.scratchPad.eventBits[0xD] & 0x4) == 0)
+		{
+			return false;
+		}
+		
+		if (gameInfo.aButtonText != 0x23)
+		{
+			return false;
+		}
+		
+		if (gameInfo.eventSystem.actionStatus != 0x29)
+		{
+			return false;
+		}
+		
+		if (Singleton::getInstance()->midnaTimeControl == 0)
+		{
+			return false;
+		}
+			
+		if (!chestRandomizer->isStageTOD())
+		{
+			return false;
+		}
+		return true;
+	}
+
 } // namespace mod
