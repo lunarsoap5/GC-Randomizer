@@ -47,6 +47,7 @@ namespace mod::game_patch
 	 */
 	void removeIBLimit();
 
+
 	/**
 	 * Changes the max rupee amounts for each
 	 * of the wallets
@@ -127,6 +128,10 @@ namespace mod::game_patch
 	 */
 	void setGroveFlags();
 
+	/**
+	 * when you spawn into the Cart Escort, game will spawn you in Kakariko Afterwards
+	 */
+	void skipCartEscort();
 
 	/**
 	 * warps player to Lanayru twilight gate if they don't have MS
@@ -185,6 +190,9 @@ namespace mod::game_patch
 	 */
 	void skipMDH();
 
+	/**
+	 * unset the story flag and boss flag when re-entering a dungeon
+	 */
 	void setLanternFlag();
 
 	void breakBarrier();
@@ -199,7 +207,7 @@ namespace mod::game_patch
 	void fixSPRState();
 	void fixToTState();
 	void fixCiTSState();
-
+	
 	/**
 	 * reset the flags for a dungeon if it has been beaten or if a skip is active
 	 */

@@ -36,8 +36,9 @@ namespace mod
 		u8 isGMStoryPatch;
 		u8 isEarlyHCEnabled;
 		u8 areStoryItemsRandomized;
-		u8 isCrystalRandomized;
-
+		u8 startWithCrystal;
+		u8 isDesertAccessEnabled;
+		
 		//dungeon flags
 		u8 hasFTBeenBeaten;
 		u8 hasGMBeenBeaten;
@@ -46,6 +47,7 @@ namespace mod
 		u8 hasSPRBeenBeaten;
 		u8 hasToTBeenBeaten;
 		u8 hasCiTSBeenBeaten;
+		u8 hasCiTSOoccoo;
 
 		private:
 

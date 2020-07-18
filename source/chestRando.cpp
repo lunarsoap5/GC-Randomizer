@@ -16,6 +16,7 @@
 #include <tp/d_a_alink.h>
 #include <tp/d_kankyo.h>
 #include <tp/JFWSystem.h>
+#include <tp/resource.h>
 #include <cstdio>
 #include <cstring>
 
@@ -69,18 +70,6 @@ namespace mod
 				if (destCheck->itemID == items::Item::Ordon_Sword)
 				{
 					sourceCheck = findSource(destCheck->destLayer, 0x1, destCheck);//to prevent woodensword from being overwritten before losing it			
-				}
-				else if (destCheck->itemID == items::Item::Ordon_Shield || destCheck->itemID == items::Item::Wooden_Shield || destCheck->itemID == items::Item::Hylian_Shield)
-				{
-					sourceCheck = findSource(destCheck->destLayer, 0x2, destCheck);//to prevent softlocking the game when you try to get ordon shield check		
-				}
-				else if (destCheck->itemID == items::Item::Zora_Armor || destCheck->itemID == items::Item::Magic_Armor)
-				{
-					sourceCheck = findSource(destCheck->destLayer, 0x2, destCheck);//to prevent softlocking the game when you try to get ordon shield check		
-				}
-				else if (isProgressiveEnabled == 0 && destCheck->itemID == items::Item::Clawshots)
-				{
-					sourceCheck = findSource(destCheck->destLayer, 0x7, destCheck);//to prevent Clawshots from being overwritten by Clawshot
 				}
 				else
 				{
@@ -251,7 +240,7 @@ namespace mod
 			break;
 
 		case item::ItemType::Story:
-			if (Singleton::getInstance()->areStoryItemsRandomized == 1)
+			if (Singleton::getInstance()->areStoryItemsRandomized == 0)
 			{
 				result = true;
 			}
@@ -293,7 +282,7 @@ namespace mod
 				result = true;
 			break;*/
 		case items::Item::Shadow_Crystal:
-			if (Singleton::getInstance()->isMDHSkipEnabled == 0 || Singleton::getInstance()->isCrystalRandomized == 0)
+			if (Singleton::getInstance()->isMDHSkipEnabled == 0)
 			{
 				result = true;
 			}
@@ -320,6 +309,9 @@ namespace mod
 			}
 			break;
 
+		case items::Item::Gate_Keys:
+			result = true;
+			break;
 
 		}
 
@@ -376,6 +368,10 @@ namespace mod
 		else if (item == items::Item::Poe_Soul && gameInfo.scratchPad.poeCount >= 1 && !(tp::d_a_alink::checkStageName(stage::allStages[Stage_Castle_Town_Shops]) && tp::d_kankyo::env_light.currentRoom == 5))
 		{//decrease poe counter
 			gameInfo.scratchPad.poeCount--;
+		}
+		else if (item == items::Item::Ooccoo_Dungeon && tp::d_a_alink::checkStageName(stage::allStages[Stage_City_in_the_Sky]))
+		{
+			Singleton::getInstance()->hasCiTSOoccoo = 1;
 		}
 		else if (item == items::Item::Vessel_Of_Light_Faron)
 		{
@@ -881,10 +877,17 @@ namespace mod
 								}
 								else if (item == items::Item::Shadow_Crystal)
 								{//shadow crystal doesn't actually do anything so we have to do its functionnality ourselves
-									game_patch::giveMidnaTransform();
-									if (Singleton::getInstance()->isMDHSkipEnabled == 1)
+									if (Singleton::getInstance()->startWithCrystal == 1)
 									{
-										gameInfo.scratchPad.unk_1F[0x11] |= 0x8; //Midna on Back
+										item = items::Item::Silver_Rupee;
+									}
+									else
+									{
+										game_patch::giveMidnaTransform();
+										if (Singleton::getInstance()->isMDHSkipEnabled == 1)
+										{
+											gameInfo.scratchPad.unk_1F[0x11] |= 0x8; //Midna on Back
+										}
 									}
 								}
 								else if (item == items::Item::Dominion_Rod_Uncharged)
@@ -957,7 +960,7 @@ namespace mod
 									}
 									else
 									{
-										gameInfo.scratchPad.eventBits[0x29] |= 0x4;//give ending blow
+										gameInfo.scratchPad.eventBits[0x29] |= 0x4;//give ending blow										
 									}
 								}
 								else if (item == 0xE2)
@@ -1116,56 +1119,7 @@ namespace mod
 								}
 								else
 								{
-									if ((gameInfo.scratchPad.eventBits[0x29] & 0x4) != 0)/*have ending blow*/
-									{
-										if ((gameInfo.scratchPad.eventBits[0x29] & 0x8) != 0)/*have shield attack*/
-										{
-											if ((gameInfo.scratchPad.eventBits[0x29] & 0x2) != 0)/*have back slice*/
-											{
-												if ((gameInfo.scratchPad.eventBits[0x29] & 0x1) != 0)/*have helm splitter*/
-												{
-													if ((gameInfo.scratchPad.eventBits[0x2A] & 0x80) != 0)/*have mortal draw*/
-													{
-														if ((gameInfo.scratchPad.eventBits[0x2A] & 0x40) != 0)/*have jump strike*/
-														{
-															gameInfo.scratchPad.eventBits[0x2A] |= 0x20;//give great spin
-														}
-														else
-														{
-															gameInfo.scratchPad.eventBits[0x2A] |= 0x40;//give jumpstrike
-														}
-
-													}
-													else
-													{
-														gameInfo.scratchPad.eventBits[0x2A] |= 0x80;//give mortal draw
-													}
-
-												}
-												else
-												{
-													gameInfo.scratchPad.eventBits[0x29] |= 0x1;//give helm splitter
-												}
-
-											}
-											else
-											{
-												gameInfo.scratchPad.eventBits[0x29] |= 0x2;//give back slice
-											}
-
-										}
-										else
-										{
-											{
-												gameInfo.scratchPad.eventBits[0x29] |= 0x8;//give shield attack
-											}
-										}
-
-									}
-									else
-									{
-										gameInfo.scratchPad.eventBits[0x29] |= 0x4;//give ending blow
-									}
+									gameInfo.scratchPad.eventBits[0x29] |= 0x4;//give ending blow
 								}
 								}
 								else if (item == 0xE5)

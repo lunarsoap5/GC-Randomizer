@@ -39,8 +39,9 @@ namespace mod
 		isEarlyPoTEnabled = 0;
 		isGMStoryPatch = 0;
 		isEarlyHCEnabled = 0;
+		startWithCrystal = 0;
 		areStoryItemsRandomized = 0;
-		isCrystalRandomized = 0;
+		isDesertAccessEnabled = 0;
 
 		//dungeon fixes
 		hasFTBeenBeaten = 0;
@@ -50,6 +51,7 @@ namespace mod
 		hasSPRBeenBeaten = 0;
 		hasToTBeenBeaten = 0;
 		hasCiTSBeenBeaten = 0;
+		hasCiTSOoccoo = 0;
 	}
 
 } 
