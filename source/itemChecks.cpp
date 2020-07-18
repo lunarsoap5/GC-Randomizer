@@ -482,7 +482,7 @@ namespace mod::item
 		/*#60*/{ 0xe0, 11, stage::allStages[50], 0, 0x8, 0xFF, 0b000000000000000000010, 297.160065, -4608.964844, 7384.047852, nullptr, nullptr },
 		/*60 poe reward*/{ 0x07, 7, stage::allStages[73], 5, 0xFF, 0xFF, 0b000000000000000000000, 4250.363281, 134.492020, 1813.639648, nullptr, nullptr },
 		//sky book quest
-		/*empty*/{ 0xe9, 0, stage::allStages[72], 0, 0x13, 0x13, 0b000000000000010000000, -532.266479, 1.500000, -343.810791, nullptr, nullptr },
+		/*empty*/{ 0xe9, 0, stage::allStages[72], 0, 0xFF, 0x13, 0b000000000000010000000, -532.266479, 1.500000, -343.810791, nullptr, nullptr },
 		/*faron*/{ 0xea, 0, stage::allStages[45], 8, 0x13, 0x13, 0b000000000000010000000, -17500.000000, -310.000000, -20950.000000, nullptr, nullptr },
 		/*eldin gorge*/{ 0xea, 0, stage::allStages[56], 3, 0x13, 0x13, 0b000000000000010000000, -10195.000000, -4760.000000, 39363.000000, nullptr, nullptr },
 		/*edin bridge*/{ 0xea, 0, stage::allStages[56], 0, 0x13, 0x13, 0b000000000000010000000, 33650.000000, -80.000000, -35970.000000, nullptr, nullptr },

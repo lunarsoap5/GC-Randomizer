@@ -219,6 +219,8 @@ namespace mod
 
 			void changeLanternColor();
 
+			void fixFTTotemMonkey();
+
 			//void setFieldModels();
 
 			//bool procActorCommonLayerInit(void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, s32 unk3, void* unk4);

@@ -776,6 +776,7 @@ namespace mod::game_patch
 		eventBitsPtr[0x3] |= 0x90; //Jaggle Calls out to link, talked to squirrel as wolf in Ordon
 		eventBitsPtr[0x5] |= 0x10; //unchain wolf link
 		eventBitsPtr[0x6] |= 0xC0; //CS after beating Ordon Shadow, cs after entering Faron twilight
+		eventBitsPtr[0x7] |= 0x20; //Talked to Bo outside his house
 		eventBitsPtr[0xB] |= 0x20; //Talked to Yeta First Time
 		eventBitsPtr[0x10] |= 0x2; //Talked to Jaggle after climbing vines
 		eventBitsPtr[0x5E] |= 0x10; //Midna Text After Beating Forest Temple
@@ -926,9 +927,7 @@ namespace mod::game_patch
 
 		if (Singleton::getInstance()->isEarlyToTEnabled == 1)
 		{
-			gameInfo.scratchPad.eventBits[0x20] |= 0x8; //SPR Story Flag
 			gameInfo.scratchPad.allAreaNodes.Sacred_Grove.unk_0[0x17] |= 0x10; //SG Portal
-			gameInfo.scratchPad.allAreaNodes.Sacred_Grove.unk_0[0x16] |= 0x2; //SK Human Beat
 			gameInfo.scratchPad.allAreaNodes.Sacred_Grove.unk_0[0x9] |= 0x40; //ToT Stairs
 			gameInfo.scratchPad.allAreaNodes.Sacred_Grove.unk_0[0xB] |= 0x10; //Pushed block as human
 		}

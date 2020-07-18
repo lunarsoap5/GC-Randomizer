@@ -898,29 +898,29 @@ namespace mod
 					// Transform
 					tp::d_a_alink::procCoMetamorphoseInit(gameInfo.linkMapPtr);
 				}
-				
+
 			}
-			
-			if (canChangeToD())
+		}
+		
+		if (canChangeToD() && controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_R | controller::PadInputs::Button_Y))
+		{
+			if (gameInfo.scratchPad.skyAngle >= 105 && gameInfo.scratchPad.skyAngle <= 284)
 			{
-				if (gameInfo.scratchPad.skyAngle >= 180 && gameInfo.scratchPad.skyAngle <= 359)
+				gameInfo.scratchPad.skyAngle = 285;
+				if (gameInfo.nextStageVars.nextSpawnPoint == 0xFF)
 				{
-					gameInfo.scratchPad.skyAngle = 0;
-					if (gameInfo.nextStageVars.nextSpawnPoint == 0xFF)
-					{
-						gameInfo.nextStageVars.nextSpawnPoint = lastGoodSpawn;
-					}
-					gameInfo.nextStageVars.triggerLoad |= 1;
+					gameInfo.nextStageVars.nextSpawnPoint = lastGoodSpawn;
 				}
-				else if (gameInfo.scratchPad.skyAngle >= 0 && gameInfo.scratchPad.skyAngle <= 179)
+				gameInfo.nextStageVars.triggerLoad |= 1;
+			}
+			else if (gameInfo.scratchPad.skyAngle >= 285 || gameInfo.scratchPad.skyAngle <= 104)
+			{
+				gameInfo.scratchPad.skyAngle = 105;
+				if (gameInfo.nextStageVars.nextSpawnPoint == 0xFF)
 				{
-					gameInfo.scratchPad.skyAngle = 180;
-					if (gameInfo.nextStageVars.nextSpawnPoint == 0xFF)
-					{
-						gameInfo.nextStageVars.nextSpawnPoint = lastGoodSpawn;
-					}
-					gameInfo.nextStageVars.triggerLoad |= 1;
+					gameInfo.nextStageVars.nextSpawnPoint = lastGoodSpawn;
 				}
+				gameInfo.nextStageVars.triggerLoad |= 1;
 			}
 		}
 		
@@ -1125,6 +1125,7 @@ namespace mod
 
 		changeLanternColor();
 		//setFieldModels();
+		fixFTTotemMonkey();
 
 	}
 
@@ -1828,6 +1829,17 @@ namespace mod
 		}
 	}
 
+	void Mod::fixFTTotemMonkey()
+	{
+		if (tp::d_a_alink::checkStageName("D_MN05") && tp::d_kankyo::env_light.currentRoom == 12)
+		{
+			if ((gameInfo.localAreaNodes.unk_0[0xA] & 0x4) != 0)
+			{
+				gameInfo.localAreaNodes.unk_0[0x12] |= 0x1;
+			}
+		}
+	}
+
 	void Mod::preventPoweringUpDomRod()
 	{
 		if (gameInfo.scratchPad.itemWheel.Sky_Book == 0xFF && tools::checkItemFlag(ItemFlags::Ancient_Sky_Book_empty) && !tools::checkItemFlag(ItemFlags::Ancient_Sky_Book_partly_filled))
@@ -1930,7 +1942,7 @@ namespace mod
 	void Mod::changeLanternColor()
 	{
 
-		// CheckHeavyState overwrite
+		// set lantern variables
 		u32 lanternVariableAddress = reinterpret_cast<u32>(&tp::d_a_alink::lanternVariables);
 		*reinterpret_cast<u8*>(lanternVariableAddress + 0x3D) = reinterpret_cast<u8>(innerRed);
 		*reinterpret_cast<u8*>(lanternVariableAddress + 0x3F) = reinterpret_cast<u8>(innerGreen);
