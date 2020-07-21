@@ -267,6 +267,7 @@ namespace mod
 		hudConsole->addOption(page, "GM Story Flag?", &Singleton::getInstance()->isGMStoryPatch, 0x1);
 		hudConsole->addOption(page, "Start w/ Crstl?", &Singleton::getInstance()->startWithCrystal, 0x1);
 		hudConsole->addOption(page, "No Desrt Req?", &Singleton::getInstance()->isDesertAccessEnabled, 0x1);
+		hudConsole->addOption(page, "Story Items?", &Singleton::getInstance()->areStoryItemsRandomized, 0x1);
 				
 		hudConsole->addWatch(page, "CurrentEventID:", &gameInfo.eventSystem.currentEventID, 'x', WatchInterpretation::_u8);
 		hudConsole->addWatch(page, "NextEventID:", &gameInfo.eventSystem.nextEventID, 'x', WatchInterpretation::_u8);
@@ -894,12 +895,8 @@ namespace mod
 		{
 			if (canQuickTransform())
 			{
-				if (gameInfo.linkMapPtr->equippedItem != items::Ball_and_Chain)
-				{
 					// Transform
 					tp::d_a_alink::procCoMetamorphoseInit(gameInfo.linkMapPtr);
-				}
-
 			}
 		}
 			
@@ -2047,6 +2044,12 @@ namespace mod
 		if (tp::d_a_alink::checkSpinnerRide(linkMapPtr))
 		{
 			strcpy(sysConsolePtr->consoleLine[20].line, "-> on spinner");
+			return false;
+		}
+
+		// check to see if you are holding ball and chain
+		if (gameInfo.linkMapPtr->equippedItem == items::Ball_and_Chain)
+		{
 			return false;
 		}
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Can Transform");
