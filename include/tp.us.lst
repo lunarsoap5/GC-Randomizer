@@ -194,3 +194,8 @@
 
 //d_meter2_info.o
 804301A4:wZButtonPtr
+
+//Z2SeqMgr.o
+802af010:bgmStart
+802af49c:subBgmStart
+802afb94:bgmStreamPrepare

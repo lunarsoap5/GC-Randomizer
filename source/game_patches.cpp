@@ -964,6 +964,15 @@ namespace mod::game_patch
 				gameInfo.scratchPad.unk_1F[0x11] |= 0x8; //Midna on Back
 			}
 		}
+
+		Singleton::getInstance()->hasFTBeenBeaten = 0;
+		Singleton::getInstance()->hasGMBeenBeaten = 0;
+		Singleton::getInstance()->hasLBTBeenBeaten = 0;
+		Singleton::getInstance()->hasAGBeenBeaten = 0;
+		Singleton::getInstance()->hasSPRBeenBeaten = 0;
+		Singleton::getInstance()->hasToTBeenBeaten = 0;
+		Singleton::getInstance()->hasCiTSBeenBeaten = 0;
+
 		
 
 		if (Singleton::getInstance()->isIntroSkipped == 1)

@@ -4,6 +4,7 @@
 
 namespace mod::array
 {
+	
 	extern "C"
 	{
 		/**
@@ -15,5 +16,12 @@ namespace mod::array
 		 * @returns If successful the index of needle inside the array, otherwise -1
 		 */
 		s32 indexOf(u16 needle, u16* haystack, size_t count);
+
+		u32 getRandomBgmId(u32 originalId);
+		u32 getRandomAudioStreamId(u32 originalId);
+
+		extern u8 bgmIndexArray[0xAA];
+		extern u8 audioStreamingIndexArray[0x81];
+		extern u8 invalidBgmIndexArray[72];
 	}
 }

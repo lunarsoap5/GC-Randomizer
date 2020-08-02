@@ -36,6 +36,7 @@ namespace mod
 		u8 isGMStoryPatch;
 		u8 isEarlyHCEnabled;
 		u8 startWithCrystal;
+		u8 isRainbowLanternEnabled;
 		
 		//dungeon flags
 		u8 hasFTBeenBeaten;

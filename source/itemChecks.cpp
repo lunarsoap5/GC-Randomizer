@@ -332,7 +332,7 @@ namespace mod::item
 		/* 322 */{ 0x90, 4, stage::allStages[52], 0, 0x8, 0x8, 0b111111010010001000000, -116117.015625, -15810.000000, 58812.617188, nullptr, nullptr }, //Auru's Memo
 		/* 323 */{ 0x91, 4, stage::allStages[51], 0, 0x10, 0x10, 0b000000000000000000000, 31608.291016, -13330.000000, -11652.610352, nullptr, nullptr }, //Aeshi's Sketch
 		/* 324 */{ 0x80, 4, stage::allStages[46], 0, 0xFF, 0x13, 0b000000000000000000000, -324.903625, 0.000000, 435.528595, nullptr, nullptr }, //Renardo's Letter
-		/* 325 */{ 0x81, 4, stage::allStages[53], 5, 0xFF, 0x13, 0b000000000000000000000, 2694.345215, -1150.000000, 3105.746826, nullptr, nullptr }, //Invoice
+		/* 325 */{ 0x81, 4, stage::allStages[70], 5, 0xFF, 0x13, 0b000000000000000000000, 2694.345215, -1150.000000, 3105.746826, nullptr, nullptr }, //Invoice
 		/* 326 */{ 0x82, 4, stage::allStages[57], 16, 0xFF, 0x13, 0b000000000000000000000, -51514.375000, -6269.229980, 31816.427734, nullptr, nullptr }, //Wooden Statue
 		/* 327 */{ 0x83, 4, stage::allStages[63], 0, 0xFF, 0x13, 0b000000000000000000000, 2077.769775, 104.958275, -1301.828491, nullptr, nullptr }, //Ilia's Charm
 		/* 328 */{ 0x84, 4, stage::allStages[68], 0, 0xFF, 0x13, 0b000000000000000000000, 312.675079, 0.000000, -160.984177, nullptr, nullptr }, //Horse Call
