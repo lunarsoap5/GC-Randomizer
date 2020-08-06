@@ -40,7 +40,8 @@ namespace mod
 		isGMStoryPatch = 0;
 		isEarlyHCEnabled = 0;
 		startWithCrystal = 0;
-		isRainbowLanternEnabled = 0;
+		areStoryItemsRandomized = 0;
+		isDesertAccessEnabled = 0;
 
 		//dungeon fixes
 		hasFTBeenBeaten = 0;

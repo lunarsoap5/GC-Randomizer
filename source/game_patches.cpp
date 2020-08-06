@@ -528,11 +528,11 @@ namespace mod::game_patch
 
 	void accessDesert()
 	{
-		if (tools::checkItemFlag(ItemFlags::Shadow_Crystal))
+		if (Singleton::getInstance()->isDesertAccessEnabled == 1)
 		{
 			return;
 		}
-		else
+		else if (tools::checkItemFlag(ItemFlags::Shadow_Crystal) && Singleton::getInstance()->isDesertAccessEnabled == 0)
 		{
 			strncpy(gameInfo.nextStageVars.nextStage, stage::allStages[Stage_Lake_Hylia], sizeof(gameInfo.nextStageVars.nextStage) - 1);
 			gameInfo.nextStageVars.nextRoom = 0x0;
@@ -964,15 +964,6 @@ namespace mod::game_patch
 				gameInfo.scratchPad.unk_1F[0x11] |= 0x8; //Midna on Back
 			}
 		}
-
-		Singleton::getInstance()->hasFTBeenBeaten = 0;
-		Singleton::getInstance()->hasGMBeenBeaten = 0;
-		Singleton::getInstance()->hasLBTBeenBeaten = 0;
-		Singleton::getInstance()->hasAGBeenBeaten = 0;
-		Singleton::getInstance()->hasSPRBeenBeaten = 0;
-		Singleton::getInstance()->hasToTBeenBeaten = 0;
-		Singleton::getInstance()->hasCiTSBeenBeaten = 0;
-
 		
 
 		if (Singleton::getInstance()->isIntroSkipped == 1)

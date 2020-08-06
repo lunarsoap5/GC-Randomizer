@@ -35,7 +35,6 @@
 #include <tp/d_item.h>
 #include <tp/d_item_data.h>
 #include <tp/d_meter2_info.h>
-#include <tp/Z2SeqMgr.h>
 #include <cstdio>
 #include <cstring>
 
@@ -49,7 +48,6 @@ namespace mod
 	mod::HUDConsole* global::hudConsolePtr = nullptr;
 	int num_frames = 120;
 	int frame_counter = 0;
-	bool hasLanternColorChange = false;
 
 	void main()
 	{
@@ -268,6 +266,8 @@ namespace mod
 		//hudConsole->addOption(page, "Coords as hex?", &coordsAreInHex, 0x1);
 		hudConsole->addOption(page, "GM Story Flag?", &Singleton::getInstance()->isGMStoryPatch, 0x1);
 		hudConsole->addOption(page, "Start w/ Crstl?", &Singleton::getInstance()->startWithCrystal, 0x1);
+		hudConsole->addOption(page, "No Desrt Req?", &Singleton::getInstance()->isDesertAccessEnabled, 0x1);
+		hudConsole->addOption(page, "Story Items?", &Singleton::getInstance()->areStoryItemsRandomized, 0x1);
 				
 		hudConsole->addWatch(page, "CurrentEventID:", &gameInfo.eventSystem.currentEventID, 'x', WatchInterpretation::_u8);
 		hudConsole->addWatch(page, "NextEventID:", &gameInfo.eventSystem.nextEventID, 'x', WatchInterpretation::_u8);
@@ -278,7 +278,6 @@ namespace mod
 
 		//Cosmetic Changes
 		page = hudConsole->addPage("Cosmetic");
-		hudConsole->addOption(page, "Rainbow Lantern?", &Singleton::getInstance()->isRainbowLanternEnabled, 0x1);
 		hudConsole->addOption(page, "LTN In Rd:", &innerRed, 0xFF);
 		hudConsole->addOption(page, "LTN In Green:", &innerGreen, 0xFF);
 		hudConsole->addOption(page, "LTN In Blue:", &innerBlue, 0xFF);
@@ -768,41 +767,6 @@ namespace mod
 			return global::modPtr->setItemBombNumCount_trampoline(unk1, bagNb, amount);
 		}
 		);
-
-		bgmStart_trampoline = patch::hookFunction(tp::z2seqmgr::bgmStart,
-			[](void* Z2SeqMgr, u32 bgmId, u32 unk3, s32 unk4)
-		{
-			// Get the new bgmId
-			bgmId = array::getRandomBgmId(bgmId);
-			return global::modPtr->bgmStart_trampoline(Z2SeqMgr, bgmId, unk3, unk4);
-		}
-		);
-
-		subBgmStart_trampoline = patch::hookFunction(tp::z2seqmgr::subBgmStart,
-			[](void* Z2SeqMgr, u32 bgmId)
-		{
-			// Get the new bgmId
-			bgmId = array::getRandomBgmId(bgmId);
-			return global::modPtr->subBgmStart_trampoline(Z2SeqMgr, bgmId);
-		}
-		);
-
-		bgmStreamPrepare_trampoline = patch::hookFunction(tp::z2seqmgr::bgmStreamPrepare,
-			[](void* Z2SeqMgr, u32 audioStreamingId)
-		{
-			// Get the new audioStreamingId
-			audioStreamingId = array::getRandomAudioStreamId(audioStreamingId);
-			return global::modPtr->bgmStreamPrepare_trampoline(Z2SeqMgr, audioStreamingId);
-		}
-		);
-
-		// Initialize bgmIndexArray
-		u32 bgmIndexArrayTotalElements = sizeof(array::bgmIndexArray) / sizeof(array::bgmIndexArray[0]);
-		tools::fillArrayIncrement(array::bgmIndexArray, bgmIndexArrayTotalElements, 1);
-
-		// Initialize audioStreamingIndexArray
-		u32 audioStreamingIndexArrayTotalElements = sizeof(array::audioStreamingIndexArray) / sizeof(array::audioStreamingIndexArray[0]);
-		tools::fillArrayIncrement(array::audioStreamingIndexArray, audioStreamingIndexArrayTotalElements, 1);
 	}
 
 	void Mod::procNewFrame()
@@ -931,32 +895,32 @@ namespace mod
 		{
 			if (canQuickTransform())
 			{
-				// Transform
+					// Transform
 					tp::d_a_alink::procCoMetamorphoseInit(gameInfo.linkMapPtr);
 			}
 		}
-		
-		if (canChangeToD() && controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_R | controller::PadInputs::Button_Y))
-		{
-			if (gameInfo.scratchPad.skyAngle >= 105 && gameInfo.scratchPad.skyAngle <= 284)
+			
+			if (canChangeToD() && controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_R | controller::PadInputs::Button_Y))
 			{
-				gameInfo.scratchPad.skyAngle = 285;
-				if (gameInfo.nextStageVars.nextSpawnPoint == 0xFF)
+				if (gameInfo.scratchPad.skyAngle >= 105 && gameInfo.scratchPad.skyAngle <= 284)
 				{
-					gameInfo.nextStageVars.nextSpawnPoint = lastGoodSpawn;
+					gameInfo.scratchPad.skyAngle = 285;
+					if (gameInfo.nextStageVars.nextSpawnPoint == 0xFF)
+					{
+						gameInfo.nextStageVars.nextSpawnPoint = lastGoodSpawn;
+					}
+					gameInfo.nextStageVars.triggerLoad |= 1;
 				}
-				gameInfo.nextStageVars.triggerLoad |= 1;
-			}
-			else if (gameInfo.scratchPad.skyAngle >= 285 || gameInfo.scratchPad.skyAngle <= 104)
-			{
-				gameInfo.scratchPad.skyAngle = 105;
-				if (gameInfo.nextStageVars.nextSpawnPoint == 0xFF)
+				else if (gameInfo.scratchPad.skyAngle >= 285 || gameInfo.scratchPad.skyAngle <= 104)
 				{
-					gameInfo.nextStageVars.nextSpawnPoint = lastGoodSpawn;
+					gameInfo.scratchPad.skyAngle = 105;
+					if (gameInfo.nextStageVars.nextSpawnPoint == 0xFF)
+					{
+						gameInfo.nextStageVars.nextSpawnPoint = lastGoodSpawn;
+					}
+					gameInfo.nextStageVars.triggerLoad |= 1;
 				}
-				gameInfo.nextStageVars.triggerLoad |= 1;
 			}
-		}
 		
 
 		if (sysConsolePtr->consoleEnabled)
@@ -1076,7 +1040,6 @@ namespace mod
 				frame_counter = 0;
 			}
 		}
-
 		checkSearchID = (checkSearchID2 * 0x100) + checkSearchID1;
 		checkReverseSearchID = (checkReverseSearchID2 * 0x100) + checkReverseSearchID1;
 		if (checkSearchID != lastCheckSearchID)
@@ -1976,80 +1939,7 @@ namespace mod
 
 	void Mod::changeLanternColor()
 	{
-		if (Singleton::getInstance()->isRainbowLanternEnabled == 0x1)
-		{
-			
-			if (innerRed != 0xFF && innerRed != 0x0)
-			{
-				innerRed = innerRed + 0xF;
-			}
-			if (innerRed == 0xFF || innerRed == 0x0)
-			{
-				innerRed = 0x0;
-				if (innerGreen != 0xFF && innerGreen != 0x0)
-				{
-					innerGreen = innerGreen + 0xF;
-				}
-			}
-			if (innerRed == 0xFF || innerRed == 0x0)
-			{
-				if (innerGreen == 0xFF || innerGreen == 0x0)
-				{
-					innerGreen = 0x0;
-					if (innerBlue != 0xFF)
-					{
-						innerBlue = innerBlue + 0xF;
-					}
-				}
-			}
-			if (innerRed == 0xFF || innerRed == 0x0)
-			{
-				if (innerGreen == 0xFF || innerGreen == 0x0)
-				{
-					if (innerBlue == 0xFF)
-					{
-						innerRed = 0x1;
-						innerGreen = 0x1;
-						innerBlue = 0x1;
-					}
-				}
-			}
-			if (outerRed != 0xFF && outerRed != 0x0)
-			{
-				outerRed = outerRed + 0xF;
-			}
-			if (outerRed == 0xFF || outerRed == 0x0)
-			{
-				outerRed = 0x0;
-				if (outerGreen != 0xFF && outerGreen != 0x0)
-				{
-					outerGreen = outerGreen + 0xF;
-				}
-			}
-			if (outerRed == 0xFF || outerRed == 0x0)
-			{
-				if (outerGreen == 0xFF || outerGreen == 0x0)
-				{
-					outerGreen = 0x0;
-						if (outerBlue != 0xFF)
-						{
-							outerBlue = outerBlue + 0xF;
-						}
-				}
-			}
-			if (outerRed == 0xFF || outerRed == 0x0)
-			{
-				if (outerGreen == 0xFF || outerGreen == 0x0)
-				{
-					if (outerBlue == 0xFF)
-					{
-						outerRed = 0x1;
-						outerGreen = 0x1;
-						outerBlue = 0x1;
-					}
-				}
-			}
-		}
+
 		// set lantern variables
 		u32 lanternVariableAddress = reinterpret_cast<u32>(&tp::d_a_alink::lanternVariables);
 		*reinterpret_cast<u8*>(lanternVariableAddress + 0x3D) = reinterpret_cast<u8>(innerRed);
@@ -2157,11 +2047,11 @@ namespace mod
 			return false;
 		}
 
+		// check to see if you are holding ball and chain
 		if (gameInfo.linkMapPtr->equippedItem == items::Ball_and_Chain)
 		{
 			return false;
 		}
-
 		strcpy(sysConsolePtr->consoleLine[20].line, "-> Can Transform");
 		return true;
 	}

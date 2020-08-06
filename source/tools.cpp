@@ -109,29 +109,4 @@ namespace mod::tools
 		u32* tempItemFlagsArray = gameInfo.scratchPad.itemFlags;
 		return tempItemFlagsArray[tempFlagVar / flagsPerVar] & (1 << (tempFlagVar % flagsPerVar));
 	}
-
-	void shuffleByteArray(u8* array, u32 numItems) // Fisher–Yates shuffle
-	{
-		for (s32 i = numItems - 1; i > 0; i--)
-		{
-			// Get a random index
-			u32 tempIndex = getRandom(numItems) % (i + 1);
-
-			// Swap array[i] with array[tempIndex]
-			u8 tempByte = array[i];
-			array[i] = array[tempIndex];
-			array[tempIndex] = tempByte;
-		}
-	}
-
-	void fillArrayIncrement(u8* array, u32 numItems, u8 incrementAmount)
-	{
-		u8 val = 0;
-		for (u32 i = 0; i < numItems; i++)
-		{
-			array[i] = val;
-			val += incrementAmount;
-		}
-	}
-
 }

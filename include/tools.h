@@ -73,25 +73,5 @@ namespace mod::tools
 		 * Checks if a specific bit/flag in the itemFlags variable in tp::d_com_inf_game::gameInfo.scratchPad.itemFlags is set
 		 */
 		bool checkItemFlag(ItemFlags flag);
-
-		/**
-		 * Shuffles any given u8 array
-		 * Uses the Fisher–Yates shuffle algorithm
-		 *
-		 * @param array The array to shuffle
-		 * @param numItems The total number of elements in the array
-		 */
-		void shuffleByteArray(u8* array, u32 numItems);
-
-		/**
-		 * Fills any u8 array incrementally
-		 *
-		 * @param array The array to fill
-		 * @param numItems The total number of elements in the array
-		 * @param incrementAmount The amount to increment by
-		 */
-		void fillArrayIncrement(u8* array, u32 numItems, u8 incrementAmount);
-
-		bool checkIfBgmIdIsValid(u8 bgmId);
 	}
 }
