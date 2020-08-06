@@ -10,7 +10,7 @@ endif
 include $(DEVKITPPC)/gamecube_rules
 
 export ELF2REL	:=	elf2rel
-export GCIPACK	:=	python3 /home/lunarsoap/Downloads/GC-Randomizer-vbn5983/GC-Randomizer-vbn598/bin/gcipack.py
+export GCIPACK	:=	gcipack
 
 ifeq ($(VERSION),)
 all: us jp eu
@@ -47,7 +47,7 @@ INCLUDES	:=	include
 
 MACHDEP		= -mno-sdata -mgcn -DGEKKO -mcpu=750 -meabi -mhard-float
 
-CFLAGS		= -nostdlib -ffreestanding -ffunction-sections -fdata-sections -g -Os -Wall -Werror -Wno-address-of-packed-member $(MACHDEP) $(INCLUDE)
+CFLAGS		= -nostdlib -ffreestanding -ffunction-sections -fdata-sections -g -Os -Wall -Werror $(MACHDEP) $(INCLUDE)
 CXXFLAGS	= -fno-exceptions -fno-rtti -std=gnu++17 $(CFLAGS)
 
 LDFLAGS		= -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections -nostdlib -g $(MACHDEP) -Wl,-Map,$(notdir $@).map

@@ -38,7 +38,7 @@ namespace mod::item
 		Coral_Earring	= 0b000000000000000010000,//0x3D
 		Wooden_Sword	= 0b000000000000000001000,//0x3F
 		Ordon_Sword		= 0b000000000000000000100,//0x28
-		Shadow_Crystal	= 0b000000000000000000010,//0x32 
+		Master_Sword	= 0b000000000000000000010,//0x29 locked not randomized yet (implies transformation too)
 		Shield			= 0b000000000000000000001,//0x2C
 	};
 

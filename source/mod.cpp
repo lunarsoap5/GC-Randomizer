@@ -70,7 +70,6 @@ namespace mod
 		game_patch::assemblyOverwrites();
 		game_patch::increaseWalletSize();
 		game_patch::increaseClimbSpeed();
-		
 		/*
 		 * Causes issues right now (argarok cannot be beaten)
 		 * game_patch::removeIBLimit();
@@ -120,6 +119,13 @@ namespace mod
 		// Debug
 		page = hudConsole->addPage("Debug Info");
 		
+		hudConsole->addOption(page, "Bugsanity?", &chestRandomizer->isBugsanityEnabled, 0x1);
+		hudConsole->addOption(page, "Poesanity?", &chestRandomizer->isPoesanityEnabled, 0x1);
+		hudConsole->addOption(page, "Shopsanity?", &chestRandomizer->isShopsanityEnabled, 0x1);	
+		hudConsole->addOption(page, "Dungeon Items?", &chestRandomizer->areDungeonItemsRandomized, 0x1);
+		hudConsole->addOption(page, "Key Shuffle?", &chestRandomizer->isKeysanityEnabled, 0x1);
+		hudConsole->addOption(page, "Skybooksanity?", &Singleton::getInstance()->shuffledSkybook, 0x1);
+		
 		
 		
 		hudConsole->addWatch(page, "Function:", &lastItemFunc, 's', WatchInterpretation::_str);
@@ -160,19 +166,6 @@ namespace mod
 		hudConsole->addWatch(page, "Reverse ID:", &checkReverseSearchID, 'd', WatchInterpretation::_u16);
 		hudConsole->addWatch(page, "Search Result:", &checkSearchResults, 's', WatchInterpretation::_str);
 		hudConsole->addWatch(page, "Reverse Result:", &checkReverseSearchResults, 's', WatchInterpretation::_str);
-
-		//Shuffled Checks
-		page = hudConsole->addPage("Shuffled Checks");
-		
-		hudConsole->addOption(page, "Bugsanity?", &chestRandomizer->isBugsanityEnabled, 0x1);
-		hudConsole->addOption(page, "Poesanity?", &chestRandomizer->isPoesanityEnabled, 0x1);
-		hudConsole->addOption(page, "Shopsanity?", &chestRandomizer->isShopsanityEnabled, 0x1);	
-		hudConsole->addOption(page, "Dungeon Items?", &chestRandomizer->areDungeonItemsRandomized, 0x1);
-		hudConsole->addOption(page, "Key Shuffle?", &chestRandomizer->isKeysanityEnabled, 0x1);
-		hudConsole->addOption(page, "Sky Character?", &Singleton::getInstance()->shuffledSkybook, 0x1);
-		hudConsole->addOption(page, "Heart Pieces?", &chestRandomizer->areHeartPiecesRandomized, 0x1);
-		hudConsole->addOption(page, "Rupees?", &chestRandomizer->areRupeesRandomized, 0x1);
-		hudConsole->addOption(page, "Ammo Refills?", &chestRandomizer->areAmmoRandomized, 0x1);
 		
 		// Game info 1
 		page = hudConsole->addPage("Skips 1");
@@ -211,7 +204,7 @@ namespace mod
 		hudConsole->addOption(page, "No Shop Bottl?", &allowBottleItemsShopAnytime, 0x1);
 		hudConsole->addOption(page, "Fast transform?", &enableQuickTransform, 0x1);
 		hudConsole->addOption(page, "Skip Intro?", &Singleton::getInstance()->isIntroSkipped, 0x1);
-		//hudConsole->addOption(page, "Midna ToD Skip?", &Singleton::getInstance()->midnaTimeControl, 0x1);
+		hudConsole->addOption(page, "Midna ToD Skip?", &Singleton::getInstance()->midnaTimeControl, 0x1);
 		//color
 		/*page = hudConsole->addPage("Tunic Color1");
 
@@ -260,7 +253,7 @@ namespace mod
 		
 		//event info
 		page = hudConsole->addPage("Event Info");
-		//hudConsole->addOption(page, "Coords as hex?", &coordsAreInHex, 0x1);
+		hudConsole->addOption(page, "Coords as hex?", &coordsAreInHex, 0x1);
 				
 		hudConsole->addWatch(page, "CurrentEventID:", &gameInfo.eventSystem.currentEventID, 'x', WatchInterpretation::_u8);
 		hudConsole->addWatch(page, "NextEventID:", &gameInfo.eventSystem.nextEventID, 'x', WatchInterpretation::_u8);
@@ -477,9 +470,6 @@ namespace mod
 		//Skip MDH After Lanayru
 		eventListener->addLoadEvent(stage::allStages[Stage_Lake_Hylia], 0x1, 0x14, 0xFF, 0xFF, game_patch::skipMDH, event::LoadEventAccuracy::Stage_Room_Spawn);
 
-		//Set Lantern gotten from Coro Flag
-		eventListener->addLoadEvent(stage::allStages[Stage_Faron_Woods], 0xFF, 0x0, 0xFF, 0xFF, game_patch::setLanternFlag, event::LoadEventAccuracy::Stage_Room_Spawn);
-
 
 
 		//   =================
@@ -498,34 +488,9 @@ namespace mod
 		actorCommonLayerInit_trampoline = patch::hookFunction(tp::d_stage::actorCommonLayerInit,
 			[](void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, int unk3, void* unk4)
 		{
-			if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Faron_Woods]))
-			{
-				if (Singleton::getInstance()->hasActorCommonLayerRan <= 4)
-				{
-					global::modPtr->doCustomTRESActor(mStatus_roomControl);
-				}
-			}
-			else if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Hyrule_Field]) && gameInfo.nextStageVars.nextSpawnPoint == 0xFC)
-			{
-				if (Singleton::getInstance()->hasActorCommonLayerRan <= 2)
-				{
-					global::modPtr->doCustomTRESActor(mStatus_roomControl);
-				}
-			}
-			else
-			{
-				global::modPtr->doCustomTRESActor(mStatus_roomControl);
-			}
+			global::modPtr->doCustomTRESActor(mStatus_roomControl);
+
 			return global::modPtr->actorCommonLayerInit_trampoline(mStatus_roomControl, chunkTypeInfo, unk3, unk4);
-		}
-		);
-
-
-		putSave_trampoline = patch::hookFunction(tp::d_save::putSave,
-			[](tp::d_com_inf_game::GameInfo* gameInfoPtr, s32 areaID)
-		{
-			Singleton::getInstance()->hasActorCommonLayerRan = 0;
-			return global::modPtr->putSave_trampoline(gameInfoPtr, areaID);
 		}
 		);
 
@@ -843,7 +808,7 @@ namespace mod
 		}
 		else if (tp::d_a_alink::linkStatus)
 		{
-			if (enableQuickTransform == 1 && gameInfo.rButtonText == 0 && ((((gameInfo.aButtonText == 0x24) && gameInfo.eventSystem.eventFlag == 0) && tp::d_a_alink::linkStatus->status == 0x1)) &&
+			if (enableQuickTransform == 1 && gameInfo.rButtonText == 0 && ((((gameInfo.aButtonText == 0x24) && gameInfo.eventSystem.eventFlag == 0) && tp::d_a_alink::linkStatus)) &&
 				(gameInfo.scratchPad.eventBits[0xD] & 0x4) != 0 && controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_Z))
 			{
 				// Make sure Link is actually loaded
@@ -858,7 +823,7 @@ namespace mod
 				}
 			}
 			/*else if (tp::d_a_alink::linkStatus->status == 0x5 && gameInfo.aButtonText == 0x23 && controller::checkForButtonInputSingleFrame(controller::PadInputs::Button_Z) && Singleton::getInstance()->midnaTimeControl == 1 &&
-				chestRandomizer->isStageTOD())
+				!(chestRandomizer->isStageBoss() || chestRandomizer->isStageGrotto() || chestRandomizer->isStageDungeon() || chestRandomizer->isStageInterior() || chestRandomizer->isStageCave() || chestRandomizer->isStageSpecial()))
 			{
 				if (gameInfo.scratchPad.skyAngle >= 180 && gameInfo.scratchPad.skyAngle <= 359)
 				{
@@ -1859,9 +1824,9 @@ namespace mod
 			}
 
 			/// Create the actors
-			global::modPtr->actorCommonLayerInit_trampoline(mStatus_roomControl, &chunkInfo, 0, nullptr);	
+			global::modPtr->actorCommonLayerInit_trampoline(mStatus_roomControl, &chunkInfo, 0, nullptr);
+
 			delete[] TRES;
-			Singleton::getInstance()->hasActorCommonLayerRan++;
 		}
 
 		delete[] checks;

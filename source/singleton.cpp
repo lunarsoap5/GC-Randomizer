@@ -34,7 +34,6 @@ namespace mod
 		isTwilightSkipped = 1;
 		diababaMusicFixed = 0;
 		midnaTimeControl = 1;
-		hasActorCommonLayerRan = 0;
 	}
 
 } 
