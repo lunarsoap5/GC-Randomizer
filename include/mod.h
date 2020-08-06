@@ -221,6 +221,10 @@ namespace mod
 
 			void fixFTTotemMonkey();
 
+			void(*bgmStart_trampoline)(void* Z2SeqMgr, u32 bgmId, u32 unk3, s32 unk4) = nullptr;
+			void(*subBgmStart_trampoline)(void* Z2SeqMgr, u32 bgmId) = nullptr;
+			void(*bgmStreamPrepare_trampoline)(void* Z2SeqMgr, u32 audioStreamingId) = nullptr;
+
 			//void setFieldModels();
 
 			//bool procActorCommonLayerInit(void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, s32 unk3, void* unk4);

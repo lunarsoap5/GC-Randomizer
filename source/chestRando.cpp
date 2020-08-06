@@ -116,6 +116,66 @@ namespace mod
 			}
 		}
 
+		// Place layer checks
+		for (u16 i = 0; i < totalChecks; i++)
+		{
+			destCheck = &item::checks[i];
+
+			if (!destCheck->source)
+			{
+				// Free slot
+				if (destCheck->destLayer != 0xFF)
+				{
+					// Layer check	
+					if (destCheck->itemID == items::Item::Ordon_Sword)
+					{
+						sourceCheck = findSource(destCheck->destLayer, 0x1, destCheck);//to prevent woodensword from being overwritten before losing it			
+					}
+					else if (destCheck->itemID == items::Item::Ordon_Shield || destCheck->itemID == items::Item::Wooden_Shield || destCheck->itemID == items::Item::Hylian_Shield)
+					{
+						sourceCheck = findSource(destCheck->destLayer, 0x2, destCheck);//to prevent softlocking the game when you try to get ordon shield check		
+					}
+					else if (destCheck->itemID == items::Item::Zora_Armor || destCheck->itemID == items::Item::Magic_Armor)
+					{
+						sourceCheck = findSource(destCheck->destLayer, 0x2, destCheck);//to prevent softlocking the game when you try to get ordon shield check		
+					}
+					else if (isProgressiveEnabled == 0)
+					{
+						if (destCheck->itemID == items::Item::Clawshots)
+						{
+							sourceCheck = findSource(destCheck->destLayer, 0x7, destCheck);//to prevent Clawshots from being overwritten by Clawshot
+						}
+						else if (destCheck->itemID == items::Item::Big_Quiver)
+						{
+							sourceCheck = findSource(destCheck->destLayer, 0x4, destCheck);//to prevent bow from being overwritten
+						}
+						else if (destCheck->itemID == items::Item::Giant_Quiver)
+						{
+							sourceCheck = findSource(destCheck->destLayer, 0x8, destCheck);//to prevent bow from being overwritten
+						}
+						else if (destCheck->itemID == items::Item::Giant_Wallet)
+						{
+							sourceCheck = findSource(destCheck->destLayer, 0x7, destCheck);//to prevent overwriting giant wallet with big wallet
+						}
+						else if (destCheck->itemID == items::Item::Giant_Bomb_Bag)
+						{
+							sourceCheck = findSource(destCheck->destLayer, 0x6, destCheck);//to prevent getting a 4th bag and possibly crashing the game
+						}
+						else
+						{
+							sourceCheck = findSource(destCheck->destLayer, 0x0, destCheck);
+						}
+					}
+					else
+					{
+						sourceCheck = findSource(destCheck->destLayer, 0x0, destCheck);
+					}
+					placeCheck(sourceCheck, destCheck);
+					layerCheckCount++;
+				}
+			}
+		}
+
 		
 
 		// Place remaining
@@ -153,6 +213,37 @@ namespace mod
 
 		// Reset seed if the player wanted to lock it (otherwise it advances anyways)
 		tools::randomSeed = currentSeed;
+
+		// Reinitialize bgmIndexArray
+		u8* tempBgmIndexArray = array::bgmIndexArray;
+		u32 bgmIndexArrayTotalElements = sizeof(array::bgmIndexArray) / sizeof(array::bgmIndexArray[0]);
+		tools::fillArrayIncrement(tempBgmIndexArray, bgmIndexArrayTotalElements, 1);
+
+		// Shuffle bgmIndexArray
+		tools::shuffleByteArray(tempBgmIndexArray, bgmIndexArrayTotalElements);
+
+		for (u32 i = 0; i < bgmIndexArrayTotalElements; i++)
+		{
+			if (!checkIfBgmIdIsValid(array::bgmIndexArray[i]))
+			{
+				u8 tempId;
+				u8 maxId = 0xAA;
+				do
+				{
+					tempId = tools::getRandom(maxId);
+				} while (!checkIfBgmIdIsValid(tempId));
+
+				array::bgmIndexArray[i] = tempId;
+			}
+		}
+
+		// Reinitialize audioStreamingIndexArray
+		u8* tempAudioStreamingIndexArray = array::audioStreamingIndexArray;
+		u32 audioStreamingIndexArrayTotalElements = sizeof(array::audioStreamingIndexArray) / sizeof(array::audioStreamingIndexArray[0]);
+		tools::fillArrayIncrement(tempAudioStreamingIndexArray, audioStreamingIndexArrayTotalElements, 1);
+
+		// Shuffle audioStreamingIndexArray
+		tools::shuffleByteArray(tempAudioStreamingIndexArray, audioStreamingIndexArrayTotalElements);
 	}
 
 	void ChestRandomizer::placeCheck(item::ItemCheck* sourceCheck, item::ItemCheck* destCheck)
@@ -238,9 +329,33 @@ namespace mod
 				result = true;
 			}
 			break;
+		
+		case item::ItemType::HeartPiece:
+			// Map, compass, big key
+			if (areHeartPiecesRandomized == 0)
+			{
+				result = true;
+			}
+			break;
+		
+		case item::ItemType::Rupee:
+			// Map, compass, big key
+			if (areRupeesRandomized == 0)
+			{
+				result = true;
+			}
+			break;
+
+		case item::ItemType::Ammo:
+			// Map, compass, big key
+			if (areAmmoRandomized == 0)
+			{
+				result = true;
+			}
+			break;
 
 		case item::ItemType::Story:
-			if (Singleton::getInstance()->areStoryItemsRandomized == 0)
+			if (check->itemID != items::Item::Aurus_Memo && check->itemID != items::Item::Asheis_Sketch)
 			{
 				result = true;
 			}
@@ -288,6 +403,10 @@ namespace mod
 			}
 			break;
 
+		case items::Item::Fishing_Rod:
+			result = true;
+			break;
+
 		case items::Item::Ancient_Sky_Book_empty:
 			if (isProgressiveEnabled == 0)
 			{
@@ -309,9 +428,6 @@ namespace mod
 			}
 			break;
 
-		case items::Item::Gate_Keys:
-			result = true;
-			break;
 
 		}
 
@@ -2209,5 +2325,18 @@ namespace mod
 		{
 			return true;
 		}
+	}
+
+	bool ChestRandomizer::checkIfBgmIdIsValid(u8 bgmId)
+	{
+		u32 invalidBgmIndexArraySize = sizeof(array::invalidBgmIndexArray) / sizeof(array::invalidBgmIndexArray[0]);
+		for (u32 i = 0; i < invalidBgmIndexArraySize; i++)
+		{
+			if (bgmId == array::invalidBgmIndexArray[i])
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 }
