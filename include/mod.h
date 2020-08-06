@@ -251,12 +251,13 @@ namespace mod
 			void (*putSave_trampoline)(tp::d_com_inf_game::GameInfo* gameInfoPtr, s32 areaID) = nullptr;
 
 			// Item functions
-			s32 (*createItemForPresentDemo_trampoline)(const float pos[3], s32 item, u8 unk3, s32 unk4, s32 unk5, const float unk6[3], const float unk7[3]) = nullptr;
-			s32 (*createItemForTrBoxDemo_trampoline)(const float pos[3], s32 item, s32 unk3, s32 unk4, const float unk5[3], const float unk6[3]) = nullptr;
-			s32 (*createItemForBoss_trampoline)(const float pos[3], s32 item, s32 unk3, const float unk4[3], const float unk5[3], float unk6, float unk7, s32 unk8) = nullptr;
-			s32 (*createItemForMidBoss_trampoline)(const float pos[3], s32 item, s32 unk3, const float unk4[3], const float unk5[3], s32 unk6, s32 unk7) = nullptr;
-			s32 (*createItemForDirectGet_trampoline)(const float pos[3], s32 item, s32 unk3, const float unk4[3], const float unk5[3], float unk6, float unk7) = nullptr;
-			s32(*createItemForSimpleDemo_trampoline)(const float pos[3], s32 item, s32 unk3, const float unk4[3], const float unk5[3], float unk6, float unk7) = nullptr;
+			s32(*createItemForPresentDemo_trampoline)(const float pos[3], s32 item, u8 unk3, s32 unk4, s32 unk5, const s16 rot[3], const float scale[3]) = nullptr;
+			s32(*createItemForTrBoxDemo_trampoline)(const float pos[3], s32 item, s32 itemPickupFlag, s32 roomNo, const s16 rot[3], const float scale[3]) = nullptr;
+			s32(*createItemForBoss_trampoline)(const float pos[3], s32 item, s32 roomNo, const s16 rot[3], const float scale[3], float unk6, float unk7, s32 parameters) = nullptr;
+			s32(*createItemForMidBoss_trampoline)(const float pos[3], s32 item, s32 roomNo, const s16 rot[3], const float scale[3], s32 unk6, s32 itemPickupFlag) = nullptr;
+			s32(*createItemForDirectGet_trampoline)(const float pos[3], s32 item, s32 unk3, const s16 rot[3], const float scale[3], float unk6, float unk7) = nullptr;
+			s32(*createItemForSimpleDemo_trampoline)(const float pos[3], s32 item, s32 unk3, const s16 rot[3], const float scale[3], float unk6, float unk7) = nullptr;
+
 			s32(*createItem_trampoline)(const float pos[3], s32 item, s32 unk3, s32 unk4, const float unk5[3], const float unk6[3], s32 unk7) = nullptr;
 
 			void(*setItemBombNumCount_trampoline)(u32 unk1, u8 bagNb, short amount) = nullptr;

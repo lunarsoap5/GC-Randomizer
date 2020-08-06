@@ -49,7 +49,6 @@ namespace mod
 	mod::HUDConsole* global::hudConsolePtr = nullptr;
 	int num_frames = 120;
 	int frame_counter = 0;
-	bool hasLanternColorChange = false;
 
 	void main()
 	{
@@ -218,7 +217,7 @@ namespace mod
 		hudConsole->addOption(page, "Early PoT?", &Singleton::getInstance()->isEarlyPoTEnabled, 0x1);
 		hudConsole->addOption(page, "Open HC?", &Singleton::getInstance()->isEarlyHCEnabled, 0x1);
 		//color
-		/*page = hudConsole->addPage("Tunic Color1");
+		page = hudConsole->addPage("Tunic Color1");
 
 		hudConsole->addOption(page, "Top toggle:", &topToggle, 0x1);
 		hudConsole->addOption(page, "Red top:", &redTop, 0xFF);
@@ -227,7 +226,7 @@ namespace mod
 		hudConsole->addOption(page, "Bottom toggle:", &bottomToggle, 0x1);
 		hudConsole->addOption(page, "Red bottom:", &redBottom, 0xFF);
 		hudConsole->addOption(page, "Green bottom:", &greenBottom, 0xFF);
-		hudConsole->addOption(page, "Blue bottom:", &blueBottom, 0xFF); */
+		hudConsole->addOption(page, "Blue bottom:", &blueBottom, 0xFF); 
 
 			//buttons
 			/*page = hudConsole->addPage("Button texts");
@@ -268,6 +267,7 @@ namespace mod
 		//hudConsole->addOption(page, "Coords as hex?", &coordsAreInHex, 0x1);
 		hudConsole->addOption(page, "GM Story Flag?", &Singleton::getInstance()->isGMStoryPatch, 0x1);
 		hudConsole->addOption(page, "Start w/ Crstl?", &Singleton::getInstance()->startWithCrystal, 0x1);
+		hudConsole->addOption(page, "Shuffle BGM?", &Singleton::getInstance()->isCustomMusicEnabled, 0x1);
 				
 		hudConsole->addWatch(page, "CurrentEventID:", &gameInfo.eventSystem.currentEventID, 'x', WatchInterpretation::_u8);
 		hudConsole->addWatch(page, "NextEventID:", &gameInfo.eventSystem.nextEventID, 'x', WatchInterpretation::_u8);
@@ -582,7 +582,7 @@ namespace mod
 		);
 
 		createItemForPresentDemo_trampoline = patch::hookFunction(tp::f_op_actor_mng::createItemForPresentDemo,
-			[](const float pos[3], s32 item, u8 unk3, s32 unk4, s32 unk5, const float unk6[3], const float unk7[3])
+			[](const float pos[3], s32 item, u8 unk3, s32 unk4, s32 unk5, const s16 rot[3], const float scale[3])
 			{
 				// Call replacement function
 				/*char txt[50];
@@ -591,59 +591,59 @@ namespace mod
 
 				item = global::modPtr->procItemCreateFunc(pos, item, "createItemForPresentDemo");
 
-				return global::modPtr->createItemForPresentDemo_trampoline(pos, item, unk3, unk4, unk5, unk6, unk7);
+				return global::modPtr->createItemForPresentDemo_trampoline(pos, item, unk3, unk4, unk5, rot, scale);
 			}
 		);
 			
 
 		createItemForTrBoxDemo_trampoline = patch::hookFunction(tp::f_op_actor_mng::createItemForTrBoxDemo,
-			[](const float pos[3], s32 item, s32 unk3, s32 unk4, const float unk5[3], const float unk6[3])
+			[](const float pos[3], s32 item, s32 itemPickupFlag, s32 roomNo, const s16 rot[3], const float scale[3])
 			{
 				// Call replacement function
 				item = global::modPtr->procItemCreateFunc(pos, item, "createItemForTrBoxDemo");
 
-				return global::modPtr->createItemForTrBoxDemo_trampoline(pos, item, unk3, unk4, unk5, unk6);
+				return global::modPtr->createItemForTrBoxDemo_trampoline(pos, item, itemPickupFlag, roomNo, rot, scale);
 			}
 		);
 		//this function is called when the heart spawns, not when link gets it		
 		//createItemForTrBoxDemo is called when heart container is gotten
 		createItemForBoss_trampoline = patch::hookFunction(tp::f_op_actor_mng::createItemForBoss,
-			[](const float pos[3], s32 item, s32 unk3, const float unk4[3], const float unk5[3], float unk6, float unk7, s32 unk8)
+			[](const float pos[3], s32 item, s32 roomNo, const s16 rot[3], const float scale[3], float unk6, float unk7, s32 parameters)
 			{
 				// Call replacement function
 				item = global::modPtr->procItemCreateFunc(pos, item, "createItemForBoss");
 
-				return global::modPtr->createItemForBoss_trampoline(pos, item, unk3, unk4, unk5, unk6, unk7, unk8);
+				return global::modPtr->createItemForBoss_trampoline(pos, item, roomNo, rot, scale, unk6, unk7, parameters);
 			}
 		);
 
 		createItemForMidBoss_trampoline = patch::hookFunction(tp::f_op_actor_mng::createItemForMidBoss,
-			[](const float pos[3], s32 item, s32 unk3, const float unk4[3], const float unk5[3], s32 unk6, s32 unk7)
+			[](const float pos[3], s32 item, s32 roomNo, const s16 rot[3], const float scale[3], s32 unk6, s32 itemPickupFlag)
 			{
 				// Call replacement function
 				item = global::modPtr->procItemCreateFunc(pos, item, "createItemForMidBoss");
 
-				return global::modPtr->createItemForMidBoss_trampoline(pos, item, unk3, unk4, unk5, unk6, unk7);
+				return global::modPtr->createItemForMidBoss_trampoline(pos, item, roomNo, rot, scale, unk6, itemPickupFlag);
 			}
 		);
 
 		createItemForDirectGet_trampoline = patch::hookFunction(tp::f_op_actor_mng::createItemForDirectGet,
-			[](const float pos[3], s32 item, s32 unk3, const float unk4[3], const float unk5[3], float unk6, float unk7)
+			[](const float pos[3], s32 item, s32 unk3, const s16 rot[3], const float scale[3], float unk6, float unk7)
 			{
 				// Call replacement function
 				item = global::modPtr->procItemCreateFunc(pos, item, "createItemForDirectGet");
 
-				return global::modPtr->createItemForDirectGet_trampoline(pos, item, unk3, unk4, unk5, unk6, unk7);
+				return global::modPtr->createItemForDirectGet_trampoline(pos, item, unk3, rot, scale, unk6, unk7);
 			}
 		);
 
 		createItemForSimpleDemo_trampoline = patch::hookFunction(tp::f_op_actor_mng::createItemForSimpleDemo,
-			[](const float pos[3], s32 item, s32 unk3, const float unk4[3], const float unk5[3], float unk6, float unk7)
+			[](const float pos[3], s32 item, s32 unk3, const s16 rot[3], const float scale[3], float unk6, float unk7)
 			{
 				// Call replacement function
 				item = global::modPtr->procItemCreateFunc(pos, item, "createItemForSimpleDemo");
 
-				return global::modPtr->createItemForSimpleDemo_trampoline(pos, item, unk3, unk4, unk5, unk6, unk7);
+				return global::modPtr->createItemForSimpleDemo_trampoline(pos, item, unk3, rot, scale, unk6, unk7);
 			}
 		);
 
@@ -1981,14 +1981,14 @@ namespace mod
 			
 			if (innerRed != 0xFF && innerRed != 0x0)
 			{
-				innerRed = innerRed + 0xF;
+				innerRed = innerRed + 0xD;
 			}
 			if (innerRed == 0xFF || innerRed == 0x0)
 			{
 				innerRed = 0x0;
 				if (innerGreen != 0xFF && innerGreen != 0x0)
 				{
-					innerGreen = innerGreen + 0xF;
+					innerGreen = innerGreen + 0xD;
 				}
 			}
 			if (innerRed == 0xFF || innerRed == 0x0)
@@ -1998,7 +1998,7 @@ namespace mod
 					innerGreen = 0x0;
 					if (innerBlue != 0xFF)
 					{
-						innerBlue = innerBlue + 0xF;
+						innerBlue = innerBlue + 0xD;
 					}
 				}
 			}
@@ -2016,14 +2016,14 @@ namespace mod
 			}
 			if (outerRed != 0xFF && outerRed != 0x0)
 			{
-				outerRed = outerRed + 0xF;
+				outerRed = outerRed + 0xD;
 			}
 			if (outerRed == 0xFF || outerRed == 0x0)
 			{
 				outerRed = 0x0;
 				if (outerGreen != 0xFF && outerGreen != 0x0)
 				{
-					outerGreen = outerGreen + 0xF;
+					outerGreen = outerGreen + 0xD;
 				}
 			}
 			if (outerRed == 0xFF || outerRed == 0x0)
@@ -2033,7 +2033,7 @@ namespace mod
 					outerGreen = 0x0;
 						if (outerBlue != 0xFF)
 						{
-							outerBlue = outerBlue + 0xF;
+							outerBlue = outerBlue + 0xD;
 						}
 				}
 			}

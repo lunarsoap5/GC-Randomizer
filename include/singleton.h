@@ -37,6 +37,7 @@ namespace mod
 		u8 isEarlyHCEnabled;
 		u8 startWithCrystal;
 		u8 isRainbowLanternEnabled;
+		u8 isCustomMusicEnabled;
 		
 		//dungeon flags
 		u8 hasFTBeenBeaten;

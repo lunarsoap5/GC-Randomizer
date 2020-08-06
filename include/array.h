@@ -22,6 +22,7 @@ namespace mod::array
 
 		extern u8 bgmIndexArray[0xAA];
 		extern u8 audioStreamingIndexArray[0x81];
-		extern u8 invalidBgmIndexArray[72];
+		extern u8 invalidBgmIndexArray[0x51];
+		extern bool checkIfBgmIdIsValid(u8 bgmId);
 	}
 }

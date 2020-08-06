@@ -214,36 +214,39 @@ namespace mod
 		// Reset seed if the player wanted to lock it (otherwise it advances anyways)
 		tools::randomSeed = currentSeed;
 
-		// Reinitialize bgmIndexArray
-		u8* tempBgmIndexArray = array::bgmIndexArray;
-		u32 bgmIndexArrayTotalElements = sizeof(array::bgmIndexArray) / sizeof(array::bgmIndexArray[0]);
-		tools::fillArrayIncrement(tempBgmIndexArray, bgmIndexArrayTotalElements, 1);
-
-		// Shuffle bgmIndexArray
-		tools::shuffleByteArray(tempBgmIndexArray, bgmIndexArrayTotalElements);
-
-		for (u32 i = 0; i < bgmIndexArrayTotalElements; i++)
+		if (Singleton::getInstance()->isCustomMusicEnabled == 0x1)
 		{
-			if (!checkIfBgmIdIsValid(array::bgmIndexArray[i]))
+			// Reinitialize bgmIndexArray
+			u8* tempBgmIndexArray = array::bgmIndexArray;
+			u32 bgmIndexArrayTotalElements = sizeof(array::bgmIndexArray) / sizeof(array::bgmIndexArray[0]);
+			tools::fillArrayIncrement(tempBgmIndexArray, bgmIndexArrayTotalElements, 1);
+
+			// Shuffle bgmIndexArray
+			tools::shuffleByteArray(tempBgmIndexArray, bgmIndexArrayTotalElements);
+
+			for (u32 i = 0; i < bgmIndexArrayTotalElements; i++)
 			{
-				u8 tempId;
-				u8 maxId = 0xAA;
-				do
+				if (!array::checkIfBgmIdIsValid(array::bgmIndexArray[i]))
 				{
-					tempId = tools::getRandom(maxId);
-				} while (!checkIfBgmIdIsValid(tempId));
+					u8 tempId;
+					u8 maxId = 0xAA;
+					do
+					{
+						tempId = tools::getRandomBgm(maxId);
+					} while (!array::checkIfBgmIdIsValid(tempId));
 
-				array::bgmIndexArray[i] = tempId;
+					array::bgmIndexArray[i] = tempId;
+				}
 			}
+
+			// Reinitialize audioStreamingIndexArray
+			u8* tempAudioStreamingIndexArray = array::audioStreamingIndexArray;
+			u32 audioStreamingIndexArrayTotalElements = sizeof(array::audioStreamingIndexArray) / sizeof(array::audioStreamingIndexArray[0]);
+			tools::fillArrayIncrement(tempAudioStreamingIndexArray, audioStreamingIndexArrayTotalElements, 1);
+
+			// Shuffle audioStreamingIndexArray
+			tools::shuffleByteArray(tempAudioStreamingIndexArray, audioStreamingIndexArrayTotalElements);
 		}
-
-		// Reinitialize audioStreamingIndexArray
-		u8* tempAudioStreamingIndexArray = array::audioStreamingIndexArray;
-		u32 audioStreamingIndexArrayTotalElements = sizeof(array::audioStreamingIndexArray) / sizeof(array::audioStreamingIndexArray[0]);
-		tools::fillArrayIncrement(tempAudioStreamingIndexArray, audioStreamingIndexArrayTotalElements, 1);
-
-		// Shuffle audioStreamingIndexArray
-		tools::shuffleByteArray(tempAudioStreamingIndexArray, audioStreamingIndexArrayTotalElements);
 	}
 
 	void ChestRandomizer::placeCheck(item::ItemCheck* sourceCheck, item::ItemCheck* destCheck)
@@ -2325,18 +2328,5 @@ namespace mod
 		{
 			return true;
 		}
-	}
-
-	bool ChestRandomizer::checkIfBgmIdIsValid(u8 bgmId)
-	{
-		u32 invalidBgmIndexArraySize = sizeof(array::invalidBgmIndexArray) / sizeof(array::invalidBgmIndexArray[0]);
-		for (u32 i = 0; i < invalidBgmIndexArraySize; i++)
-		{
-			if (bgmId == array::invalidBgmIndexArray[i])
-			{
-				return false;
-			}
-		}
-		return true;
 	}
 }

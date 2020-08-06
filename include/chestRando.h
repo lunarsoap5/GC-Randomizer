@@ -144,7 +144,5 @@ namespace mod
 			 * check if the check gotten in a grotto is the right one
 			 */
 			bool isGrottoCheckOk(u16 checkID);
-
-			bool checkIfBgmIdIsValid(u8 bgmId);
 	};
 }

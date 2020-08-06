@@ -11,6 +11,8 @@ namespace mod::tools
 	{
 		extern u64 randomSeed;
 
+		extern u64 bgmSeed;
+
 		/**
 		 * Generates a simple random number (not perfectly random but good enough for most purposes)
 		 * Note: It's best to use with a clock that advances randomSeed
@@ -20,6 +22,10 @@ namespace mod::tools
 		 * @returns A random integer between 0 and max, excluding max
 		 */
 		u32 getRandom(u32 max);
+
+		u32 getRandomMain(u32 max, u64* seed);
+
+		u32 getRandomBgm(u32 max);
 
 		/**
 		 * Triggers the generator function which is a member function
