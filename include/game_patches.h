@@ -227,6 +227,7 @@ namespace mod::game_patch
 	void setCiTSDungeonFlag();
 	void setCiTSBossFlag();
 
+	void changeFieldModels();
 	void modifyFieldItems(tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo);
 
 }
