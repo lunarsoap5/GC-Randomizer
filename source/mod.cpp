@@ -73,6 +73,7 @@ namespace mod
 		game_patch::assemblyOverwrites();
 		game_patch::increaseWalletSize();
 		game_patch::increaseClimbSpeed();
+		game_patch::changeFieldItems();
 		
 		
 		// Causes issues right now (argarok cannot be beaten)

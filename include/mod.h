@@ -4,6 +4,7 @@
 #include <tp/d_com_inf_game.h>
 #include <tp/DynamicLink.h>
 #include <tp/dzx.h>
+#include <tp/d_stage.h>
 #include "eventListener.h"
 #include "chestRando.h"
 #include "HUDConsole.h"
@@ -31,7 +32,7 @@ namespace mod
 
 			// Options
 			u8 customSeed; // Use custom seed?
-			u8 randoEnabled; // Randomize chests?
+			static u8 randoEnabled; // Randomize chests?
 			u8 truePause; // Disable controls during console?
 			u8 inputBuffering; // En/Disable buffering
 

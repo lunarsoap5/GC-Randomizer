@@ -2,6 +2,7 @@
 
 #include "defines.h"
 #include <tp/d_com_inf_game.h>
+#include <tp/d_stage.h>
 
 
 
@@ -225,4 +226,11 @@ namespace mod::game_patch
 	void setToTBossFlag();
 	void setCiTSDungeonFlag();
 	void setCiTSBossFlag();
+
+	void changeFieldItems();
+
+	bool(*actorCommonLayerInit_trampoline)(void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, int unk3, void* unk4) = nullptr;
+
+	bool(*actorInit_trampoline)(void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, int unk3, void* unk4) = nullptr;
+
 }

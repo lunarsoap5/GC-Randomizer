@@ -1,6 +1,7 @@
 #pragma once
 
 #include "defines.h"
+#include "mod.h"
 
 namespace mod::array
 {
@@ -23,6 +24,8 @@ namespace mod::array
 		extern u8 bgmIndexArray[0xAA];
 		extern u8 audioStreamingIndexArray[0x81];
 		extern u8 invalidBgmIndexArray[0x51];
+		extern u8 bgmFanfareArray[0x8];
+		extern bool checkIfBgmIdIsFanfare(u8 bgmId);
 		extern bool checkIfBgmIdIsValid(u8 bgmId);
 	}
 }

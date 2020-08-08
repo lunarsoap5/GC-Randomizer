@@ -1,5 +1,7 @@
 #include "array.h"
 #include "memory.h"
+#include "mod.h"
+#include "singleton.h"
 
 #include <cstring>
 
@@ -105,8 +107,25 @@ namespace mod::array
 		0xA7
 	};
 
+	u8 bgmFanfareArray[0x8] =
+	{
+		0xA,
+		0xB,
+		0x81,
+		0x82,
+		0x83,
+		0x99,
+		0xA0,
+		0xA6
+	};
+
 	u32 getRandomBgmId(u32 originalId)
 	{
+		if (mod::Mod::randoEnabled == 0 || Singleton::getInstance()->isCustomMusicEnabled == 0x0)
+		{
+			return originalId;
+		}
+
 		// Make sure the original id is valid
 		if ((originalId < 0x1000000) || (originalId > 0x10000A9))
 		{
@@ -122,6 +141,11 @@ namespace mod::array
 
 	u32 getRandomAudioStreamId(u32 originalId)
 	{
+		if (mod::Mod::randoEnabled == 0 || Singleton::getInstance()->isCustomMusicEnabled == 0x0)
+		{
+			return originalId;
+		}
+
 		// Make sure the original id is valid
 		if ((originalId < 0x2000000) || (originalId > 0x2000080))
 		{
@@ -146,5 +170,18 @@ namespace mod::array
 			}
 		}
 		return true;
+	}
+
+	bool checkIfBgmIdIsFanfare(u8 bgmId)
+	{
+		u32 bgmFanfareArraySize = sizeof(array::bgmFanfareArray) / sizeof(array::bgmFanfareArray[0]);
+		for (u32 i = 0; i < bgmFanfareArraySize; i++)
+		{
+			if (bgmId == array::bgmFanfareArray[i])
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }

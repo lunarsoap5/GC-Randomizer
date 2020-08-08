@@ -8,7 +8,7 @@ namespace tp::d_item_data
 
 	struct ItemResource // d_item_data.h
 	{
-		const char* arcName;
+		char* arcName;
 		s16 modelResIdx;
 		s16 btkResIdx;
 		s16 bckResIdx;
@@ -22,7 +22,7 @@ namespace tp::d_item_data
 
 	struct FieldItemRes // d_item_data.h
 	{
-		const char* arcName;
+		char* arcName;
 		s16 modelResIdx;
 		s16 bckAnmResIdx;
 		s16 brkAnmResIdx;
@@ -38,6 +38,10 @@ namespace tp::d_item_data
 		u8 mCollisionR;
 		u8 mFlags;
 	} __attribute__((__packed__));
+
+	
+
+	
 
 	static_assert(sizeof(ItemResource) == 0x18);
 	static_assert(sizeof(FieldItemRes) == 0x10);
