@@ -1124,7 +1124,7 @@ namespace mod::game_patch
 		}
 	}
 
-	void changeFieldItems()
+	void modifyFieldItems(tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo)
 	{
 		tp::d_item_data::ItemResource* itemResPtr = &tp::d_item_data::item_resource[0];
 		tp::d_item_data::FieldItemRes* fieldItemResPtr = &tp::d_item_data::field_item_res[0];
@@ -1157,76 +1157,46 @@ namespace mod::game_patch
 		u32 address_US = 0x8015CF64;
 		*reinterpret_cast<u32*>(address_US) = 0x48000018; // b 0x18
 
-		actorCommonLayerInit_trampoline = patch::hookFunction(tp::d_stage::actorCommonLayerInit,
-			[](void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, int unk3, void* unk4)
-			{
-			tp::d_stage::Item* itemActrPtr = reinterpret_cast<tp::d_stage::Item*>(chunkTypeInfo->chunkDataPtr);
-			u32 numChunks = chunkTypeInfo->numChunks;
-			for (u32 i = 0; i < numChunks; i++)
-			{
-				// Check for "item", as that seems to be whats used for rupees
-				// Would check for chests and whatnot as well when changing the contents of those
-				if (strncmp(itemActrPtr->objectName, "item", sizeof(tp::d_stage::Actr::objectName)))
-				{
-					// Change the item id
-					u8 tempParamByte1;
-					u8 tempParamByte2;
-					u8 tempParamByte4;
-					tempParamByte4 = 0x10;
+		
 
-					// Changing the parameters probably isnt necessary for "item", but I'll add them anyway
-					// Refer to Winditor for what the parameters do
-					tempParamByte1 = 0xF3;
-					tempParamByte2 = 0xFF;
-					itemActrPtr->rot[2] = 0x3F;
-
-					itemActrPtr->paramOne = tempParamByte1;
-					itemActrPtr->paramTwo = tempParamByte2;
-					itemActrPtr->item = tempParamByte4;
-				}
-			}
-			return actorCommonLayerInit_trampoline(mStatus_roomControl, chunkTypeInfo, unk3, unk4);
-			}
-		);
-
-		// Hook dStage_actorCommonLayerInit to search for field items (probably only rupees) to replace based on object name
-		actorInit_trampoline = patch::hookFunction(tp::d_stage::actorInit,
-			[](void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, int unk3, void* unk4)
+		tp::d_stage::Item* itemActrPtr = reinterpret_cast<tp::d_stage::Item*>(chunkTypeInfo->chunkDataPtr);
+		u32 numChunks = chunkTypeInfo->numChunks;
+		for (u32 i = 0; i < numChunks; i++)
 		{
-			tp::d_stage::Item* itemActrPtr = reinterpret_cast<tp::d_stage::Item*>(chunkTypeInfo->chunkDataPtr);
-			u32 numChunks = chunkTypeInfo->numChunks;
-			for (u32 i = 0; i < numChunks; i++)
+			// Check for "item", as that seems to be whats used for rupees
+			// Would check for chests and whatnot as well when changing the contents of those
+			if (strncmp(itemActrPtr->objectName, "item", sizeof(tp::d_stage::Actr::objectName)))
 			{
-				// Check for "htPiece", as that seems to be whats used for heart pieces
-				// Not sure what name heart containers use
-				if (strncmp(itemActrPtr->objectName, "htPiece", sizeof(tp::d_stage::Actr::objectName)))
-				{
-					// Change the object name to "item"
-					strncpy(itemActrPtr->objectName, "item", sizeof(tp::d_stage::Actr::objectName));
+				// Change the item id
+				itemActrPtr->item = 0x10;
 
-					// Change the item id
-					u8 tempParamByte1;
-					u8 tempParamByte2;
-					u8 tempParamByte4;
-					tempParamByte4 = 0x20;
-
-					// Changing the parameters is necessary for this, as its being changed to use rupee parameters
-					// Currently allows the item to respawn, so need to look into what handles that
-					// Refer to Winditor for what the parameters do
-					tempParamByte1 = 0xF3;
-					tempParamByte2 = 0xFF;
-					itemActrPtr->rot[2] = 0x3F;
-
-					itemActrPtr->paramOne = tempParamByte1;
-					itemActrPtr->paramTwo = tempParamByte2;
-					itemActrPtr->item = tempParamByte4;
-				}
+				// Changing the parameters probably isnt necessary for "item", but I'll add them anyway
+				// Refer to Winditor for what the parameters do
+				itemActrPtr->rot[2] = 0x3F;
+				itemActrPtr->paramOne = 0xF3;
+				itemActrPtr->paramTwo = 0xFF;
 			}
-			return actorInit_trampoline(mStatus_roomControl, chunkTypeInfo, unk3, unk4);
 		}
-		);
-	}
-		// hook dStage_actorInit to search for field items (probably only heart containers) to replace based on object name
-		// Not sure what is passed into dStage_actorInit, but r4 seems to be the same as dStage_actorCommonLayerInit
-	
+
+		for (u32 i = 0; i < numChunks; i++)
+		{
+			// Check for "htPiece", as that seems to be whats used for heart pieces
+			// Not sure what name heart containers use
+			if (strncmp(itemActrPtr->objectName, "htPiece", sizeof(tp::d_stage::Actr::objectName)))
+			{
+				// Change the object name to "item"
+				strncpy(itemActrPtr->objectName, "item", sizeof(tp::d_stage::Actr::objectName));
+
+				// Change the item id
+				itemActrPtr->item = 0x20;
+
+				// Changing the parameters is necessary for this, as its being changed to use rupee parameters
+				// Currently allows the item to respawn, so need to look into what handles that
+				// Refer to Winditor for what the parameters do
+				itemActrPtr->rot[2] = 0x3F;
+				itemActrPtr->paramOne = 0xF3;
+				itemActrPtr->paramTwo = 0xFF;
+			}
+		}
+	}	
 }

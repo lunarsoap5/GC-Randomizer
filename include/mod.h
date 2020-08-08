@@ -32,7 +32,7 @@ namespace mod
 
 			// Options
 			u8 customSeed; // Use custom seed?
-			static u8 randoEnabled; // Randomize chests?
+			u8 randoEnabled; // Randomize chests?
 			u8 truePause; // Disable controls during console?
 			u8 inputBuffering; // En/Disable buffering
 
@@ -249,6 +249,8 @@ namespace mod
 
 			bool (*actorCommonLayerInit_trampoline)(void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, int unk3, void* unk4) = nullptr;
 
+			bool(*actorInit_trampoline)(void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, int unk3, void* unk4) = nullptr;
+
 			void (*putSave_trampoline)(tp::d_com_inf_game::GameInfo* gameInfoPtr, s32 areaID) = nullptr;
 
 			// Item functions
@@ -262,5 +264,7 @@ namespace mod
 			s32(*createItem_trampoline)(const float pos[3], s32 item, s32 unk3, s32 unk4, const float unk5[3], const float unk6[3], s32 unk7) = nullptr;
 
 			void(*setItemBombNumCount_trampoline)(u32 unk1, u8 bagNb, short amount) = nullptr;
+
+			void modifyFieldItems(tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo);
 	};
 }

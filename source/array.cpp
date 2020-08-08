@@ -121,7 +121,7 @@ namespace mod::array
 
 	u32 getRandomBgmId(u32 originalId)
 	{
-		if (mod::Mod::randoEnabled == 0 || Singleton::getInstance()->isCustomMusicEnabled == 0x0)
+		if (/*mod::Mod::randoEnabled == 0 || */Singleton::getInstance()->isCustomMusicEnabled == 0x0)
 		{
 			return originalId;
 		}
@@ -141,7 +141,7 @@ namespace mod::array
 
 	u32 getRandomAudioStreamId(u32 originalId)
 	{
-		if (mod::Mod::randoEnabled == 0 || Singleton::getInstance()->isCustomMusicEnabled == 0x0)
+		if (/*mod::Mod::randoEnabled == 0 || */Singleton::getInstance()->isCustomMusicEnabled == 0x0)
 		{
 			return originalId;
 		}

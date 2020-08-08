@@ -227,10 +227,6 @@ namespace mod::game_patch
 	void setCiTSDungeonFlag();
 	void setCiTSBossFlag();
 
-	void changeFieldItems();
-
-	bool(*actorCommonLayerInit_trampoline)(void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, int unk3, void* unk4) = nullptr;
-
-	bool(*actorInit_trampoline)(void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, int unk3, void* unk4) = nullptr;
+	void modifyFieldItems(tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo);
 
 }

@@ -151,6 +151,7 @@
 80368994:strcmp
 80368B2C:strcpy
 80368AE8:strncpy
+80368954:strncmp
 
 //currentState
 803A66B3:current_state

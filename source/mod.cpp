@@ -73,7 +73,6 @@ namespace mod
 		game_patch::assemblyOverwrites();
 		game_patch::increaseWalletSize();
 		game_patch::increaseClimbSpeed();
-		game_patch::changeFieldItems();
 		
 		
 		// Causes issues right now (argarok cannot be beaten)
@@ -562,9 +561,22 @@ namespace mod
 			{
 				global::modPtr->doCustomTRESActor(mStatus_roomControl);
 			}
+
+			game_patch::modifyFieldItems(chunkTypeInfo);
+
 			return global::modPtr->actorCommonLayerInit_trampoline(mStatus_roomControl, chunkTypeInfo, unk3, unk4);
 		}
 		);
+
+		actorInit_trampoline = patch::hookFunction(tp::d_stage::actorInit,
+			[](void* mStatus_roomControl, tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo, int unk3, void* unk4)
+		{
+			// Modify field items in certain rooms
+			game_patch::modifyFieldItems(chunkTypeInfo);
+
+			// Call original function
+			return global::modPtr->actorInit_trampoline(mStatus_roomControl, chunkTypeInfo, unk3, unk4);
+		});
 
 
 		putSave_trampoline = patch::hookFunction(tp::d_save::putSave,
@@ -1935,7 +1947,7 @@ namespace mod
 			tp::d_stage::dzxChunkTypeInfo chunkInfo;
 			strcpy(chunkInfo.tag, "ACTR");  // has to be ACTR for the function we use
 			chunkInfo.numChunks = checkCount;
-			chunkInfo.chunkDataPtr = TRES;
+			chunkInfo.chunkDataPtr = reinterpret_cast<tp::d_stage::Actr*>(TRES);
 
 			// Populate TRES array with data
 			for (u32 i = 0; i < checkCount; i++)
@@ -2195,5 +2207,4 @@ namespace mod
 		}
 		return true;
 	}
-
 } // namespace mod
