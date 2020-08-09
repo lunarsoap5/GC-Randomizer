@@ -1168,7 +1168,7 @@ namespace mod::game_patch
 			if (strcmp(itemActrPtr->objectName, "item") == 0)
 			{
 				// Change the item id
-				itemActrPtr->item = 0x5;
+				itemActrPtr->item = 0xD;
 
 				// Changing the parameters probably isnt necessary for "item", but I'll add them anyway
 				// Refer to Winditor for what the parameters do
@@ -1185,7 +1185,7 @@ namespace mod::game_patch
 				strcpy(itemActrPtr->objectName, "item");
 
 				// Change the item id
-				itemActrPtr->item = 0x5;
+				itemActrPtr->item = 0xD;
 
 				// Changing the parameters is necessary for this, as its being changed to use rupee parameters
 				// Currently allows the item to respawn, so need to look into what handles that
