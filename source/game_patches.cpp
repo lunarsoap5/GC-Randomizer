@@ -556,6 +556,10 @@ namespace mod::game_patch
 	{
 		if ((gameInfo.scratchPad.eventBits[0x8] & 0x40) == 0 && Singleton::getInstance()->isCartEscortSkipEnabled == 0 && tools::checkItemFlag(ItemFlags::Heros_Bow) && tools::checkItemFlag(ItemFlags::Boomerang) && gameInfo.scratchPad.clearedTwilights.Lanayru == 0b1)
 		{
+			if (((gameInfo.scratchPad.eventBits[0xB] & 0x1) != 0) && (gameInfo.scratchPad.eventBits[0x1E] & 0x8) == 0)
+			{
+				return;
+			}
 			gameInfo.nextStageVars.nextState = 0x8;
 			gameInfo.nextStageVars.nextSpawnPoint = 0x14;
 		}
@@ -1153,8 +1157,15 @@ namespace mod::game_patch
 
 		// Modify a branch in itemGetNextExecute to allow the item get cutscene to play with items past 0x40
 		// If you already have the item it gives you, then itll act like a rupee and appear over your head. This could be changed though.
-		u32 address_US = 0x8015CF64;
-		*reinterpret_cast<u32*>(address_US) = 0x48000018; // b 0x18
+#ifdef TP_US
+u32* Address = reinterpret_cast<u32*>(0x8015CF64);
+#elif defined TP_JP
+u32* Address = reinterpret_cast<u32*>(0x8015CFB0);
+#elif defined TP_EU
+u32* Address = reinterpret_cast<u32*>(0x8015D170);
+#endif
+
+		*Address = 0x48000018; // b 0x18
 	}	
 
 	void modifyFieldItems(tp::d_stage::dzxChunkTypeInfo* chunkTypeInfo)
@@ -1168,7 +1179,7 @@ namespace mod::game_patch
 			if (strcmp(itemActrPtr->objectName, "item") == 0)
 			{
 				// Change the item id
-				itemActrPtr->item = 0xD;
+				itemActrPtr->item = 0xFA;
 
 				// Changing the parameters probably isnt necessary for "item", but I'll add them anyway
 				// Refer to Winditor for what the parameters do
@@ -1185,7 +1196,7 @@ namespace mod::game_patch
 				strcpy(itemActrPtr->objectName, "item");
 
 				// Change the item id
-				itemActrPtr->item = 0xD;
+				itemActrPtr->item = 0xFA;
 
 				// Changing the parameters is necessary for this, as its being changed to use rupee parameters
 				// Currently allows the item to respawn, so need to look into what handles that

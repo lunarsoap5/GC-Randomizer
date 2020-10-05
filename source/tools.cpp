@@ -5,6 +5,7 @@
 #include <tp/evt_control.h>
 #include <tp/d_com_inf_game.h>
 #include <tp/JFWSystem.h>
+#include <tp/resource.h>
 #include <cstring>
 #include <cstdio>
 
@@ -145,5 +146,4 @@ namespace mod::tools
 			val += incrementAmount;
 		}
 	}
-
 }

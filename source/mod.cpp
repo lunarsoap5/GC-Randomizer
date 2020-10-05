@@ -36,6 +36,8 @@
 #include <tp/d_item_data.h>
 #include <tp/d_meter2_info.h>
 #include <tp/Z2SeqMgr.h>
+#include <tp/resource.h>
+#include <tp/d_file_select.h>
 #include <cstdio>
 #include <cstring>
 
@@ -49,6 +51,7 @@ namespace mod
 	mod::HUDConsole* global::hudConsolePtr = nullptr;
 	int num_frames = 120;
 	int frame_counter = 0;
+	s32 lastItem;
 
 	void main()
 	{
@@ -605,10 +608,11 @@ namespace mod
 
 				item = global::modPtr->procItemCreateFunc(pos, item, "createItemForPresentDemo");
 
-				return global::modPtr->createItemForPresentDemo_trampoline(pos, item, unk3, unk4, unk5, rot, scale);
+				return global::modPtr->createItemForPresentDemo_trampoline(pos, item, unk3, 0x32, 0x32, rot, scale);
 			}
 		);
-			
+
+
 
 		createItemForTrBoxDemo_trampoline = patch::hookFunction(tp::f_op_actor_mng::createItemForTrBoxDemo,
 			[](const float pos[3], s32 item, s32 itemPickupFlag, s32 roomNo, const s16 rot[3], const float scale[3])
@@ -661,6 +665,61 @@ namespace mod
 			}
 		);
 
+		parseCharacter_1Byte_trampoline = patch::hookFunction(tp::resource::parseCharacter_1Byte,
+			[](const char** text)
+			{
+				const char* smallKeyString = { "This will open a locked door"};
+				if ((strncmp(*text, smallKeyString, 28) == 0) && tp::d_a_alink::checkStageName(stage::allStages[Stage_Forest_Temple]))
+				{
+					const char* replacementString = {"It can be used in the\nForest Temple.\x00\x1A"};
+					static char* textBufferHolder; 
+					static char textBuffer[39];
+				
+						// Modify textBuffer with new text, snprintf is safest
+						snprintf(textBuffer, 39, replacementString);
+						//strncpy(textBuffer, replacementString, replacementStringSize - 1);
+						textBufferHolder = textBuffer;
+						*text = textBufferHolder;
+				}
+				else if ((strncmp(*text, smallKeyString, 28) == 0) && tp::d_a_alink::checkStageName(stage::allStages[Stage_Snowpeak_Ruins]))
+				{
+					const char* replacementString = {"It can be used in\nSnowpeak Ruins.\x00\x1A"};
+					static char* textBufferHolder; 
+					static char textBuffer[36];
+				
+						// Modify textBuffer with new text, snprintf is safest
+						snprintf(textBuffer, 36, replacementString);
+						//strncpy(textBuffer, replacementString, replacementStringSize - 1);
+						textBufferHolder = textBuffer;
+						*text = textBufferHolder;
+				}
+				else if ((strncmp(*text, smallKeyString, 28) == 0) && tp::d_a_alink::checkStageName(stage::allStages[Stage_Lakebed_Temple]))
+				{
+					const char* replacementString = {"It can be used in\nLakebed Temple.\x00\x1A"};
+					static char* textBufferHolder; 
+					static char textBuffer[36];
+				
+						// Modify textBuffer with new text, snprintf is safest
+						snprintf(textBuffer, 36, replacementString);
+						//strncpy(textBuffer, replacementString, replacementStringSize - 1);
+						textBufferHolder = textBuffer;
+						*text = textBufferHolder;
+				}
+				else if ((strncmp(*text, smallKeyString, 28) == 0) && tp::d_a_alink::checkStageName(stage::allStages[Stage_Arbiters_Grounds]))
+				{
+					const char* replacementString = {"It can be used in\nArbiters Grounds.\x00\x1A"};
+					static char* textBufferHolder; 
+					static char textBuffer[38];
+				
+						// Modify textBuffer with new text, snprintf is safest
+						snprintf(textBuffer, 38, replacementString);
+						//strncpy(textBuffer, replacementString, replacementStringSize - 1);
+						textBufferHolder = textBuffer;
+						*text = textBufferHolder;
+				}
+				return global::modPtr->parseCharacter_1Byte_trampoline(text);
+			}
+		);
 
 		evt_control_Skipper_trampoline = patch::hookFunction(tp::evt_control::skipper,
 			[](void* evtPtr)
@@ -1091,6 +1150,11 @@ namespace mod
 			}
 		}
 
+		if (tp::d_a_alink::checkStageName(stage::allStages[Stage_Ook]) && gameInfo.eventSystem.currentEventID == 0x1 && gameInfo.scratchPad.form == 0)
+		{
+			tp::d_a_alink::procCoMetamorphoseInit(gameInfo.linkMapPtr);
+		}
+
 		checkSearchID = (checkSearchID2 * 0x100) + checkSearchID1;
 		checkReverseSearchID = (checkReverseSearchID2 * 0x100) + checkReverseSearchID1;
 		if (checkSearchID != lastCheckSearchID)
@@ -1190,6 +1254,7 @@ namespace mod
 			strcmp(funcIdentifier, "createItemForMidBoss") != 0 && strcmp(funcIdentifier, "createItemForSimpleDemo") != 0)
 		{
 			item = chestRandomizer->getItemReplacement(pos, item);
+			lastItem = item;
 		}
 
 		return item;

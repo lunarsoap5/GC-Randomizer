@@ -109,8 +109,8 @@ namespace mod::array
 
 	u8 bgmFanfareArray[0x8] =
 	{
-		0xA,
-		0xB,
+		0x0A,
+		0x0B,
 		0x81,
 		0x82,
 		0x83,
@@ -172,7 +172,7 @@ namespace mod::array
 		return true;
 	}
 
-	bool checkIfBgmIdIsFanfare(u8 bgmId)
+	bool checkIfBgmIdIsFanfare(u32 bgmId)
 	{
 		u32 bgmFanfareArraySize = sizeof(array::bgmFanfareArray) / sizeof(array::bgmFanfareArray[0]);
 		for (u32 i = 0; i < bgmFanfareArraySize; i++)

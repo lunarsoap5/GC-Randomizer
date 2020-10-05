@@ -2325,12 +2325,12 @@ namespace mod
 			// Since we are shuffling bgm, we will shuffle bgmFanfareArray as well
 			tools::shuffleByteArray(tempBgmFanfareArray, bgmFanfareArrayTotalElements);
 
-			int j = 0;
+			u32 fanfareArrayIndex = 0;
 			for (u32 i = 0; i < bgmIndexArrayTotalElements; i++)
 			{
-				if (!array::checkIfBgmIdIsValid(array::bgmIndexArray[i]))
+				u8 tempId = array::bgmIndexArray[i];
+				if (!array::checkIfBgmIdIsValid(tempId))
 				{
-					u8 tempId;
 					u8 const maxId = 0xAA;
 					do
 					{
@@ -2340,10 +2340,19 @@ namespace mod
 					array::bgmIndexArray[i] = tempId;
 				}
 
-				if (array::checkIfBgmIdIsFanfare(i))
+				tempId = i;
+				if (array::checkIfBgmIdIsFanfare(tempId))
 				{
-					array::bgmIndexArray[i] = array::bgmFanfareArray[j];
-					j++;
+					u32 bgmFanfareArraySize = sizeof(array::bgmFanfareArray) / sizeof(array::bgmFanfareArray[0]);
+					if (fanfareArrayIndex < bgmFanfareArraySize)
+					{
+						array::bgmIndexArray[i] = array::bgmFanfareArray[fanfareArrayIndex];
+						fanfareArrayIndex++;
+					}
+					else
+					{
+						array::bgmIndexArray[i] = 0;
+					}
 				}
 			}
 			// Shuffle audioStreamingIndexArray

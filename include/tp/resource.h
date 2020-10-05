@@ -6,6 +6,6 @@ namespace tp::resource
 {
 	extern "C"
 	{
-		extern void* parseCharacter_1Byte(const char** text);
+		char parseCharacter_1Byte(const char** text);
 	}
 }

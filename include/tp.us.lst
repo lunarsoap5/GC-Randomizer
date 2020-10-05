@@ -12,6 +12,7 @@
 80032AA8:getRupeeMax
 800350BC:getSave
 800350F0:putSave
+80035a04:card_to_memory
 
 // d_stage.o
 8002586C:actorCommonLayerInit
@@ -200,3 +201,5 @@
 802af010:bgmStart
 802af49c:subBgmStart
 802afb94:bgmStreamPrepare
+
+801868ec:menuSelectStart

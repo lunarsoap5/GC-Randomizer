@@ -10,5 +10,6 @@ namespace tp::d_save
 		u16 getRupeeMax();
 		void getSave(tp::d_com_inf_game::GameInfo* gameInfoPtr, s32 areaID);
 		void putSave(tp::d_com_inf_game::GameInfo* gameInfoPtr, s32 areaID);
+		void card_to_memory(char* param_1, int param_2);
 	}
 }

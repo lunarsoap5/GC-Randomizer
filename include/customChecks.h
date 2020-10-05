@@ -42,7 +42,7 @@ namespace mod
 		/*Lantern*/
 		{"F_SP108", 0xFF, 1, 0xF8, 0x48, 0xC66D4C1B, 0x41C19A25, 0xC65D2696, 0x36EC, nullptr, []() { return true; } },
 		/*Zora Armor*/
-		{"F_SP111", 0, 1, 0x7C, 0x31, 0x46A85A96, 0x43FA0000, 0x43944190, 0xC270, []() { gameInfo.scratchPad.eventBits[0x8] |= 0x4;/*got zora armor from Rutela*/ }, []() { return true; } },
+		{"F_SP111", 0, 1, 0x7C, 0x31, 0x46A85A96, 0x43FA0000, 0x43944190, 0xC270, []() { gameInfo.scratchPad.eventBits[0x8] |= 0x4;/*got zora armor from Rutela*/ gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x17] |= 0x40;/*remove rock in graveyard*/ gameInfo.scratchPad.allAreaNodes.Eldin.unk_0[0x16] |= 0x40; }, []() { return true; } },
 		/*Coral Earring*/
 		{"F_SP111", 0, 1, 0x78, 0x3D, 0x46A81087, 0x43FA57D9, 0xC3BCEFAC, 0xC270, []() { gameInfo.scratchPad.eventBits[0x3B] |= 0x80;/*Got Coral Earring from Ralis*/ }, []() { return tools::checkItemFlag(ItemFlags::Asheis_Sketch); } },
 		/*Auru's Memo*/
